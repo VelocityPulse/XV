@@ -5,22 +5,28 @@ using System.IO;
 using System.Xml.Serialization;
 using UnityEngine;
 
+// When app built, the file is savec in : Build.app/Contents/SavedData/
 [Serializable]
 public sealed class DataScene {
 
 	private const string FILE_NAME = "DataScene.xml";
 
+	public List<ObjectDataScene> DataObjects { get; set; }
 
-	// When app built, the file is savec in : Build.app/Contents/SavedData/
+	public DataScene()
+	{
+		DataObjects = new List<ObjectDataScene>();
+	}
 
-	static public string Serialize (DataScene iDataScene) {
+	static public string Serialize(DataScene iDataScene)
+	{
 		string lFolderPath = Application.dataPath + "/SavedData/";
 		Utils.CreateFolder(lFolderPath);
 
 
 		Debug.Log("Path : " + lFolderPath + FILE_NAME);
 		using (StreamWriter writer = new StreamWriter(lFolderPath + FILE_NAME)) {
-			var serializer = new XmlSerializer(typeof(DataScene));
+			XmlSerializer serializer = new XmlSerializer(typeof(DataScene));
 			serializer.Serialize(writer, iDataScene);
 			writer.Flush();
 		}
@@ -28,7 +34,8 @@ public sealed class DataScene {
 		return lFolderPath + FILE_NAME;
 	}
 
-	static public DataScene Unserialize () {
+	static public DataScene Unserialize()
+	{
 
 		string lFolderPath = Application.dataPath + "/SavedData/";
 		Utils.CreateFolder(lFolderPath);
