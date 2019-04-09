@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -8,39 +9,41 @@ public class GameManager : MonoBehaviour {
 
 	private readonly DataScene mDataScene;
 
-	public GameObject mTestGameObject;
+	public ObjectEntity SelectedEntity { get; set; }
 
 	GameManager()
 	{
 		mDataScene = new DataScene();
 	}
 
-	// Use this for initialization
 	void Start()
 	{
-		ObjectDataScene lMyObject = new ObjectDataScene();
-
-		lMyObject.Name = mTestGameObject.name;
-		lMyObject.Position = mTestGameObject.transform.position;
-		lMyObject.Rotation = mTestGameObject.transform.eulerAngles;
-		lMyObject.Scale = mTestGameObject.transform.localScale;
-
-		mDataScene.DataObjects.Add(lMyObject);
-		DataScene.Serialize(mDataScene);
 	}
 
-	// Update is called once per frame
 	void Update()
 	{
+		if (Input.GetMouseButtonDown(0)) {
+			RaycastHit hit;
+			Ray ray = Camera.current.ScreenPointToRay(Input.mousePosition);
 
+			if (Physics.Raycast(ray, out hit)) {
+
+				if (hit.collider == null)
+					Debug.Log("collider hit is null");
+				else
+					Debug.Log("hit : " + hit.collider.gameObject.name);
+			} else
+				Debug.Log("Raycast hasnt hit anything");
+			//SelectedEntity.HideUi();
+			//SelectedEntity = null;
+
+		}
 	}
 
 	//TODO : 
-
-	//Coder la fonction import qui prend un path.
-	//ObjectEntity
-	//Ajouter le addComponent de ObjectEntity dans BuildObject
-	//Ajouter le mDataScene.DataObjects.Add() dans le init de ObjectEntity
+	// rendre gamemanager singleton et faire un pull request vers antho
+	// S'occuper du selectedEntity. 
+	// sur un mouse click dans object entity, le signaler a gamemanager
 
 	GameObject BuildObject(ObjectDataScene iODS)
 	{
@@ -66,17 +69,13 @@ public class GameManager : MonoBehaviour {
 		lGameObject.transform.eulerAngles = iODS.Rotation;
 		lGameObject.transform.localScale = iODS.Scale;
 
-		// Todo : ajouter le script ObjectEntity
-		//lGameObject.AddComponent("ObjectEntity");
-
-		//lGameObject.AddComponent<DataScene>();
-
-		//lGameObject.AddComponent<Collider>();
+		lGameObject.AddComponent<ObjectEntity>()
+				   .InitDataScene(mDataScene)
+				   .SetObjectDataScene(iODS)
+				   .SaveEntity();
 
 		return lGameObject;
 	}
-
-
 
 	/// <summary>
 	/// ////////////////////////////// DEBUG 

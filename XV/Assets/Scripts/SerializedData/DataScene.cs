@@ -20,7 +20,7 @@ public sealed class DataScene {
 
 	static public string Serialize(DataScene iDataScene)
 	{
-		string lFolderPath = Application.dataPath + "/SavedData/";
+		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
 		Utils.CreateFolder(lFolderPath);
 
 
@@ -34,10 +34,26 @@ public sealed class DataScene {
 		return lFolderPath + FILE_NAME;
 	}
 
+	public string Serialize()
+	{
+		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
+		Utils.CreateFolder(lFolderPath);
+
+
+		Debug.Log("Path : " + lFolderPath + FILE_NAME);
+		using (StreamWriter writer = new StreamWriter(lFolderPath + FILE_NAME)) {
+			XmlSerializer serializer = new XmlSerializer(typeof(DataScene));
+			serializer.Serialize(writer, this);
+			writer.Flush();
+		}
+
+		return lFolderPath + FILE_NAME;
+	}
+
 	static public DataScene Unserialize()
 	{
 
-		string lFolderPath = Application.dataPath + "/SavedData/";
+		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
 		Utils.CreateFolder(lFolderPath);
 
 		XmlSerializer lSerializer = new XmlSerializer(typeof(DataScene));
