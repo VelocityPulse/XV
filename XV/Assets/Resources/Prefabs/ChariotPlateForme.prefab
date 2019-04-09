@@ -257,6 +257,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224566407060832564}
   - component: {fileID: 95145499048537986}
+  - component: {fileID: 222775889964577592}
   m_Layer: 0
   m_Name: ChariotPlateForme
   m_TagString: Untagged
@@ -1868,6 +1869,12 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!222 &222775889964577592
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1457844196386484}
 --- !u!224 &224566407060832564
 RectTransform:
   m_ObjectHideFlags: 1
@@ -1886,7 +1893,7 @@ RectTransform:
   - {fileID: 4365603009502412}
   - {fileID: 4646655645140120}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
