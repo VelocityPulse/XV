@@ -16,8 +16,7 @@ public sealed class UIModelManager : MonoBehaviour {
         if ((lModels = ModelManager.Instance.GetAllModel()) == null)
             return;
         
-        for (int i = 0; i < lModels.Count; i++)
-        {
+        for (int i = 0; i < lModels.Count; i++) {
             GameObject lUiElement = Instantiate(UiElement, transform);
             lUiElement.GetComponent<Image>().sprite = lModels[i].Sprite;
             lUiElement.GetComponentInChildren<Text>().text = lModels[i].Sprite.name;

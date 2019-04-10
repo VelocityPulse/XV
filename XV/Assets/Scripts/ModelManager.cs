@@ -23,42 +23,58 @@ public sealed class ModelManager
     {
     }
 
-    private ModelManager()
+    private void LoadImportModel()
     {
-        if ((mModelPool = new Dictionary<string, Model>()) == null)
-        {
-            Debug.LogError("[MODEL_POOL] Error while creating the dictionary.");
-            ModelPoolLenght = 0;
-            return;
-        }
+        GameObject lGm = null;
+        string lName = null;
 
+        string[] lModelFiles = Directory.GetFiles(Application.dataPath + "/Resources/SavedData/Models");
+        Sprite lImportModelSprite = Resources.Load<Sprite>("Sprites/UI/ImportModel");
+
+        foreach (string iModelFile in lModelFiles) {
+            if (iModelFile.Contains(".fbx") && !iModelFile.Contains(".meta")) {
+                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/SavedData/Models/", "")) == null) {
+                    Debug.LogError("[MODEL_POOL] Error while removing data path.");
+                    continue;
+                }
+                if ((lName = lName.Replace(".fbx", "")) == null) {
+                    Debug.LogError("[MODEL_POOL] Error while removing extension name.");
+                    continue;
+                }
+                if ((lGm = Resources.Load<GameObject>("SavedData/Models/" + lName)) == null) {
+                    Debug.LogError("[MODEL_POOL] Error while loading prefab:" + "Prefabs/" + lName);
+                    continue;
+                }
+                Debug.Log("---- " + lName + " loaded ----");
+                lImportModelSprite.name = lName;
+                mModelPool.Add(lName, new Model { GameObject = lGm, Sprite = lImportModelSprite, });
+            }
+        }
+    }
+
+    private void LoadInternModel()
+    {
         GameObject lGm = null;
         Sprite lSprite = null;
         string lName = null;
 
         string[] lModelFiles = Directory.GetFiles(Application.dataPath + "/Resources/Prefabs");
 
-        foreach (string iModelFile in lModelFiles)
-        {
-            if (iModelFile.Contains(".prefab") && !iModelFile.Contains(".meta"))
-            {
-                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/Prefabs/", "")) == null)
-                {
+        foreach (string iModelFile in lModelFiles) {
+            if (iModelFile.Contains(".prefab") && !iModelFile.Contains(".meta")) {
+                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/Prefabs/", "")) == null) {
                     Debug.LogError("[MODEL_POOL] Error while removing data path.");
                     continue;
                 }
-                if ((lName = lName.Replace(".prefab", "")) == null)
-                {
+                if ((lName = lName.Replace(".prefab", "")) == null) {
                     Debug.LogError("[MODEL_POOL] Error while removing extension name.");
                     continue;
                 }
-                if ((lGm = Resources.Load<GameObject>("Prefabs/" + lName)) == null)
-                {
+                if ((lGm = Resources.Load<GameObject>("Prefabs/" + lName)) == null) {
                     Debug.LogError("[MODEL_POOL] Error while loading prefab:" + "Prefabs/" + lName);
                     continue;
                 }
-                if ((lSprite = Resources.Load<Sprite>("Sprites/UI/" + lName)) == null)
-                {
+                if ((lSprite = Resources.Load<Sprite>("Sprites/UI/" + lName)) == null) {
                     Debug.LogError("[MODEL_POOL] Error while loading sprite:" + "Sprites/UI/" + lName);
                     continue;
                 }
@@ -66,13 +82,23 @@ public sealed class ModelManager
                 mModelPool.Add(lName, new Model { GameObject = lGm, Sprite = lSprite, });
             }
         }
+    }
+
+    private ModelManager()
+    {
+        if ((mModelPool = new Dictionary<string, Model>()) == null) {
+            Debug.LogError("[MODEL_POOL] Error while creating the dictionary.");
+            ModelPoolLenght = 0;
+            return;
+        }
+        LoadInternModel();
+        LoadImportModel();
         ModelPoolLenght = mModelPool.Count;
     }
 
     public static ModelManager Instance
     {
-        get
-        {
+        get {
             return instance;
         }
     }
