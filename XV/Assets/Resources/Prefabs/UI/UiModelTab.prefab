@@ -39,7 +39,6 @@ GameObject:
   - component: {fileID: 224790023543605614}
   - component: {fileID: 222302999653513154}
   - component: {fileID: 114806987745720834}
-  - component: {fileID: 114634318028809514}
   - component: {fileID: 114792727535985096}
   - component: {fileID: 114387785507315138}
   - component: {fileID: 114262882461783224}
@@ -242,18 +241,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.ScrollRect+ScrollRectEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114634318028809514
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1212051379717230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1200242548, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShowMaskGraphic: 1
 --- !u!114 &114639054553981614
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -369,7 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.33088237, g: 0.33088237, b: 0.33088237, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -423,7 +410,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.33088237, g: 0.33088237, b: 0.33088237, a: 1}
+  m_Color: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 0.21176471}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -527,8 +514,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.076825164, y: 0.08375467}
   m_AnchorMax: {x: 0.92200005, y: 0.8862641}
-  m_AnchoredPosition: {x: 0.18500288, y: 12.037479}
-  m_SizeDelta: {x: 1.9512519, y: -17.018734}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224466270860109544
 RectTransform:

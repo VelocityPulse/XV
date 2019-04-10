@@ -69,7 +69,6 @@ public sealed class UIElement : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public void OnEndDrag(PointerEventData eventData)
     {
         Utils.SetLayerRecursively(mSelectedElement, LayerMask.NameToLayer("dropable"));
-        Instantiate(mSelectedElement);
 
         ObjectDataScene lObject = new ObjectDataScene {
             Name = mElementText.text,
