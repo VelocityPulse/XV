@@ -3,12 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ObjectEntity : MonoBehaviour {
+public class ObjectEntity : MonoBehaviour
+{
 
 	private DataScene mDataScene;
 	private ObjectDataScene mODS;
+	private bool mSelected;
 
-	public bool Selected { get; set; }
+	public bool Selected
+	{
+		get
+		{
+			return mSelected;
+		}
+		set
+		{
+			if (!value)
+				Debug.Log("ObjectEntity : " + mODS.Name + "Has been unselected");
+			mSelected = value;
+		}
+	}
 
 	void Start()
 	{
@@ -39,8 +53,10 @@ public class ObjectEntity : MonoBehaviour {
 
 	private void OnMouseDown()
 	{
-		//GameManager.Instance.SelectedEntity = this;
-		//DisplayUi();
+		if (!Selected) {
+			GameManager.Instance.SelectedEntity = this;
+			Debug.Log("ObjectEntity : " + mODS.Name + " has been selected");
+		}
 	}
 
 	public ObjectEntity InitDataScene(DataScene iDataScene)

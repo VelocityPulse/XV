@@ -5,45 +5,79 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
 
-	private readonly DataScene mDataScene;
+	private static GameManager mInstance;
 
-	public ObjectEntity SelectedEntity { get; set; }
+	private readonly DataScene mDataScene = new DataScene();
 
-	GameManager()
+	private ObjectEntity mSelectedEntity;
+
+	public ObjectEntity SelectedEntity
 	{
-		mDataScene = new DataScene();
+		get
+		{
+			return mSelectedEntity;
+		}
+		set
+		{
+			if (value == null && mSelectedEntity == null)
+				return;
+
+			if (value == null && mSelectedEntity != null) {
+				mSelectedEntity.Selected = false;
+				return;
+			}
+
+			if (mSelectedEntity != null)
+				mSelectedEntity.Selected = false;
+			mSelectedEntity = value;
+			mSelectedEntity.Selected = true;
+		}
+	}
+
+	static public GameManager Instance
+	{
+		get
+		{
+			Debug.Log("singleton");
+			if (mInstance == null)
+				mInstance = new GameObject("GameManager").AddComponent<GameManager>();
+			return mInstance;
+		}
 	}
 
 	void Start()
 	{
+		if (mInstance == null) {
+			mInstance = this;
+		} else {
+			Destroy(this);
+			throw new System.Exception("An instance of this singleton already exists.");
+		}
 	}
 
 	void Update()
 	{
 		if (Input.GetMouseButtonDown(0)) {
 			RaycastHit hit;
-			Ray ray = Camera.current.ScreenPointToRay(Input.mousePosition);
+
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 			if (Physics.Raycast(ray, out hit)) {
 
-				if (hit.collider == null)
-					Debug.Log("collider hit is null");
-				else
-					Debug.Log("hit : " + hit.collider.gameObject.name);
-			} else
-				Debug.Log("Raycast hasnt hit anything");
-			//SelectedEntity.HideUi();
-			//SelectedEntity = null;
-
+				if (hit.collider == null) {
+					Debug.Log("Collider hit is null");
+					SelectedEntity = null;
+				} else
+					Debug.Log("Hit : " + hit.collider.gameObject.name);
+			} else {
+				Debug.Log("Raycast hasnt hit nothing");
+				SelectedEntity = null;
+			}
 		}
 	}
-
-	//TODO : 
-	// rendre gamemanager singleton et faire un pull request vers antho
-	// S'occuper du selectedEntity. 
-	// sur un mouse click dans object entity, le signaler a gamemanager
 
 	GameObject BuildObject(ObjectDataScene iODS)
 	{
@@ -77,9 +111,13 @@ public class GameManager : MonoBehaviour {
 		return lGameObject;
 	}
 
-	/// <summary>
-	/// ////////////////////////////// DEBUG 
-	/// </summary>
+
+
+
+
+
+
+
 	private int mInvokedBox = 0;
 	private int mInvokedModel = 0;
 	public void InvokeBox()
@@ -114,7 +152,4 @@ public class GameManager : MonoBehaviour {
 		if (lRet != null)
 			mInvokedModel++;
 	}
-
-	//////////////////////////////////// DEBUG
-
 }

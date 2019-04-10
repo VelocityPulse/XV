@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 
@@ -14,6 +15,11 @@ public static class Utils {
 		Directory.CreateDirectory(iPath);
 
 		return false;
+	}
+
+	public static void PrintStackTrace() {
+		StackTrace t = new StackTrace();
+		UnityEngine.Debug.Log(t.ToString());
 	}
 
 }
