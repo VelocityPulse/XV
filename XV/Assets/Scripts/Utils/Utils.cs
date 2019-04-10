@@ -22,4 +22,16 @@ public static class Utils {
 		UnityEngine.Debug.Log(t.ToString());
 	}
 
+    public static bool SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        if (obj == null || newLayer < 0 || newLayer > 31)
+            return false;
+        obj.layer = newLayer;
+        foreach (Transform child in obj.transform) {
+            if (child == null)
+                continue;
+            SetLayerRecursively(child.gameObject, newLayer);
+        }
+        return true;
+    }
 }

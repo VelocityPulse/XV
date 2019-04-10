@@ -393,7 +393,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1457844196386484, guid: cedf09bb77b154182b46688c9e585ab3, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
@@ -600,7 +600,7 @@ Prefab:
     - target: {fileID: 224790023543605614, guid: 0e7833e9a7fb841b8bc88f8501b87d1f,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: -627.3963
       objectReference: {fileID: 0}
     - target: {fileID: 114806987745720834, guid: 0e7833e9a7fb841b8bc88f8501b87d1f,
         type: 2}
@@ -869,9 +869,9 @@ GameObject:
   - component: {fileID: 1971455689}
   - component: {fileID: 1971455688}
   - component: {fileID: 1971455687}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Plane
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

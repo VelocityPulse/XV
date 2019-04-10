@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 222674027567819964}
   - component: {fileID: 114882732806024904}
   m_Layer: 5
-  m_Name: UIModelTab
+  m_Name: UiModelTab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -178,42 +178,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UiElement: {fileID: 1475068284339798, guid: 395310df4e4c54fa89ca044067d986d8, type: 2}
-  UiModelSprites:
-  - {fileID: 21300000, guid: d9b3f09aa1f584821812b6b088128998, type: 3}
-  - {fileID: 21300000, guid: c7f2a9ea22b594bd983133ef3e04df1e, type: 3}
-  - {fileID: 21300000, guid: 0b9448530580d44f0946b5b380be655a, type: 3}
-  - {fileID: 21300000, guid: 6d10ea50d2cec4dcaaee4d84d2b86c35, type: 3}
-  - {fileID: 21300000, guid: a46bdb4426243446181482ab4d010873, type: 3}
-  - {fileID: 21300000, guid: fcc746e6176884b9b9ca89d644a9bf41, type: 3}
-  - {fileID: 21300000, guid: b447394e3b2b84766b2780e26f4be455, type: 3}
-  - {fileID: 21300000, guid: 88538091d19c94b70ace876ab407d19e, type: 3}
-  - {fileID: 21300000, guid: 116692dc9551d49bdad2bd34f94a970c, type: 3}
-  - {fileID: 21300000, guid: ad52808efc0444b25b069c427b7a5f90, type: 3}
-  - {fileID: 21300000, guid: 28d4c989a99fc48658b464c3cb3a9c7e, type: 3}
-  - {fileID: 21300000, guid: c45fa98756ec74f22b4096d8d1e35e9e, type: 3}
-  - {fileID: 21300000, guid: a2ee2fa70084544f0aa2e7ab0e0fa2dd, type: 3}
-  - {fileID: 21300000, guid: d40305812ea004622bf4c46c5b277fea, type: 3}
-  - {fileID: 21300000, guid: d7f619895922e480eacb7c6c7f9ef2bc, type: 3}
-  - {fileID: 21300000, guid: 3d35f7c85d4c74a80aedd214ab2d73b4, type: 3}
-  - {fileID: 21300000, guid: 3214aeacd0bf840d7b0b641d6806f2c2, type: 3}
-  - {fileID: 21300000, guid: eba69973910474fe580f6830860c2d03, type: 3}
-  - {fileID: 21300000, guid: c0eb0c4cf930843ccbbc26e624a37d0f, type: 3}
-  - {fileID: 21300000, guid: c96a4a167bf7d43cba41bb483b889916, type: 3}
-  - {fileID: 21300000, guid: 5e677c4e92beb4857b3fbcd1b4fc1613, type: 3}
-  - {fileID: 21300000, guid: 694721a399a13487bbdb4c01b92d6ec4, type: 3}
-  - {fileID: 21300000, guid: 6c0879d555e164283adf145f1fd97e03, type: 3}
-  - {fileID: 21300000, guid: 968bfb88f789041e283f1d703ab156b9, type: 3}
-  - {fileID: 21300000, guid: 31d496f597b134fe3be4e7b0d5f6a016, type: 3}
-  - {fileID: 21300000, guid: 9fb626196f4d6433d88deb7a0f4a297b, type: 3}
-  - {fileID: 21300000, guid: 6721b26f4afe64661b4038a1e578c968, type: 3}
-  - {fileID: 21300000, guid: b76db402b440b4210bdf798573415d38, type: 3}
-  - {fileID: 21300000, guid: 0c363f1c8305b4179a5523a7aa63ffa5, type: 3}
-  - {fileID: 21300000, guid: 80b00de6d60a0484ca8850b17cc9e925, type: 3}
-  - {fileID: 21300000, guid: 97c65425b68634852b4bb2347520b6bc, type: 3}
-  - {fileID: 21300000, guid: 8765fdc6f175640679a8ca06918fe2d1, type: 3}
-  - {fileID: 21300000, guid: e4b7f0b0951ee4475a082c5fa5183e52, type: 3}
-  - {fileID: 21300000, guid: afbdb5ac52a4a4f818cd11256878e79a, type: 3}
-  - {fileID: 21300000, guid: efc9679b6a2744a978bf0b06d9d3a323, type: 3}
 --- !u!114 &114390524854083668
 MonoBehaviour:
   m_ObjectHideFlags: 1
