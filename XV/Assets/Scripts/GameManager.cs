@@ -65,17 +65,15 @@ public class GameManager : MonoBehaviour
 	void Update()
 	{
 		if (Input.GetMouseButtonDown(0)) {
-			RaycastHit hit;
+			RaycastHit lHit;
 
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-			if (Physics.Raycast(ray, out hit)) {
-
-				if (hit.collider == null) {
+			if (Physics.Raycast(lRay, out lHit)) {
+				if (lHit.collider == null) {
 					Debug.Log("Collider hit is null");
 					SelectedEntity = null;
-				} else
-					Debug.Log("Hit : " + hit.collider.gameObject.name);
+				}
 			} else {
 				Debug.Log("Raycast hasnt hit nothing");
 				SelectedEntity = null;
@@ -138,12 +136,6 @@ public class GameManager : MonoBehaviour
 
 		return oGameObject;
 	}
-
-
-
-
-
-
 
 
 	private int mInvokedBox = 0;

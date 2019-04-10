@@ -30,8 +30,6 @@ public class ObjectEntity : MonoBehaviour
 	void Start()
 	{
 		Debug.Log("Start ObjectEntity");
-
-
 		Transform[] lTransforms = GetComponentsInChildren<Transform>();
 
 		foreach (Transform childObject in lTransforms) {
@@ -68,11 +66,11 @@ public class ObjectEntity : MonoBehaviour
 		return this;
 	}
 
-	public ObjectEntity SetObjectDataScene(ObjectDataScene iOBS)
+	public ObjectEntity SetObjectDataScene(ObjectDataScene iODS)
 	{
-		mODS = iOBS;
-        if (!mDataScene.DataObjects.Contains(mODS))
-            mDataScene.DataObjects.Add(mODS);
+		mODS = iODS;
+		if (!mDataScene.DataObjects.Contains(mODS))
+			mDataScene.DataObjects.Add(mODS);
 		return this;
 	}
 
