@@ -10,7 +10,7 @@ public sealed class UIElement : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     private Text mElementText;
 
-    public GameObject mModelGameObject;
+    public ModelManager.Model Model;
 
     private GameObject mSelectedElement;
 
@@ -46,7 +46,6 @@ public sealed class UIElement : MonoBehaviour, IPointerEnterHandler, IPointerExi
     // On hit, update the selectedElement position
     public void OnDrag(PointerEventData iEventData)
     {
-        Debug.Log("DRAG");
         if (mSelectedElement != null) {
             if (!mSelectedElement.activeSelf)
                 mSelectedElement.SetActive(true);
@@ -69,19 +68,28 @@ public sealed class UIElement : MonoBehaviour, IPointerEnterHandler, IPointerExi
     // On End restore Layer to dropable, build the object using selectedElement, delete SelectedElement.
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("DROP");
         Utils.SetLayerRecursively(mSelectedElement, LayerMask.NameToLayer("dropable"));
         Instantiate(mSelectedElement);
+
+        ObjectDataScene lObject = new ObjectDataScene {
+            Name = mElementText.text,
+            Type = Model.Type,
+            Position = mSelectedElement.transform.position,
+            Rotation = mSelectedElement.transform.rotation.eulerAngles,
+            Scale = mSelectedElement.transform.localScale,
+        };
+
+        GameObject lRet = GameManager.Instance.BuildObject(lObject);
+
 		Destroy(mSelectedElement);
     }
 
     // Instantiate the associated Model, disable it and ignore raycast for this object.
     public void OnBeginDrag(PointerEventData eventData)
     {
-		Debug.Log("BEGIN DRAG");
         if (mSelectedElement != null)
             return;
-        mSelectedElement = Instantiate(mModelGameObject);
+        mSelectedElement = Instantiate(Model.GameObject);
         mSelectedElement.SetActive(false);
         Utils.SetLayerRecursively(mSelectedElement, LayerMask.NameToLayer("Ignore Raycast"));
 

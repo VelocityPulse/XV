@@ -7,6 +7,7 @@ public sealed class ModelManager
 {
     public class Model
     {
+        public ObjectDataSceneType Type { get; set; }
         public GameObject  GameObject { get; set; }
         public Sprite Sprite { get; set; }
     };
@@ -47,7 +48,7 @@ public sealed class ModelManager
                 }
                 Debug.Log("---- " + lName + " loaded ----");
                 lImportModelSprite.name = lName;
-                mModelPool.Add(lName, new Model { GameObject = lGm, Sprite = lImportModelSprite, });
+                mModelPool.Add(lName, new Model { Type = ObjectDataSceneType.EXTERN, GameObject = lGm, Sprite = lImportModelSprite, });
             }
         }
     }
@@ -79,7 +80,7 @@ public sealed class ModelManager
                     continue;
                 }
                 Debug.Log("---- " + lName + " loaded ----");
-                mModelPool.Add(lName, new Model { GameObject = lGm, Sprite = lSprite, });
+                mModelPool.Add(lName, new Model { Type = ObjectDataSceneType.BUILT_IN, GameObject = lGm, Sprite = lSprite, });
             }
         }
     }

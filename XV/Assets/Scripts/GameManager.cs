@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 {
 
 	private static GameManager mInstance;
+    private static bool mLockInstance;
 
 	private readonly DataScene mDataScene = new DataScene();
 
@@ -42,8 +43,10 @@ public class GameManager : MonoBehaviour
 		get
 		{
 			Debug.Log("singleton");
-			if (mInstance == null)
-				mInstance = new GameObject("GameManager").AddComponent<GameManager>();
+            if (mInstance == null) {
+                mLockInstance = true;
+                mInstance = new GameObject("GameManager").AddComponent<GameManager>();
+            }
 			return mInstance;
 		}
 	}
@@ -52,10 +55,11 @@ public class GameManager : MonoBehaviour
 	{
 		if (mInstance == null) {
 			mInstance = this;
-		} else {
+		} else if (!mLockInstance) {
 			Destroy(this);
 			throw new System.Exception("An instance of this singleton already exists.");
 		}
+        mLockInstance = false;
 	}
 
 	void Update()
@@ -79,7 +83,7 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	GameObject BuildObject(ObjectDataScene iODS)
+	public GameObject BuildObject(ObjectDataScene iODS)
 	{
 		GameObject lGameObject = null;
 

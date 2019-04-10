@@ -68,6 +68,8 @@ public class ObjectEntity : MonoBehaviour
 	public ObjectEntity SetObjectDataScene(ObjectDataScene iOBS)
 	{
 		mODS = iOBS;
+        if (!mDataScene.DataObjects.Contains(mODS))
+            mDataScene.DataObjects.Add(mODS);
 		return this;
 	}
 

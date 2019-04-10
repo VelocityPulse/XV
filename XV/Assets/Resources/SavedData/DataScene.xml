@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <DataObjects />
+  <DataObjects>
+    <ObjectDataScene>
+      <Name>TableEmballage</Name>
+      <Type>EXTERN</Type>
+      <Position>
+        <x>-2.295865</x>
+        <y>3.01837842E-17</y>
+        <z>-0.09107852</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+  </DataObjects>
 </DataScene>
