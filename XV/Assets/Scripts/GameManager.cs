@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
         GameObject oGameObject = null;
 
 		if (iODS.Type == ObjectDataSceneType.BUILT_IN) {
-			oGameObject = Resources.Load<GameObject>("Prefabs/" + iODS.Name);
+			oGameObject = Resources.Load<GameObject>("Prefabs/ItemBank/" + iODS.Name);
 			if (oGameObject == null) {
 				Debug.LogError("Load prefab " + iODS.Name + " failed.");
 				return oGameObject;
@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
         }
 
         GameObject lGUI;
-        if ((lGUI = Resources.Load<GameObject>("Prefabs/UI/UIModel")) != null){
+        if ((lGUI = Resources.Load<GameObject>("Prefabs/UI/UIBubbleInfo")) != null){
             lGUI = Instantiate(lGUI, oGameObject.transform);
             lGUI.GetComponent<RectTransform>().position = new Vector3(lBounds.center.x, lBounds.size.y + 1, lBounds.center.z);
         }

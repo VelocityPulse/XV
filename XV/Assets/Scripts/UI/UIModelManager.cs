@@ -11,9 +11,9 @@ public sealed class UIModelManager : MonoBehaviour {
 
     private void Start()
 	{
-        List<ModelManager.Model> lModels;
+        List<ModelLoader.Model> lModels;
 
-        if ((lModels = ModelManager.Instance.GetAllModel()) == null)
+        if ((lModels = ModelLoader.Instance.GetAllModel()) == null)
             return;
 
         GameObject lPaddElement = new GameObject();
@@ -29,7 +29,7 @@ public sealed class UIModelManager : MonoBehaviour {
             GameObject lUiElement = Instantiate(UiElement, transform);
             lUiElement.GetComponent<Image>().sprite = lModels[i].Sprite;
             lUiElement.GetComponentInChildren<Text>().text = lModels[i].Sprite.name;
-            lUiElement.GetComponent<UIElement>().Model = lModels[i];
+            lUiElement.GetComponent<UIModel>().Model = lModels[i];
         }
         Instantiate(lPaddElement, transform);
 	}

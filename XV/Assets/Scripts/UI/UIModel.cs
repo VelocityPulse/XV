@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public sealed class UIElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler ,IDragHandler, IEndDragHandler
+public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler ,IDragHandler, IEndDragHandler
 {
     private Image mElementColor;
 
     private Text mElementText;
 
-    public ModelManager.Model Model;
+    public ModelLoader.Model Model;
 
     private GameObject mSelectedElement;
 

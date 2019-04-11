@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public sealed class ModelManager
+public sealed class ModelLoader
 {
     public class Model
     {
+        public Model()
+        {
+        }
+
         public ObjectDataSceneType Type { get; set; }
         public GameObject  GameObject { get; set; }
         public Sprite Sprite { get; set; }
     };
 
-    private static readonly ModelManager instance = new ModelManager();
+    private static readonly ModelLoader instance = new ModelLoader();
 
     private Dictionary<string, Model> mModelPool;
 
@@ -20,7 +24,7 @@ public sealed class ModelManager
 
     // Explicit static constructor to tell C# compiler
     // not to mark type as beforefieldinit
-    static ModelManager()
+    static ModelLoader()
     {
     }
 
@@ -43,7 +47,7 @@ public sealed class ModelManager
                     continue;
                 }
                 if ((lGm = Resources.Load<GameObject>("SavedData/Models/" + lName)) == null) {
-                    Debug.LogError("[MODEL_POOL] Error while loading prefab:" + "Prefabs/" + lName);
+                    Debug.LogError("[MODEL_POOL] Error while loading prefab:" + "Prefabs/ItemBank/" + lName);
                     continue;
                 }
                 Debug.Log("---- " + lName + " loaded ----");
@@ -59,11 +63,11 @@ public sealed class ModelManager
         Sprite lSprite = null;
         string lName = null;
 
-        string[] lModelFiles = Directory.GetFiles(Application.dataPath + "/Resources/Prefabs");
+        string[] lModelFiles = Directory.GetFiles(Application.dataPath + "/Resources/Prefabs/ItemBank");
 
         foreach (string iModelFile in lModelFiles) {
             if (iModelFile.Contains(".prefab") && !iModelFile.Contains(".meta")) {
-                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/Prefabs/", "")) == null) {
+                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/Prefabs/ItemBank/", "")) == null) {
                     Debug.LogError("[MODEL_POOL] Error while removing data path.");
                     continue;
                 }
@@ -71,8 +75,8 @@ public sealed class ModelManager
                     Debug.LogError("[MODEL_POOL] Error while removing extension name.");
                     continue;
                 }
-                if ((lGm = Resources.Load<GameObject>("Prefabs/" + lName)) == null) {
-                    Debug.LogError("[MODEL_POOL] Error while loading prefab:" + "Prefabs/" + lName);
+                if ((lGm = Resources.Load<GameObject>("Prefabs/ItemBank/" + lName)) == null) {
+                    Debug.LogError("[MODEL_POOL] Error while loading prefab:" + "Prefabs/ItemBank/" + lName);
                     continue;
                 }
                 if ((lSprite = Resources.Load<Sprite>("Sprites/UI/" + lName)) == null) {
@@ -85,7 +89,7 @@ public sealed class ModelManager
         }
     }
 
-    private ModelManager()
+    private ModelLoader()
     {
         if ((mModelPool = new Dictionary<string, Model>()) == null) {
             Debug.LogError("[MODEL_POOL] Error while creating the dictionary.");
@@ -97,7 +101,7 @@ public sealed class ModelManager
         ModelPoolLenght = mModelPool.Count;
     }
 
-    public static ModelManager Instance
+    public static ModelLoader Instance
     {
         get {
             return instance;

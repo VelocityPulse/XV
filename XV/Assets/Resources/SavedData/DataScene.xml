@@ -2,50 +2,50 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
-      <Name>Banette</Name>
-      <Type>BUILT_IN</Type>
-      <Position>
-        <x>-4.87148237</x>
-        <y>8.604038E-18</y>
-        <z>0.0315085649</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
-      <Name>ChariotRetractableElectrique</Name>
-      <Type>BUILT_IN</Type>
-      <Position>
-        <x>1.36651754</x>
-        <y>5.565816E-17</y>
-        <z>-1.70516968</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
       <Name>ChariotMainPlateForme</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>-1.76426363</x>
-        <y>-7.59457748E-17</y>
-        <z>3.95666742</z>
+        <x>-2.84456</x>
+        <y>1.29585618E-17</y>
+        <z>-0.04722774</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>ArmoireOutilsMobile</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>-0.497063756</x>
+        <y>-6.878004E-17</y>
+        <z>3.59755468</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>TableEmballage</Name>
+      <Type>EXTERN</Type>
+      <Position>
+        <x>1.83206081</x>
+        <y>6.1723946E-17</y>
+        <z>-1.5115211</z>
       </Position>
       <Rotation>
         <x>0</x>
