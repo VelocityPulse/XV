@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4592560443496060}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Caisse1m3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,7 +34,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4717992822795104}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Group1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   - component: {fileID: 33449742540466196}
   - component: {fileID: 23871371079261048}
   - component: {fileID: 64828065063785262}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Mesh1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

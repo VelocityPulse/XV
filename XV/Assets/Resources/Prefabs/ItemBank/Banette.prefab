@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4577618990471738}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Banette
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   - component: {fileID: 33068659345314994}
   - component: {fileID: 23898669330130206}
   - component: {fileID: 64026915015612026}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Mesh1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

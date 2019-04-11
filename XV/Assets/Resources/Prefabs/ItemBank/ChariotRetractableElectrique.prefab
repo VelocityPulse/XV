@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33685269217961280}
   - component: {fileID: 23165118642097680}
   - component: {fileID: 64942459020077690}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Mesh1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4388763389861262}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ChariotRetractableElectrique
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4383038952894648}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Group1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 33229421500547598}
   - component: {fileID: 23637761051028942}
   - component: {fileID: 64762916746209964}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Mesh2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

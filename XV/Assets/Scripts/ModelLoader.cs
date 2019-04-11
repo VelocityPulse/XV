@@ -52,7 +52,10 @@ public sealed class ModelLoader
                 }
                 Debug.Log("---- " + lName + " loaded ----");
                 lImportModelSprite.name = lName;
-                mModelPool.Add(lName, new Model { Type = ObjectDataSceneType.EXTERN, GameObject = lGm, Sprite = lImportModelSprite, });
+                if (mModelPool.ContainsKey(lName) == false)
+                    mModelPool.Add(lName, new Model { Type = ObjectDataSceneType.EXTERN, GameObject = lGm, Sprite = lImportModelSprite, });
+                else
+                    Debug.LogError("[MODEL_POOL] Error, model name already exist.");
             }
         }
     }
