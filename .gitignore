@@ -1,4 +1,3 @@
-*.cs.meta
 *.o
 *.a
 /objs

@@ -2,50 +2,31 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
+      <Name>Cantilever</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>-2.764329</x>
+        <y>-7.021589E-18</y>
+        <z>3.79547453</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
       <Name>ChariotMainPlateForme</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>-2.84456</x>
-        <y>1.29585618E-17</y>
-        <z>-0.04722774</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
-      <Name>ArmoireOutilsMobile</Name>
-      <Type>BUILT_IN</Type>
-      <Position>
-        <x>-0.497063756</x>
-        <y>-6.878004E-17</y>
-        <z>3.59755468</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
-      <Name>TableEmballage</Name>
-      <Type>EXTERN</Type>
-      <Position>
-        <x>1.83206081</x>
-        <y>6.1723946E-17</y>
-        <z>-1.5115211</z>
+        <x>-0.8191309</x>
+        <y>3.897301E-17</y>
+        <z>-1.21881449</z>
       </Position>
       <Rotation>
         <x>0</x>
