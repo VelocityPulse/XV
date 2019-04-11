@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 222282527185815128}
   - component: {fileID: 114230735495895506}
   - component: {fileID: 114404493259792344}
-  - component: {fileID: 114687370323592908}
+  - component: {fileID: 114648401962270340}
   m_Layer: 5
   m_Name: UIElement
   m_TagString: Untagged
@@ -93,7 +93,7 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &114687370323592908
+--- !u!114 &114648401962270340
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -101,7 +101,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1475068284339798}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39c7a133391b0440eb58916eaa7834bb, type: 3}
+  m_Script: {fileID: 11500000, guid: 36459633f8820453eaedd7ccd7499fdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114837478552103540
