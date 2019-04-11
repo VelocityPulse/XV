@@ -7,10 +7,6 @@ public sealed class ModelLoader
 {
     public class Model
     {
-        public Model()
-        {
-        }
-
         public ObjectDataSceneType Type { get; set; }
         public GameObject  GameObject { get; set; }
         public Sprite Sprite { get; set; }
@@ -33,12 +29,12 @@ public sealed class ModelLoader
         GameObject lGm = null;
         string lName = null;
 
-        string[] lModelFiles = Directory.GetFiles(Application.dataPath + "/Resources/SavedData/Models");
+		string[] lModelFiles = Directory.GetFiles(Application.dataPath + "/Resources/" + GameManager.ExternItemBankPath);
         Sprite lImportModelSprite = Resources.Load<Sprite>("Sprites/UI/ImportModel");
 
         foreach (string iModelFile in lModelFiles) {
             if (iModelFile.Contains(".fbx") && !iModelFile.Contains(".meta")) {
-                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/SavedData/Models/", "")) == null) {
+                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/" + GameManager.ExternItemBankPath, "")) == null) {
                     Debug.LogError("[MODEL_POOL] Error while removing data path.");
                     continue;
                 }
@@ -47,7 +43,7 @@ public sealed class ModelLoader
                     continue;
                 }
                 if ((lGm = Resources.Load<GameObject>("SavedData/Models/" + lName)) == null) {
-                    Debug.LogError("[MODEL_POOL] Error while loading prefab:" + "Prefabs/ItemBank/" + lName);
+					Debug.LogError("[MODEL_POOL] Error while loading prefab:" + GameManager.ItemBankPath + lName);
                     continue;
                 }
                 Debug.Log("---- " + lName + " loaded ----");
@@ -66,11 +62,11 @@ public sealed class ModelLoader
         Sprite lSprite = null;
         string lName = null;
 
-        string[] lModelFiles = Directory.GetFiles(Application.dataPath + "/Resources/Prefabs/ItemBank");
+		string[] lModelFiles = Directory.GetFiles(Application.dataPath + "/Resources/" + GameManager.ItemBankPath);
 
         foreach (string iModelFile in lModelFiles) {
             if (iModelFile.Contains(".prefab") && !iModelFile.Contains(".meta")) {
-                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/Prefabs/ItemBank/", "")) == null) {
+                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/" + GameManager.ItemBankPath, "")) == null) {
                     Debug.LogError("[MODEL_POOL] Error while removing data path.");
                     continue;
                 }
@@ -78,8 +74,8 @@ public sealed class ModelLoader
                     Debug.LogError("[MODEL_POOL] Error while removing extension name.");
                     continue;
                 }
-                if ((lGm = Resources.Load<GameObject>("Prefabs/ItemBank/" + lName)) == null) {
-                    Debug.LogError("[MODEL_POOL] Error while loading prefab:" + "Prefabs/ItemBank/" + lName);
+                if ((lGm = Resources.Load<GameObject>(GameManager.ItemBankPath + lName)) == null) {
+                    Debug.LogError("[MODEL_POOL] Error while loading prefab:" + GameManager.ItemBankPath + lName);
                     continue;
                 }
                 if ((lSprite = Resources.Load<Sprite>("Sprites/UI/" + lName)) == null) {

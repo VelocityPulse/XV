@@ -5,11 +5,13 @@ using UnityEngine.EventSystems;
 
 public class ObjectEntity : MonoBehaviour
 {
+	public static string TAG = "ObjectEntity";
 
 	private DataScene mDataScene;
 	private ObjectDataScene mODS;
 	private bool mSelected;
 
+	private UIBubbleInfo mUIBubbleInfo;
     private Vector3 mCenter;
     private Vector3 mSize;
 
@@ -21,15 +23,18 @@ public class ObjectEntity : MonoBehaviour
 		}
 		set
 		{
-			if (!value)
+			if (!value) {
 				Debug.Log("ObjectEntity : " + mODS.Name + "Has been unselected");
+				mUIBubbleInfo.Hide();
+			}
 			mSelected = value;
 		}
 	}
 
 	void Start()
 	{
-		Debug.Log("Start ObjectEntity");
+ 		Debug.Log("Start ObjectEntity");
+		gameObject.tag = TAG;
 		Transform[] lTransforms = GetComponentsInChildren<Transform>();
 
 		foreach (Transform childObject in lTransforms) {
@@ -39,9 +44,9 @@ public class ObjectEntity : MonoBehaviour
 
 				ColliderMouseHandler lCMH = childObject.gameObject.AddComponent<ColliderMouseHandler>();
 
-				lCMH.OnMouseUpAction = () => { Debug.Log("up"); };
-				lCMH.OnMouseExitAction = () => { Debug.Log("exit"); };
-				lCMH.OnMouseEnterAction = () => { Debug.Log("enter"); };
+				lCMH.OnMouseUpAction = () => { };
+				lCMH.OnMouseExitAction = () => { };
+				lCMH.OnMouseEnterAction = () => { };
 				lCMH.OnMouseDownAction = () => { OnMouseDown(); };
 			}
 		}
@@ -57,6 +62,7 @@ public class ObjectEntity : MonoBehaviour
 		if (!Selected) {
 			GameManager.Instance.SelectedEntity = this;
 			Debug.Log("ObjectEntity : " + mODS.Name + " has been selected");
+			mUIBubbleInfo.Display();
 		}
 	}
 
@@ -74,15 +80,8 @@ public class ObjectEntity : MonoBehaviour
 		return this;
 	}
 
-	public ObjectEntity SaveEntity()
-	{
-		if (mODS != null) {
-			mODS.Position = transform.position;
-			mODS.Rotation = transform.rotation.eulerAngles;
-			mODS.Scale = transform.localScale;
-
-			mDataScene.Serialize();
-		}
+	public ObjectEntity SetUIBubbleInfo(UIBubbleInfo iBubbleInfo) {
+		mUIBubbleInfo = iBubbleInfo;
 		return this;
 	}
 
@@ -95,4 +94,16 @@ public class ObjectEntity : MonoBehaviour
         mSize = iVector;
         return this;
     }
+
+	public ObjectEntity SaveEntity()
+	{
+		if (mODS != null) {
+			mODS.Position = transform.position;
+			mODS.Rotation = transform.rotation.eulerAngles;
+			mODS.Scale = transform.localScale;
+
+			mDataScene.Serialize();
+		}
+		return this;
+	}
 }
