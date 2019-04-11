@@ -68,9 +68,7 @@ public sealed class UIElement : MonoBehaviour, IPointerEnterHandler, IPointerExi
     // On End restore Layer to dropable, build the object using selectedElement, delete SelectedElement.
     public void OnEndDrag(PointerEventData eventData)
     {
-        Utils.SetLayerRecursively(mSelectedElement, LayerMask.NameToLayer("dropable"));
-
-        ObjectDataScene lObject = new ObjectDataScene {
+        ObjectDataScene lODS = new ObjectDataScene {
             Name = mElementText.text,
             Type = Model.Type,
             Position = mSelectedElement.transform.position,
@@ -78,8 +76,8 @@ public sealed class UIElement : MonoBehaviour, IPointerEnterHandler, IPointerExi
             Scale = mSelectedElement.transform.localScale,
         };
 
-        GameObject lRet = GameManager.Instance.BuildObject(lObject);
-
+        GameObject lRet = GameManager.Instance.BuildObject(lODS);
+        Utils.SetLayerRecursively(lRet, LayerMask.NameToLayer("dropable"));
 		Destroy(mSelectedElement);
     }
 

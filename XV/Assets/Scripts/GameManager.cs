@@ -85,34 +85,58 @@ public class GameManager : MonoBehaviour
 
 	public GameObject BuildObject(ObjectDataScene iODS)
 	{
-		GameObject lGameObject = null;
+        GameObject oGameObject = null;
 
 		if (iODS.Type == ObjectDataSceneType.BUILT_IN) {
-			lGameObject = Resources.Load<GameObject>("Prefabs/" + iODS.Name);
-			if (lGameObject == null) {
+			oGameObject = Resources.Load<GameObject>("Prefabs/" + iODS.Name);
+			if (oGameObject == null) {
 				Debug.LogError("Load prefab " + iODS.Name + " failed.");
-				return lGameObject;
+				return oGameObject;
 			}
 		} else {
-			lGameObject = Resources.Load<GameObject>("SavedData/Models/" + iODS.Name);
-			if (lGameObject == null) {
+			oGameObject = Resources.Load<GameObject>("SavedData/Models/" + iODS.Name);
+			if (oGameObject == null) {
 				Debug.LogError("Load model " + iODS.Name + " failed.");
-				return lGameObject;
+				return oGameObject;
 			}
 		}
 
-		lGameObject = Instantiate(lGameObject);
-		lGameObject.name = iODS.Name + mInvokedBox;
-		lGameObject.transform.position = iODS.Position;
-		lGameObject.transform.eulerAngles = iODS.Rotation;
-		lGameObject.transform.localScale = iODS.Scale;
+        oGameObject = Instantiate(oGameObject);
 
-		lGameObject.AddComponent<ObjectEntity>()
-				   .InitDataScene(mDataScene)
-				   .SetObjectDataScene(iODS)
-				   .SaveEntity();
+        // Getting size and center
+        MeshFilter[] lElementMeshs = oGameObject.GetComponentsInChildren<MeshFilter>();
+        // https://forum.unity.com/threads/getting-the-bounds-of-the-group-of-objects.70979/
+        Bounds lBounds = new Bounds(Vector3.zero, Vector3.zero);
+        foreach (MeshFilter lMesh in lElementMeshs) {
+            // Bound mesh
+            lBounds.Encapsulate(lMesh.sharedMesh.bounds);
 
-		return lGameObject;
+            // Add mesh collider
+            if (lMesh.gameObject.GetComponent<MeshCollider>() == null)
+                lMesh.gameObject.AddComponent<MeshCollider>().sharedMesh = lMesh.sharedMesh;
+        }
+
+        GameObject lGUI;
+        if ((lGUI = Resources.Load<GameObject>("Prefabs/UI/UIModel")) != null){
+            lGUI = Instantiate(lGUI, oGameObject.transform);
+            lGUI.GetComponent<RectTransform>().position = new Vector3(lBounds.center.x, lBounds.size.y + 1, lBounds.center.z);
+        }
+
+        // Setting positions
+		oGameObject.name = iODS.Name + mInvokedBox;
+		oGameObject.transform.position = iODS.Position;
+		oGameObject.transform.eulerAngles = iODS.Rotation;
+		oGameObject.transform.localScale = iODS.Scale;
+
+        // Setting GameEntity
+        oGameObject.AddComponent<ObjectEntity>()
+                   .InitDataScene(mDataScene)
+                   .SetObjectDataScene(iODS)
+                   .SaveEntity()
+                   .SetSize(lBounds.size)
+                   .SetCenter(lBounds.center);
+
+		return oGameObject;
 	}
 
 

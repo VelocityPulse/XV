@@ -10,6 +10,9 @@ public class ObjectEntity : MonoBehaviour
 	private ObjectDataScene mODS;
 	private bool mSelected;
 
+    private Vector3 mCenter;
+    private Vector3 mSize;
+
 	public bool Selected
 	{
 		get
@@ -85,6 +88,13 @@ public class ObjectEntity : MonoBehaviour
 		return this;
 	}
 
+    public ObjectEntity SetCenter(Vector3 iVector) {
+        mCenter = iVector;
+        return this;
+    }
 
-
+    public ObjectEntity SetSize(Vector3 iVector) {
+        mSize = iVector;
+        return this;
+    }
 }

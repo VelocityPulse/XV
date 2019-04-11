@@ -40,8 +40,8 @@ GameObject:
   - component: {fileID: 222302999653513154}
   - component: {fileID: 114806987745720834}
   - component: {fileID: 114792727535985096}
-  - component: {fileID: 114387785507315138}
   - component: {fileID: 114262882461783224}
+  - component: {fileID: 114325198657891718}
   m_Layer: 5
   m_Name: GridElements
   m_TagString: Untagged
@@ -165,7 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
---- !u!114 &114387785507315138
+--- !u!114 &114325198657891718
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -173,7 +173,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1212051379717230}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d21092c7f777d4691bbc7bb64832cb8b, type: 3}
+  m_Script: {fileID: 11500000, guid: be50fe79eca5948609dcf8a60d4e3829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   UiElement: {fileID: 1475068284339798, guid: 395310df4e4c54fa89ca044067d986d8, type: 2}
