@@ -2,12 +2,12 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
-      <Name>GerbeurElectrique</Name>
+      <Name>Etageres2</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>-2.2017827</x>
-        <y>3.16875729E-18</y>
-        <z>0.843928635</z>
+        <x>-1.58322191</x>
+        <y>9.97996056E-18</y>
+        <z>0.1237925</z>
       </Position>
       <Rotation>
         <x>0</x>
