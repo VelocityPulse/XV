@@ -7,9 +7,11 @@ using UnityEngine;
 
 // When app built, the file is savec in : Build.app/Contents/SavedData/
 [Serializable]
-public sealed class DataScene {
-
+public sealed class DataScene
+{
 	private const string FILE_NAME = "DataScene.xml";
+
+	public string SceneName { get; set; }
 
 	public List<ObjectDataScene> DataObjects { get; set; }
 

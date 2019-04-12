@@ -20,10 +20,19 @@ public class ObjectEntity : MonoBehaviour
 		}
 	}
 
+	public static int InstantiatedEntity
+	{
+		get
+		{
+			return sAllEntites.Count;
+		}
+	}
+
 	private DataScene mDataScene;
 	private ObjectDataScene mODS;
 	private bool mSelected;
 	private bool mDestroyingObject;
+	private bool mPoppingObject;
 
 	private UIBubbleInfo mUIBubbleInfo;
 	private Vector3 mCenter;
@@ -60,11 +69,7 @@ public class ObjectEntity : MonoBehaviour
 			if (meshFilter != null) {
 
 				ColliderMouseHandler lCMH = childObject.gameObject.AddComponent<ColliderMouseHandler>();
-
-				lCMH.OnMouseUpAction = () => { };
-				lCMH.OnMouseExitAction = () => { };
-				lCMH.OnMouseEnterAction = () => { };
-				lCMH.OnMouseDownAction = () => { OnMouseDown(); };
+				lCMH.OnMouseDownAction = OnMouseDown;
 			}
 		}
 	}
@@ -83,11 +88,11 @@ public class ObjectEntity : MonoBehaviour
 	// Called by XV
 	public void Dispose()
 	{
-		if (!mDestroyingObject)
+		if (!mDestroyingObject && !mPoppingObject)
 			StartCoroutine(DestroyObjectsTimed());
 	}
 
-	public IEnumerator DestroyObjectsTimed()
+	private IEnumerator DestroyObjectsTimed()
 	{
 		mDestroyingObject = true;
 
@@ -120,6 +125,46 @@ public class ObjectEntity : MonoBehaviour
 	{
 		mDataScene = iDataScene;
 		return this;
+	}
+
+	public ObjectEntity StartAnimation(bool iAnimatedPopping)
+	{
+		if (iAnimatedPopping && !mPoppingObject) {
+
+			Transform[] lTransforms = gameObject.GetComponentsInChildren<Transform>();
+			Array.Reverse(lTransforms);
+
+			if (lTransforms.Length > 0) {
+				float lWaiting = 0.05F / lTransforms.Length;
+
+				foreach (Transform lTransform in lTransforms) {
+					if (lTransform.gameObject.tag == TAG) {
+						lTransform.gameObject.SetActive(false);
+					}
+				}
+			}
+
+			gameObject.SetActive(true);
+			StartCoroutine(PoppingObject(lTransforms));
+		}
+		return this;
+	}
+
+	private IEnumerator PoppingObject(Transform[] iTransforms)
+	{
+		mPoppingObject = true;
+
+		if (iTransforms.Length > 0) {
+			float lWaiting = 0.05F / iTransforms.Length;
+
+			foreach (Transform lTransform in iTransforms) {
+				if (lTransform.gameObject.tag == TAG) {
+					lTransform.gameObject.SetActive(true);
+					yield return new WaitForSeconds(lWaiting);
+				}
+			}
+		}
+		mPoppingObject = false;
 	}
 
 	public ObjectEntity SetObjectDataScene(ObjectDataScene iODS)

@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	public GameObject BuildObject(ObjectDataScene iODS)
+	public GameObject BuildObject(ObjectDataScene iODS, bool iAnimatedPopping = false)
 	{
 		GameObject oGameObject = null;
 
@@ -113,11 +113,13 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
+		// Instantiation
 		oGameObject = Instantiate(oGameObject);
+		if (iAnimatedPopping)
+			oGameObject.SetActive(false);
 
 		// Getting size and center
 		MeshFilter[] lElementMeshs = oGameObject.GetComponentsInChildren<MeshFilter>();
-		// https://forum.unity.com/threads/getting-the-bounds-of-the-group-of-objects.70979/
 		Bounds lBounds = new Bounds(Vector3.zero, Vector3.zero);
 		foreach (MeshFilter lMesh in lElementMeshs) {
 
@@ -147,6 +149,7 @@ public class GameManager : MonoBehaviour
 		// Setting GameEntity
 		oGameObject.AddComponent<ObjectEntity>()
 				   .InitDataScene(mDataScene)
+		           .StartAnimation(iAnimatedPopping)
 				   .SetObjectDataScene(iODS)
 				   .SetUIBubbleInfo(lUIBubbleInfo.GetComponent<UIBubbleInfo>())
 				   .SaveEntity()
@@ -161,11 +164,22 @@ public class GameManager : MonoBehaviour
 	}
 
 	public void LoadScene(DataScene iDataScene) {
+		StartCoroutine(LoadSceneAsync(iDataScene));
+	}
+
+	private IEnumerator LoadSceneAsync(DataScene iDataScene) {
 		ObjectEntity[] lObjectEntities = ObjectEntity.AllEntities;
 
 		foreach (ObjectEntity lObjectEntity in lObjectEntities) {
 			lObjectEntity.Dispose();
 		}
-	}
 
+		while (ObjectEntity.InstantiatedEntity != 0) {
+			yield return new WaitForSeconds(0.1F);
+		}
+
+		foreach (ObjectDataScene lODS in iDataScene.DataObjects) {
+			BuildObject(lODS, true);
+		}
+	}
 }
