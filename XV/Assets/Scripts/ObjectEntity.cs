@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -22,6 +23,7 @@ public class ObjectEntity : MonoBehaviour
 	private DataScene mDataScene;
 	private ObjectDataScene mODS;
 	private bool mSelected;
+	private bool mDestroyingObject;
 
 	private UIBubbleInfo mUIBubbleInfo;
 	private Vector3 mCenter;
@@ -49,7 +51,6 @@ public class ObjectEntity : MonoBehaviour
 			sAllEntites = new List<ObjectEntity>();
 		sAllEntites.Add(this);
 
-		Debug.Log("Start ObjectEntity");
 		gameObject.tag = TAG;
 		Transform[] lTransforms = GetComponentsInChildren<Transform>();
 
@@ -73,10 +74,37 @@ public class ObjectEntity : MonoBehaviour
 
 	}
 
+	// Called by unity only !
 	public void OnDestroy()
 	{
-		Debug.Log("Destroying : " + gameObject.name);
 		sAllEntites.Remove(this);
+	}
+
+	// Called by XV
+	public void Dispose()
+	{
+		if (!mDestroyingObject)
+			StartCoroutine(DestroyObjectsTimed());
+	}
+
+	public IEnumerator DestroyObjectsTimed()
+	{
+		mDestroyingObject = true;
+
+		Transform[] lTransforms = gameObject.GetComponentsInChildren<Transform>();
+		Array.Reverse(lTransforms);
+
+		if (lTransforms.Length > 0) {
+			float lWaiting = 0.05F / lTransforms.Length;
+
+			foreach (Transform lTransform in lTransforms) {
+				if (lTransform.gameObject.tag == TAG) {
+					Destroy(lTransform.gameObject);
+					yield return new WaitForSeconds(lWaiting);
+				}
+			}
+		}
+		mDestroyingObject = false;
 	}
 
 	private void OnMouseDown()

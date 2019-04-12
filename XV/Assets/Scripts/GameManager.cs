@@ -73,9 +73,7 @@ public class GameManager : MonoBehaviour
 			RaycastHit lHit;
 
 
-			if (EventSystem.current.IsPointerOverGameObject(-1)) {
-				Debug.Log("GUI trig");
-			} else {
+			if (!EventSystem.current.IsPointerOverGameObject(-1)) {
 				Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 				if (Physics.Raycast(lRay, out lHit)) {
@@ -163,29 +161,11 @@ public class GameManager : MonoBehaviour
 	}
 
 	public void LoadScene(DataScene iDataScene) {
-
 		ObjectEntity[] lObjectEntities = ObjectEntity.AllEntities;
 
-		//foreach()
-
+		foreach (ObjectEntity lObjectEntity in lObjectEntities) {
+			lObjectEntity.Dispose();
+		}
 	}
-
-	//public IEnumerator DestroyObjectsTimed() {
-	//	mDestroyingObject = true;
-
-	//	GameObject[] lObjectsToDestroy = GameObject.FindGameObjectsWithTag(ObjectEntity.TAG);
-	//	if (lObjectsToDestroy.Length > 0) {
-	//		float lRapidity = 0.05F / lObjectsToDestroy.Length;
-
-	//		Debug.Log("Rapidity : " + lRapidity);
-
-	//		foreach (GameObject l in lObjectsToDestroy) {
-	//			Destroy(l);
-	//			yield return new WaitForSeconds(lRapidity);
-	//		}
-	//	}
-
-	//	mDestroyingObject = false;
-	//}
 
 }
