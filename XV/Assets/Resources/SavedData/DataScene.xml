@@ -2,12 +2,12 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
-      <Name>Palette</Name>
+      <Name>ImprimanteClassique</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>-3.62740469</x>
-        <y>-5.09246754E-18</y>
-        <z>1.10231435</z>
+        <x>-1.048145</x>
+        <y>-9.990761E-18</y>
+        <z>0.8669439</z>
       </Position>
       <Rotation>
         <x>0</x>
