@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class UIBubbleInfo : MonoBehaviour
 {
+	public static string TAG = "BubbleInfo";
 
 	private bool mDisplayed;
 	private CanvasGroup mCanvasGroup;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -69,21 +70,27 @@ public class GameManager : MonoBehaviour
 		if (Input.GetMouseButtonDown(0)) {
 			RaycastHit lHit;
 
-			Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-			if (Physics.Raycast(lRay, out lHit)) {
-
-				if (lHit.transform == null) {
-					Debug.Log("Collider hit is null");
-					SelectedEntity = null;
-				}
-				else if (lHit.transform.tag != ObjectEntity.TAG) {
-					Debug.Log(lHit.transform.tag);
-					SelectedEntity = null;
-				}
+			if (EventSystem.current.IsPointerOverGameObject(-1)) {
+				Debug.Log("GUI trig");
 			} else {
-				Debug.Log("Raycast hasnt hit nothing");
-				SelectedEntity = null;
+				Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+				if (Physics.Raycast(lRay, out lHit)) {
+
+					Debug.Log(lHit.transform.tag);
+
+					if (lHit.transform == null) {
+						Debug.Log("Collider hit is null");
+						SelectedEntity = null;
+					} else if (lHit.transform.tag != ObjectEntity.TAG && lHit.transform.tag != UIBubbleInfo.TAG) {
+						Debug.Log(lHit.transform.tag);
+						SelectedEntity = null;
+					}
+				} else {
+					Debug.Log("Raycast hasnt hit nothing");
+					SelectedEntity = null;
+				}
 			}
 		}
 	}
@@ -113,7 +120,7 @@ public class GameManager : MonoBehaviour
 		// https://forum.unity.com/threads/getting-the-bounds-of-the-group-of-objects.70979/
 		Bounds lBounds = new Bounds(Vector3.zero, Vector3.zero);
 		foreach (MeshFilter lMesh in lElementMeshs) {
-			
+
 			// Set tag on all mesh GameObject
 			lMesh.gameObject.tag = ObjectEntity.TAG;
 
