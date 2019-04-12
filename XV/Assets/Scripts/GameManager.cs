@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
 
 	private ObjectEntity mSelectedEntity;
 
+	private bool mDestroyingObject;
+
 	public ObjectEntity SelectedEntity
 	{
 		get
@@ -155,4 +157,35 @@ public class GameManager : MonoBehaviour
 
 		return oGameObject;
 	}
+
+	public void LoadSceneDebug() {
+		LoadScene(mDataScene);
+	}
+
+	public void LoadScene(DataScene iDataScene) {
+
+		ObjectEntity[] lObjectEntities = ObjectEntity.AllEntities;
+
+		//foreach()
+
+	}
+
+	//public IEnumerator DestroyObjectsTimed() {
+	//	mDestroyingObject = true;
+
+	//	GameObject[] lObjectsToDestroy = GameObject.FindGameObjectsWithTag(ObjectEntity.TAG);
+	//	if (lObjectsToDestroy.Length > 0) {
+	//		float lRapidity = 0.05F / lObjectsToDestroy.Length;
+
+	//		Debug.Log("Rapidity : " + lRapidity);
+
+	//		foreach (GameObject l in lObjectsToDestroy) {
+	//			Destroy(l);
+	//			yield return new WaitForSeconds(lRapidity);
+	//		}
+	//	}
+
+	//	mDestroyingObject = false;
+	//}
+
 }

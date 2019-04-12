@@ -6,14 +6,26 @@ using UnityEngine.EventSystems;
 public class ObjectEntity : MonoBehaviour
 {
 	public static string TAG = "ObjectEntity";
+	public static List<ObjectEntity> sAllEntites;
+
+	public static ObjectEntity[] AllEntities
+	{
+		get
+		{
+			if (sAllEntites != null)
+				return sAllEntites.ToArray();
+			else
+				return new ObjectEntity[0];
+		}
+	}
 
 	private DataScene mDataScene;
 	private ObjectDataScene mODS;
 	private bool mSelected;
 
 	private UIBubbleInfo mUIBubbleInfo;
-    private Vector3 mCenter;
-    private Vector3 mSize;
+	private Vector3 mCenter;
+	private Vector3 mSize;
 
 	public bool Selected
 	{
@@ -33,7 +45,11 @@ public class ObjectEntity : MonoBehaviour
 
 	void Start()
 	{
- 		Debug.Log("Start ObjectEntity");
+		if (sAllEntites == null)
+			sAllEntites = new List<ObjectEntity>();
+		sAllEntites.Add(this);
+
+		Debug.Log("Start ObjectEntity");
 		gameObject.tag = TAG;
 		Transform[] lTransforms = GetComponentsInChildren<Transform>();
 
@@ -55,6 +71,12 @@ public class ObjectEntity : MonoBehaviour
 	void Update()
 	{
 
+	}
+
+	public void OnDestroy()
+	{
+		Debug.Log("Destroying : " + gameObject.name);
+		sAllEntites.Remove(this);
 	}
 
 	private void OnMouseDown()
@@ -80,20 +102,23 @@ public class ObjectEntity : MonoBehaviour
 		return this;
 	}
 
-	public ObjectEntity SetUIBubbleInfo(UIBubbleInfo iBubbleInfo) {
+	public ObjectEntity SetUIBubbleInfo(UIBubbleInfo iBubbleInfo)
+	{
 		mUIBubbleInfo = iBubbleInfo;
 		return this;
 	}
 
-    public ObjectEntity SetCenter(Vector3 iVector) {
-        mCenter = iVector;
-        return this;
-    }
+	public ObjectEntity SetCenter(Vector3 iVector)
+	{
+		mCenter = iVector;
+		return this;
+	}
 
-    public ObjectEntity SetSize(Vector3 iVector) {
-        mSize = iVector;
-        return this;
-    }
+	public ObjectEntity SetSize(Vector3 iVector)
+	{
+		mSize = iVector;
+		return this;
+	}
 
 	public ObjectEntity SaveEntity()
 	{
