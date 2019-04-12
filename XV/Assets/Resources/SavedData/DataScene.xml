@@ -2,12 +2,12 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
-      <Name>Etageres2</Name>
+      <Name>Palette</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>-1.58322191</x>
-        <y>9.97996056E-18</y>
-        <z>0.1237925</z>
+        <x>-3.62740469</x>
+        <y>-5.09246754E-18</y>
+        <z>1.10231435</z>
       </Position>
       <Rotation>
         <x>0</x>
