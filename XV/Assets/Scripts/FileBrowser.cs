@@ -77,9 +77,9 @@ public class FileBrowser : MonoBehaviour
     private void UpdateFiles()
     {
         PWD.text = "PATH:" + STARTING_PATH;
-        List<string> dirs = new List<string>(Directory.GetFileSystemEntries(STARTING_PATH));
+        List<string> lDirs = new List<string>(Directory.GetFileSystemEntries(STARTING_PATH));
 
-        foreach (string lFile in dirs)
+        foreach (string lFile in lDirs)
         {
             FileAttributes lAttr = File.GetAttributes(lFile);
             if ((lAttr & FileAttributes.Hidden) == FileAttributes.Hidden)
@@ -98,8 +98,8 @@ public class FileBrowser : MonoBehaviour
 
     private void ClearFiles()
     {
-        foreach (Transform child in UIGridElement.transform) {
-            Destroy(child.gameObject);
+        foreach (Transform lChild in UIGridElement.transform) {
+            Destroy(lChild.gameObject);
         }
     }
 

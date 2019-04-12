@@ -2,12 +2,88 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
-      <Name>ImprimanteClassique</Name>
+      <Name>Banette</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>-1.048145</x>
-        <y>-9.990761E-18</y>
-        <z>0.8669439</z>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>Caisse1m3</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>-4.441909</x>
+        <y>6.311943E-17</y>
+        <z>-2.06480455</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>BacRangement</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>-4.932024</x>
+        <y>1</y>
+        <z>-1.80457759</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>ChariotFrontal</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>ChariotFrontal</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
       </Position>
       <Rotation>
         <x>0</x>
