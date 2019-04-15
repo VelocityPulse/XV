@@ -19,8 +19,10 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private void Start()
 	{
         mSelectedElement = null;
-        if ((mElementColor = GetComponent<Image>()) == null)
+
+        if ((mElementColor = GetComponentInChildren<Image>()) == null)
             Debug.LogError("[ERROR] Ui Model element doesn't contain Image!");
+        
         if ((mElementText = GetComponentInChildren<Text>()) == null)
             Debug.LogError("[ERROR] Ui Model element doesn't contain Text!");
 	}

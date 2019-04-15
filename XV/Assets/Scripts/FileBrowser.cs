@@ -164,34 +164,19 @@ public class FileBrowser : MonoBehaviour
 
     public void OpenSelectedFile()
     {
+        AssetBundle lAssetBundles = null;
+        GameObject lImportModel = null;
+
+        lAssetBundles = AssetBundle.LoadFromFile(Application.dataPath + "/AssetBundles/" + SelectedFile.text);
+        foreach (string lName in lAssetBundles.GetAllAssetNames()) {
+            Debug.Log("----" + lName + "----");
+            lImportModel = lAssetBundles.LoadAsset<GameObject>(lName);
+
+            // Save each lImportModel into SavedData
+        }
+
+        // Update model dictionary & co 
         ModelLoader.Instance.UpdatePool();
-   //     AssetBundle lAsset = null;
-   //     GameObject lImportModel = null;
-   //     string lSrc = Path.Combine(mPath, SelectedFile.text);
-   //     string lDst = Application.dataPath + "/Resources/" + GameManager.ExternItemBankPath + SelectedFile.text;
-
-   //     Debug.Log(lDst);
-
-
-   //     try {
-			//File.Copy(lSrc, lDst);
-
-    //    } catch (Exception ex) {
-    //        Debug.LogError(ex.Message);
-    //    }
-    //    AssetBundle test = AssetBundle.LoadFromFile("/Users/banthony/goinfre/XV/XV/Temp/tamere");
-    //    lImportModel = test.LoadAsset<GameObject>("tamere");
-    //    Instantiate(lImportModel);
-    //    if ((lImportModel = Resources.Load<GameObject>(GameManager.ExternItemBankPath + SelectedFile.text)) == null) {
-    //        Debug.LogError("Fail when loading GameObject from: " + mPath + "/" + SelectedFile.text);
-    //        try {
-				//File.Delete(lDst);
-        //    } catch (Exception ex) {
-        //        Debug.LogError(ex.Message);
-        //    }
-        //    return;
-        //} else
-            //Debug.Log("Model:" + lDst + " loaded !");
     }
 
     // This function toogle the display of the UI

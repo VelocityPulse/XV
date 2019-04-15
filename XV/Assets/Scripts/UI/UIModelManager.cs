@@ -20,16 +20,23 @@ public sealed class UIModelManager : MonoBehaviour {
         // Setting up the sprite of the UI
         // Setting up the text of the UI
         // Store the Model to use at drag and drop,
-        GameObject lPaddElement = new GameObject("PaddingElement");
-        lPaddElement.transform.parent = transform;
-        lPaddElement.AddComponent<LayoutElement>();
-        for (int i = 0; i < lModels.Count; i++) {
-            GameObject lUiElement = Instantiate(UiElement, transform);
-            lUiElement.GetComponent<Image>().sprite = lModels[i].Sprite;
-            lUiElement.GetComponentInChildren<Text>().text = lModels[i].GameObject.name;
-            lUiElement.GetComponent<UIModel>().Model = lModels[i];
+
+        GameObject lUIElement = null;
+        Image lImage = null;
+        Text lText = null;
+        UIModel lScript = null;
+        foreach (ModelLoader.Model lModel in lModels) {
+
+            if ((lUIElement = Instantiate(UiElement, transform)) == null)
+                continue;
+            
+            if ((lImage = lUIElement.GetComponentInChildren<Image>()) != null)
+                lImage.sprite = lModel.Sprite;
+            if ((lText = lUIElement.GetComponentInChildren<Text>()) != null)
+                lText.text = lModel.GameObject.name;
+            if ((lScript = lUIElement.GetComponent<UIModel>()) != null)
+                lScript.Model = lModel;
         }
-        Instantiate(lPaddElement, transform);
 	}
 
     // Update the UI pool of models
