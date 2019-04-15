@@ -44,15 +44,19 @@ public class FileBrowser : MonoBehaviour
     [SerializeField]
     private Button GoHome;
 
-    [Header("Please attach: FileBrowser/Bottom/OpenSelectedFile")]
+    [Header("Please attach: FileBrowser/Bottom/ButtonContainer/OpenFile")]
     [SerializeField]
     private Button OpenFile;
 
-    [Header("Please attach: FileBrowser/Top/PWD")]
+    [Header("Please attach: FileBrowser/Bottom/ButtonContainer/Cancel")]
+    [SerializeField]
+    private Button Cancel;
+
+    [Header("Please attach: FileBrowser/Top/PWD/Text")]
     [SerializeField]
     private Text PWD;
 
-    [Header("Please attach: FileBrowser/Bottom/SelectedFilePath")]
+    [Header("Please attach: FileBrowser/Bottom/SelectedFile/Text")]
     [SerializeField]
     private Text SelectedFile;
 
@@ -89,14 +93,14 @@ public class FileBrowser : MonoBehaviour
         GoBack.onClick.AddListener(GoToParentDir);
         GoHome.onClick.AddListener(GoToHome);
         OpenFile.onClick.AddListener(OpenSelectedFile);
-
+        Cancel.onClick.AddListener(CancelBrowser);
         // Init selected file text
         SelectedFile.text = SELECTION_FIELD;
     }
 
     private void UpdateFiles()
     {
-        PWD.text = "Path:" + mPath;
+        PWD.text = "Path:" + mPath.Replace(STARTING_PATH, "");
         List<string> lDirs = new List<string>(Directory.GetFileSystemEntries(mPath));
 
         foreach (string lFile in lDirs)
@@ -159,26 +163,55 @@ public class FileBrowser : MonoBehaviour
 
     public void OpenSelectedFile()
     {
-        
+   //     AssetBundle lAsset = null;
+   //     GameObject lImportModel = null;
+   //     string lSrc= mPath + "/" + SelectedFile.text;
+   //     string lDst = Application.dataPath + "/Resources/" + GameManager.ExternItemBankPath + SelectedFile.text;
+
+   //     Debug.Log(lDst);
+
+   //     try {
+			//File.Copy(lSrc, lDst);
+
+    //    } catch (Exception ex) {
+    //        Debug.LogError(ex.Message);
+    //    }
+
+    //    if ((lImportModel = Resources.Load<GameObject>(GameManager.ExternItemBankPath + SelectedFile.text)) == null) {
+    //        Debug.LogError("Fail when loading GameObject from: " + mPath + "/" + SelectedFile.text);
+    //        try {
+				//File.Delete(lDst);
+        //    } catch (Exception ex) {
+        //        Debug.LogError(ex.Message);
+        //    }
+        //    return;
+        //} else
+            //Debug.Log("Model:" + lDst + " loaded !");
     }
 
     // This function toogle the display of the UI
     public void DisplayToogle()
     {
         // Display
-        if (mDisplayed == false) {
+        if (!mDisplayed) {
             UpdateFiles();
             mDisplayed = true;
             enabled = true;
             mCanvasGroup.blocksRaycasts = true;
             StartCoroutine(FadeToAsync(1F, 0.4F, null));
-        } 
+        }
         // Hide
-        else {
+        else
+            CancelBrowser();
+    }
+
+    public void CancelBrowser()
+    {
+        if (mDisplayed) {
             mDisplayed = false;
             mCanvasGroup.blocksRaycasts = false;
             StartCoroutine(FadeToAsync(0F, 0.4F, ClearFiles));
-        }
+        }        
     }
 
     IEnumerator FadeToAsync(float iValue, float iTime, Action iOnEndFade)

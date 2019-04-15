@@ -5,9 +5,28 @@
       <Name>Kardex</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>4.02690029</x>
-        <y>-2.802628E-17</y>
-        <z>1.919457</z>
+        <x>-1.87236309</x>
+        <y>-1.06921009E-16</y>
+        <z>5.74555969</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>ImprimanteClassique</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>-1.60228539</x>
+        <y>4.96392144E-17</y>
+        <z>-1.8185513</z>
       </Position>
       <Rotation>
         <x>0</x>

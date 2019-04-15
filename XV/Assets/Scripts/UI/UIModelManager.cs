@@ -31,4 +31,9 @@ public sealed class UIModelManager : MonoBehaviour {
         }
         Instantiate(lPaddElement, transform);
 	}
+
+    public void UpdateAvailableModel()
+    {
+        
+    }
 }
