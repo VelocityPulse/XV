@@ -24,70 +24,6 @@ public sealed class ModelLoader
     {
     }
 
-    private void LoadImportModel()
-    {
-        GameObject lGm = null;
-        string lName = null;
-
-		string[] lModelFiles = Directory.GetFiles(Application.dataPath + "/Resources/" + GameManager.ExternItemBankPath);
-        Sprite lImportModelSprite = Resources.Load<Sprite>("Sprites/UI/ImportModel");
-
-        foreach (string iModelFile in lModelFiles) {
-            if (iModelFile.Contains(".fbx") && !iModelFile.Contains(".meta")) {
-                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/" + GameManager.ExternItemBankPath, "")) == null) {
-                    Debug.LogError("[MODEL_POOL] Error while removing data path.");
-                    continue;
-                }
-                if ((lName = lName.Replace(".fbx", "")) == null) {
-                    Debug.LogError("[MODEL_POOL] Error while removing extension name.");
-                    continue;
-                }
-                if ((lGm = Resources.Load<GameObject>("SavedData/Models/" + lName)) == null) {
-					Debug.LogError("[MODEL_POOL] Error while loading prefab:" + GameManager.ItemBankPath + lName);
-                    continue;
-                }
-                Debug.Log("---- " + lName + " loaded ----");
-                lImportModelSprite.name = lName;
-                if (mModelPool.ContainsKey(lName) == false)
-                    mModelPool.Add(lName, new Model { Type = ObjectDataSceneType.EXTERN, GameObject = lGm, Sprite = lImportModelSprite, });
-                else
-                    Debug.LogError("[MODEL_POOL] Error, model name already exist.");
-            }
-        }
-    }
-
-    private void LoadInternModel()
-    {
-        GameObject lGm = null;
-        Sprite lSprite = null;
-        string lName = null;
-
-		string[] lModelFiles = Directory.GetFiles(Application.dataPath + "/Resources/" + GameManager.ItemBankPath);
-
-        foreach (string iModelFile in lModelFiles) {
-            if (iModelFile.Contains(".prefab") && !iModelFile.Contains(".meta")) {
-                if ((lName = iModelFile.Replace(Application.dataPath + "/Resources/" + GameManager.ItemBankPath, "")) == null) {
-                    Debug.LogError("[MODEL_POOL] Error while removing data path.");
-                    continue;
-                }
-                if ((lName = lName.Replace(".prefab", "")) == null) {
-                    Debug.LogError("[MODEL_POOL] Error while removing extension name.");
-                    continue;
-                }
-                if ((lGm = Resources.Load<GameObject>(GameManager.ItemBankPath + lName)) == null) {
-                    Debug.LogError("[MODEL_POOL] Error while loading prefab:" + GameManager.ItemBankPath + lName);
-                    continue;
-                }
-                if ((lSprite = Resources.Load<Sprite>("Sprites/UI/" + lName)) == null) {
-                    Debug.LogError("[MODEL_POOL] Error while loading sprite:" + "Sprites/UI/" + lName);
-                    continue;
-                }
-                Debug.Log("---- " + lName + " loaded ----");
-                mModelPool.Add(lName, new Model { Type = ObjectDataSceneType.BUILT_IN, GameObject = lGm, Sprite = lSprite, });
-            }
-        }
-    }
-
     private ModelLoader()
     {
         if ((mModelPool = new Dictionary<string, Model>()) == null) {
@@ -102,9 +38,67 @@ public sealed class ModelLoader
 
     public static ModelLoader Instance
     {
-        get {
+        get
+        {
             return instance;
         }
+    }
+
+    // Test if it's possible to unload resources after store it in the dico
+    private void LoadImportModel()
+    {
+        GameObject[] lModelFiles = Resources.LoadAll<GameObject>(GameManager.ExternItemBankPath);
+        if (lModelFiles == null) {
+            Debug.LogError("[MODEL_POOL] Error while loading items: " + GameManager.ItemBankPath);
+            return;
+        }
+
+        Sprite lImportModelSprite = Resources.Load<Sprite>("Sprites/UI/ImportModel");
+        if (lImportModelSprite == null) {
+            Debug.LogError("[MODEL_POOL] Error while loading sprite: Sprites/UI/ImportModel");
+            return;
+        }
+
+        foreach (GameObject iModelFile in lModelFiles) {
+            if (mModelPool.ContainsKey(iModelFile.name) == false) {
+                mModelPool.Add(iModelFile.name, new Model { Type = ObjectDataSceneType.EXTERN, GameObject = iModelFile, Sprite = lImportModelSprite, });
+                Debug.Log("---- " + iModelFile.name + " loaded ----");
+            }
+                else
+                    Debug.LogError("[MODEL_POOL] Error, model name already exist.");
+        }
+    }
+
+    // Test if it's possible to unload resources after store it in the dico
+    private void LoadInternModel()
+    {
+        Sprite lSprite = null;
+
+        GameObject[] lModelFiles = Resources.LoadAll<GameObject>(GameManager.ItemBankPath);
+        if (lModelFiles == null) {
+            Debug.LogError("[MODEL_POOL] Error while loading item:" + GameManager.ItemBankPath);
+            return;
+        }
+        
+        foreach (GameObject iModelFile in lModelFiles) {
+            if ((lSprite = Resources.Load<Sprite>("Sprites/UI/" + iModelFile.name)) == null) {
+                Debug.LogError("[MODEL_POOL] Error while loading sprite:" + "Sprites/UI/" + iModelFile.name);
+                continue;
+            }
+            if (mModelPool.ContainsKey(iModelFile.name) == false) {
+                mModelPool.Add(iModelFile.name, new Model { Type = ObjectDataSceneType.BUILT_IN, GameObject = iModelFile, Sprite = lSprite, });
+                Debug.Log("---- " + iModelFile.name + " loaded ----");
+            } 
+            else
+                Debug.LogError("[MODEL_POOL] Error, model name already exist.");
+        }
+    }
+
+    // Update the model dictionary
+    // Call when user import new model
+    public void UpdatePool()
+    {
+        
     }
 
     public GameObject GetModelGameObject(string iName)

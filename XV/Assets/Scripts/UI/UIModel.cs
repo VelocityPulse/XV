@@ -58,11 +58,7 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 // new at each drag ... find a way to update position.y without new
                 mSelectedElement.transform.position = new Vector3(mSelectedElement.transform.position.x, lHit.point.y, mSelectedElement.transform.position.z);
             }
-            //else
-                //Debug.Log("[ELEMENT_DRAG/DROP] RayCast hit nothing.");
         }
-        //else
-            //Debug.Log("[ELEMENT_DRAG/DROP] Instantiation of the selected element has failed.");
     }
 
     // On End restore Layer to dropable, build the object using selectedElement, delete SelectedElement.

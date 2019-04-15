@@ -26,12 +26,14 @@ public sealed class UIModelManager : MonoBehaviour {
         for (int i = 0; i < lModels.Count; i++) {
             GameObject lUiElement = Instantiate(UiElement, transform);
             lUiElement.GetComponent<Image>().sprite = lModels[i].Sprite;
-            lUiElement.GetComponentInChildren<Text>().text = lModels[i].Sprite.name;
+            lUiElement.GetComponentInChildren<Text>().text = lModels[i].GameObject.name;
             lUiElement.GetComponent<UIModel>().Model = lModels[i];
         }
         Instantiate(lPaddElement, transform);
 	}
 
+    // Update the UI pool of models
+    // Call when user import new model
     public void UpdateAvailableModel()
     {
         

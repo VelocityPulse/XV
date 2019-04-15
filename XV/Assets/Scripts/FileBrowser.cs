@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class FileBrowser : MonoBehaviour
 {
-    private const string SELECTION_FIELD = "Please select a model file to open ...";
+    private const string SELECTION_FIELD = "Please select a model file to open";
 
     private readonly string STARTING_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
  
@@ -96,6 +96,7 @@ public class FileBrowser : MonoBehaviour
         Cancel.onClick.AddListener(CancelBrowser);
         // Init selected file text
         SelectedFile.text = SELECTION_FIELD;
+        SelectedFile.color = ROYAL_GREY;
     }
 
     private void UpdateFiles()
@@ -133,11 +134,11 @@ public class FileBrowser : MonoBehaviour
         if (iButtonClicked) {
             Text lButtonText = iButtonClicked.GetComponentInChildren<Text>();
             if (lButtonText != null) {
-                FileAttributes lAttr = File.GetAttributes(mPath + "/" + lButtonText.text);
+                FileAttributes lAttr = File.GetAttributes(Path.Combine(mPath, lButtonText.text));
                 if ((lAttr & FileAttributes.Directory) != FileAttributes.Directory)
                     SelectedFile.text = lButtonText.text;
                 else {
-                    mPath = mPath + "/" + lButtonText.text;
+                    mPath = Path.Combine(mPath, lButtonText.text);
                     ClearFiles();
                     UpdateFiles();
                 }
@@ -163,12 +164,14 @@ public class FileBrowser : MonoBehaviour
 
     public void OpenSelectedFile()
     {
+        ModelLoader.Instance.UpdatePool();
    //     AssetBundle lAsset = null;
    //     GameObject lImportModel = null;
-   //     string lSrc= mPath + "/" + SelectedFile.text;
+   //     string lSrc = Path.Combine(mPath, SelectedFile.text);
    //     string lDst = Application.dataPath + "/Resources/" + GameManager.ExternItemBankPath + SelectedFile.text;
 
    //     Debug.Log(lDst);
+
 
    //     try {
 			//File.Copy(lSrc, lDst);
@@ -176,7 +179,9 @@ public class FileBrowser : MonoBehaviour
     //    } catch (Exception ex) {
     //        Debug.LogError(ex.Message);
     //    }
-
+    //    AssetBundle test = AssetBundle.LoadFromFile("/Users/banthony/goinfre/XV/XV/Temp/tamere");
+    //    lImportModel = test.LoadAsset<GameObject>("tamere");
+    //    Instantiate(lImportModel);
     //    if ((lImportModel = Resources.Load<GameObject>(GameManager.ExternItemBankPath + SelectedFile.text)) == null) {
     //        Debug.LogError("Fail when loading GameObject from: " + mPath + "/" + SelectedFile.text);
     //        try {
