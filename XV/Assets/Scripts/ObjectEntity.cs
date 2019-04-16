@@ -20,13 +20,7 @@ public class ObjectEntity : MonoBehaviour
 		}
 	}
 
-	public static int InstantiatedEntity
-	{
-		get
-		{
-			return sAllEntites.Count;
-		}
-	}
+	public static int InstantiatedEntity { get { return sAllEntites.Count; } }
 
 	private DataScene mDataScene;
 	private ObjectDataScene mODS;

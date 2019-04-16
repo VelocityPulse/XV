@@ -72,8 +72,10 @@ public class GameManager : MonoBehaviour
 		if (Input.GetMouseButtonDown(0)) {
 			RaycastHit lHit;
 
-
+			// If the click is on a GUI : 
 			if (!EventSystem.current.IsPointerOverGameObject(-1)) {
+
+				// If the click is on anything else
 				Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 				if (Physics.Raycast(lRay, out lHit)) {
@@ -134,6 +136,7 @@ public class GameManager : MonoBehaviour
 				lMesh.gameObject.AddComponent<MeshCollider>().sharedMesh = lMesh.sharedMesh;
 		}
 
+		// Add UI Bubble 
 		GameObject lUIBubbleInfo;
 		if ((lUIBubbleInfo = Resources.Load<GameObject>("Prefabs/UI/UIBubbleInfo")) != null) {
 			lUIBubbleInfo = Instantiate(lUIBubbleInfo, oGameObject.transform);

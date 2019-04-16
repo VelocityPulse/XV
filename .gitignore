@@ -1,3 +1,7 @@
+# XV 
+XV/Assets/AssetBundles/*
+
+
 *.o
 *.a
 /objs

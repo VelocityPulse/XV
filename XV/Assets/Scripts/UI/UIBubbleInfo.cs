@@ -20,12 +20,17 @@ public class UIBubbleInfo : MonoBehaviour
 	// Update is called once per frame
 	private void Update()
 	{
+		if (mDisplayed) {
+			Quaternion lLookAt = Quaternion.LookRotation(
+				transform.position - Camera.main.transform.position);
 
+			transform.rotation = Quaternion.Slerp(
+				transform.rotation, lLookAt, Time.deltaTime * 2);
+		}
 	}
 
 	public void Display()
 	{
-		Debug.Log("BUBBLE : display");
 		mDisplayed = true;
 		enabled = true;
 		StartCoroutine(FadeTo(1F, 0.4F));
