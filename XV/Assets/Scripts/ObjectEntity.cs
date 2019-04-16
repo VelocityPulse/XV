@@ -25,8 +25,12 @@ public class ObjectEntity : MonoBehaviour
 	private DataScene mDataScene;
 	private ObjectDataScene mODS;
 	private bool mSelected;
+	private bool mMouseOver;
+	private bool mMouseDrag;
 	private bool mDestroyingObject;
 	private bool mPoppingObject;
+
+	private Vector3 mMouseOriginClick;
 
 	private UIBubbleInfo mUIBubbleInfo;
 	private Vector3 mCenter;
@@ -34,10 +38,8 @@ public class ObjectEntity : MonoBehaviour
 
 	public bool Selected
 	{
-		get
-		{
-			return mSelected;
-		}
+		get { return mSelected; }
+
 		set
 		{
 			if (!value) {
@@ -64,13 +66,28 @@ public class ObjectEntity : MonoBehaviour
 
 				ColliderMouseHandler lCMH = childObject.gameObject.AddComponent<ColliderMouseHandler>();
 				lCMH.OnMouseDownAction = OnMouseDown;
+				lCMH.OnMouseOverAction = OnMouseOver;
+				lCMH.OnMouseExitAction = OnMouseExit;
+				lCMH.OnMouseDragAction = OnMouseDrag;
+				lCMH.OnMouseUpAction = OnMouseUp;
 			}
 		}
 	}
 
 	void Update()
 	{
+		if (mMouseDrag) {
+			RaycastHit lHit;
+			Ray lRay = Camera.main.ScreenPointToRay(mMouseOriginClick + Input.mousePosition);
 
+			if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
+				Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
+
+				transform.position = lHit.point;
+				transform.position += (transform.position - transform.TransformPoint(mCenter));
+				transform.position = new Vector3(transform.position.x, lHit.point.y, transform.position.z);
+			}
+		}
 	}
 
 	// Called by unity only !
@@ -106,13 +123,54 @@ public class ObjectEntity : MonoBehaviour
 		mDestroyingObject = false;
 	}
 
+	private void OnMouseOver()
+	{
+		if (mSelected && !mMouseOver) {
+			mMouseOver = true;
+			if (!mMouseDrag)
+				Cursor.SetCursor(GameManager.Instance.OverTexturCursor, Vector2.zero, CursorMode.Auto);
+		}
+	}
+
+	private void OnMouseExit()
+	{
+		if (mSelected && mMouseOver) {
+			mMouseOver = false;
+			if (!mMouseDrag)
+				Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+		}
+	}
+
 	private void OnMouseDown()
 	{
 		if (!Selected) {
 			GameManager.Instance.SelectedEntity = this;
 			Debug.Log("ObjectEntity : " + mODS.Name + " has been selected");
 			mUIBubbleInfo.Display();
+		} else
+			Cursor.SetCursor(GameManager.Instance.CatchedTexturCursor, Vector2.zero, CursorMode.Auto);
+	}
+
+	private void OnMouseDrag()
+	{
+		if (!mMouseDrag) {
+			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
+			mMouseDrag = true;
 		}
+	}
+
+	private void OnMouseUp()
+	{
+		if (mMouseDrag) {
+			mMouseDrag = false;
+			if (mMouseOver)
+				Cursor.SetCursor(GameManager.Instance.OverTexturCursor, Vector2.zero, CursorMode.Auto);
+			else
+				Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("dropable"));
+		}
+
+		SaveEntity();
 	}
 
 	public ObjectEntity InitDataScene(DataScene iDataScene)

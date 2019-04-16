@@ -22,10 +22,8 @@ public class GameManager : MonoBehaviour
 
 	public ObjectEntity SelectedEntity
 	{
-		get
-		{
-			return mSelectedEntity;
-		}
+		get { return mSelectedEntity; }
+
 		set
 		{
 			if (value == null && mSelectedEntity == null)
@@ -43,6 +41,10 @@ public class GameManager : MonoBehaviour
 			mSelectedEntity.Selected = true;
 		}
 	}
+
+	public Texture2D OverTexturCursor { get; private set; }
+
+	public Texture2D CatchedTexturCursor { get; private set; }
 
 	static public GameManager Instance
 	{
@@ -65,6 +67,11 @@ public class GameManager : MonoBehaviour
 			throw new Exception("An instance of this singleton already exists.");
 		}
 		mLockInstance = false;
+
+
+		OverTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_hand");
+		CatchedTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_catch");
+
 	}
 
 	void Update()
@@ -79,9 +86,6 @@ public class GameManager : MonoBehaviour
 				Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 				if (Physics.Raycast(lRay, out lHit)) {
-
-					Debug.Log(lHit.transform.tag);
-
 					if (lHit.transform == null) {
 						Debug.Log("Collider hit is null");
 						SelectedEntity = null;
@@ -152,7 +156,7 @@ public class GameManager : MonoBehaviour
 		// Setting GameEntity
 		oGameObject.AddComponent<ObjectEntity>()
 				   .InitDataScene(mDataScene)
-		           .StartAnimation(iAnimatedPopping)
+				   .StartAnimation(iAnimatedPopping)
 				   .SetObjectDataScene(iODS)
 				   .SetUIBubbleInfo(lUIBubbleInfo.GetComponent<UIBubbleInfo>())
 				   .SaveEntity()
@@ -162,15 +166,18 @@ public class GameManager : MonoBehaviour
 		return oGameObject;
 	}
 
-	public void LoadSceneDebug() {
+	public void LoadSceneDebug()
+	{
 		LoadScene(mDataScene);
 	}
 
-	public void LoadScene(DataScene iDataScene) {
+	public void LoadScene(DataScene iDataScene)
+	{
 		StartCoroutine(LoadSceneAsync(iDataScene));
 	}
 
-	private IEnumerator LoadSceneAsync(DataScene iDataScene) {
+	private IEnumerator LoadSceneAsync(DataScene iDataScene)
+	{
 		ObjectEntity[] lObjectEntities = ObjectEntity.AllEntities;
 
 		foreach (ObjectEntity lObjectEntity in lObjectEntities) {

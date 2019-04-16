@@ -55,10 +55,14 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
                 Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
+
                 mSelectedElement.transform.position = lHit.point;
-                mSelectedElement.transform.position += (mSelectedElement.transform.position - mSelectedElement.transform.TransformPoint(mCentroid));
+                mSelectedElement.transform.position += 
+					(mSelectedElement.transform.position - mSelectedElement.transform.TransformPoint(mCentroid));
                 // new at each drag ... find a way to update position.y without new
-                mSelectedElement.transform.position = new Vector3(mSelectedElement.transform.position.x, lHit.point.y, mSelectedElement.transform.position.z);
+
+                mSelectedElement.transform.position = new Vector3(
+					mSelectedElement.transform.position.x, lHit.point.y, mSelectedElement.transform.position.z);
             }
         }
     }

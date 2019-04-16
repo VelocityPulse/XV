@@ -13,6 +13,8 @@ public class ColliderMouseHandler : MonoBehaviour {
 
 	public Action OnMouseDragAction { get; set; }
 
+	public Action OnMouseOverAction { get; set; }
+
 	private void OnMouseEnter()
 	{
 		if (OnMouseEnterAction != null)
@@ -41,6 +43,12 @@ public class ColliderMouseHandler : MonoBehaviour {
 	{
 		if (OnMouseDragAction != null)
 			OnMouseDragAction();
+	}
+
+	private void OnMouseOver()
+	{
+		if (OnMouseOverAction != null)
+			OnMouseOverAction();
 	}
 
 }
