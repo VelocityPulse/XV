@@ -23,8 +23,9 @@ GameObject:
   - component: {fileID: 114956704601938520}
   - component: {fileID: 114630462806750588}
   - component: {fileID: 114530768064231642}
+  - component: {fileID: 114805405069545204}
   m_Layer: 5
-  m_Name: UIFileBrowserElementGrid
+  m_Name: UIFileElementGrid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +84,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: c3164811f007e4f62ba1b64fdbddb682, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f9890350da72c495fa4b42682221a6e9, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -151,6 +152,19 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114805405069545204
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1089333063148148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8979b53f88d24568809e7657fbba10c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Icon: {fileID: 114298568992611004}
+  Text: {fileID: 114935351549773104}
 --- !u!114 &114935351549773104
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -163,7 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3137255, g: 0.3137255, b: 0.3137255, a: 1}
+  m_Color: {r: 0.25490198, g: 0.4117647, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -183,7 +197,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Test
+  m_Text: src
 --- !u!114 &114956704601938520
 MonoBehaviour:
   m_ObjectHideFlags: 1

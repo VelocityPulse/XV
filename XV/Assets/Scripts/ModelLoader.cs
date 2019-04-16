@@ -53,9 +53,9 @@ public sealed class ModelLoader
             return;
         }
 
-        Sprite lImportModelSprite = Resources.Load<Sprite>("Sprites/UI/ImportModel");
+        Sprite lImportModelSprite = Resources.Load<Sprite>("Sprites/UI/ModelsSprites/ImportModel");
         if (lImportModelSprite == null) {
-            Debug.LogError("[MODEL_POOL] Error while loading sprite: Sprites/UI/ImportModel");
+            Debug.LogError("[MODEL_POOL] Error while loading sprite: Sprites/UI/ModelsSprites/ImportModel");
             return;
         }
 
@@ -81,8 +81,8 @@ public sealed class ModelLoader
         }
         
         foreach (GameObject iModelFile in lModelFiles) {
-            if ((lSprite = Resources.Load<Sprite>("Sprites/UI/" + iModelFile.name)) == null) {
-                Debug.LogError("[MODEL_POOL] Error while loading sprite:" + "Sprites/UI/" + iModelFile.name);
+            if ((lSprite = Resources.Load<Sprite>("Sprites/UI/ModelsSprites/" + iModelFile.name)) == null) {
+                Debug.LogError("[MODEL_POOL] Error while loading sprite:" + "Sprites/UI/ModelsSprites/" + iModelFile.name);
                 continue;
             }
             if (mModelPool.ContainsKey(iModelFile.name) == false) {
