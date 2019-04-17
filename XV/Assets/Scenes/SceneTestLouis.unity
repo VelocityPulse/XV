@@ -564,10 +564,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be0f99313aa644bca964d258a69d8226, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StandardSpeed: 10
-  FastSpeedMultiplier: 3
-  MouseSensitivity: 3
-  ViewModeText: {fileID: 1457109224}
+  standardSpeed: 8
+  fastSpeedMultiplier: 3
+  mouseSensitivity: 3
+  mViewModeText: {fileID: 1457109224}
 --- !u!1 &1457109222
 GameObject:
   m_ObjectHideFlags: 0

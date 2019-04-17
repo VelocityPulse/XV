@@ -3,14 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CameraHandler : MonoBehaviour {
+public sealed class CameraHandler : MonoBehaviour {
 
 	public enum Mode { FREE, SUBJECTIVE, LOCKED }
 
-	[SerializeField] private float StandardSpeed;
-	[SerializeField] private float FastSpeedMultiplier;
-    [SerializeField] private float MouseSensitivity;
-	[SerializeField] private Text ViewModeText;
+	[SerializeField]
+	private float standardSpeed;
+
+	[SerializeField]
+	private float fastSpeedMultiplier;
+
+    [SerializeField]
+	private float mouseSensitivity;
+
+	[SerializeField]
+	private Text mViewModeText;
 
 	private bool mIsRepositioning;
 
@@ -25,12 +32,12 @@ public class CameraHandler : MonoBehaviour {
 		{
 			if (value == Mode.FREE) {
 				mViewMode = Mode.FREE;
-				ViewModeText.text = "View mode: FREE";
+				mViewModeText.text = "View mode: FREE";
 			}
 			else if (value == Mode.SUBJECTIVE) {
 				mViewMode = Mode.SUBJECTIVE;
-				ViewModeText.text = "View mode: SUBJECTIVE";
-				StartCoroutine(SetSubjectivePosition(new Vector3(transform.position.x, 1f, transform.position.z)));
+				mViewModeText.text = "View mode: SUBJECTIVE";
+				StartCoroutine(SetSubjectivePositionAsync(new Vector3(transform.position.x, 1F, transform.position.z)));
 			}
 		}
 	}
@@ -92,42 +99,42 @@ public class CameraHandler : MonoBehaviour {
 
 	private void ApplyMovement()
 	{
-		bool fastMode = Input.GetKey(KeyCode.LeftShift);
-		float baseSpeed = fastMode ? StandardSpeed * FastSpeedMultiplier : StandardSpeed;
+		bool lFastMode = Input.GetKey(KeyCode.LeftShift);
+		float lBaseSpeed = lFastMode ? standardSpeed * fastSpeedMultiplier : standardSpeed;
 
-		float xSpeed = Input.GetAxis("Horizontal") * baseSpeed * Time.deltaTime;
-		float zSpeed = Input.GetAxis("Vertical") * baseSpeed * Time.deltaTime;
+		float lXSpeed = Input.GetAxis("Horizontal") * lBaseSpeed * Time.deltaTime;
+		float lZSpeed = Input.GetAxis("Vertical") * lBaseSpeed * Time.deltaTime;
 
-		Vector3 xAxisMovement = transform.right * xSpeed;
-		Vector3 zAxisMovement = transform.forward * zSpeed;
+		Vector3 lXAxisMovement = transform.right * lXSpeed;
+		Vector3 lZAxisMovement = transform.forward * lZSpeed;
 
 		// Freeze Y axis movement if in subjective mode
 		if (ViewMode == Mode.SUBJECTIVE) {
-			zAxisMovement.y = 0f;
+			lZAxisMovement.y = 0F;
 		}
 		// Move up / down if in free mode
 		else if (ViewMode == Mode.FREE) {
-			float ySpeed = Input.GetAxis("Jump") * baseSpeed * Time.deltaTime;
-			transform.position += Vector3.up * ySpeed;
+			float lYSpeed = Input.GetAxis("Jump") * lBaseSpeed * Time.deltaTime;
+			transform.position += Vector3.up * lYSpeed;
 		}
 
-		transform.position += xAxisMovement;
-		transform.position += zAxisMovement;
+		transform.position += lXAxisMovement;
+		transform.position += lZAxisMovement;
 	}
 
 	private void ApplyRotation()
 	{
-		float newRotationX = transform.eulerAngles.y + Input.GetAxis("Mouse X") * MouseSensitivity;
-		float newRotationY = transform.eulerAngles.x - Input.GetAxis("Mouse Y") * MouseSensitivity;
-		if (newRotationY > 90f && newRotationY < 270f) {
-			if (newRotationY < 180f) {
-				newRotationY = 90f;
+		float lNewRotationX = transform.eulerAngles.y + Input.GetAxis("Mouse X") * mouseSensitivity;
+		float lNewRotationY = transform.eulerAngles.x - Input.GetAxis("Mouse Y") * mouseSensitivity;
+		if (lNewRotationY > 90F && lNewRotationY < 270F) {
+			if (lNewRotationY < 180F) {
+				lNewRotationY = 90F;
 			}
 			else {
-				newRotationY = 270f;
+				lNewRotationY = 270F;
 			}
 		}
-		transform.eulerAngles = new Vector3(newRotationY, newRotationX, 0f);
+		transform.eulerAngles = new Vector3(lNewRotationY, lNewRotationX, 0F);
 	}
 
     private void SetLockedMode()
@@ -151,13 +158,13 @@ public class CameraHandler : MonoBehaviour {
 		Cursor.lockState = CursorLockMode.Locked;
 	}
 
-	private IEnumerator SetSubjectivePosition(Vector3 iTarget)
+	private IEnumerator SetSubjectivePositionAsync(Vector3 iTarget)
 	{
-		Vector3 velocity = Vector3.zero;
+		Vector3 lVelocity = Vector3.zero;
 		mIsRepositioning = true;
-		while (Vector3.Distance(transform.position, iTarget) > 0.1f)
+		while (Vector3.Distance(transform.position, iTarget) > 0.1F)
 		{
-			transform.position = Vector3.SmoothDamp(transform.position, iTarget, ref velocity, 0.3f);
+			transform.position = Vector3.SmoothDamp(transform.position, iTarget, ref lVelocity, 0.3F);
 			yield return new WaitForEndOfFrame();
 		}
 		mIsRepositioning = false;
