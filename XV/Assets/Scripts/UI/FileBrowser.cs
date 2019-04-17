@@ -7,13 +7,10 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-// TODO Try to thread the UpdateFile function
-// Display a loading UI during thread execution
 // Finalize the OpenSelectedFile function - update pool, etc ...
-// Use constant for all path
 // Update BuildObject function with AssetBundle
 
-public class FileBrowser : MonoBehaviour
+public sealed class FileBrowser : MonoBehaviour
 {
     private const string SELECTION_FIELD = "Please select a model file to open";
 
@@ -22,6 +19,8 @@ public class FileBrowser : MonoBehaviour
     private readonly Color32 ROYAL_BLUE = new Color32(65, 105, 255, 255);
 
     private readonly Color32 ROYAL_GREY = new Color32(80, 80, 80, 255);
+
+	private string mSavedDataPath;
 
     private bool mDisplayed;
 
@@ -39,6 +38,12 @@ public class FileBrowser : MonoBehaviour
 
     private Sprite mSpriteFolder;
 
+    [Header("Extern Reference")]
+    [Header("Please attach: UIModelManager/UIModelManagerGrid/GridELements")]
+    [SerializeField]
+    private UIModelManager UILibModel;
+
+    [Header("Intern Reference")]
     [Header("Please attach: FileBrowser/Middle/FileContainer/GridWithElements")]
     [SerializeField]
     private GameObject UIGridElement;
@@ -70,6 +75,7 @@ public class FileBrowser : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
+        mSavedDataPath = Application.dataPath + "/Resources/SavedData/Models/";
         // Init some variables
         mPath = STARTING_PATH;
         mCanvasGroup = GetComponent<CanvasGroup>();
@@ -82,13 +88,13 @@ public class FileBrowser : MonoBehaviour
         SelectedFile.color = ROYAL_GREY;
 
         // Load Prefab
-        mFileUITemplate = Resources.Load<GameObject>("Prefabs/UI/UIFileElementGrid");
+        mFileUITemplate = Resources.Load<GameObject>(GameManager.UITemplatePath + "UIFileElementGrid");
         // Get the Script that give acces to settings
         mFileUIParam = mFileUITemplate.GetComponent<UIElementGridParam>();
 
         // Load Assets
-        mSpriteFile = Resources.Load<Sprite>("Sprites/UI/Icons/FileBrowser/File");
-        mSpriteFolder = Resources.Load<Sprite>("Sprites/UI/Icons/FileBrowser/Folder");
+        mSpriteFile = Resources.Load<Sprite>(GameManager.UIIconPath + "FileBrowser/File");
+        mSpriteFolder = Resources.Load<Sprite>(GameManager.UIIconPath + "FileBrowser/Folder");
 
         // Button setting
         GoBack.onClick.AddListener(GoToParentDir);
@@ -169,46 +175,32 @@ public class FileBrowser : MonoBehaviour
 
     public void OpenSelectedFile()
     {
-        AssetBundle lAssetBundles = null;
         GameObject[] lAssets = null;
-
-        Debug.Log(Path.Combine(mPath, SelectedFile.text));
+        string lPathSrc = Path.Combine(mPath, SelectedFile.text);
+        string lPathDst = Path.Combine(mSavedDataPath, SelectedFile.text);
 
         // Test if the file exist
-        if (File.Exists(Application.dataPath + "/Resources/SavedData/" + SelectedFile.text)) {
+        if (File.Exists(lPathDst)) {
             Debug.LogError("[IMPORT MODEL] Error file exist !");
             // Warn user with notifier (TODO)
-            return;
+            return ;
         }
 
-        lAssetBundles = AssetBundle.LoadFromFile(Path.Combine(mPath, SelectedFile.text));
-
-        // Load the AssetBundle file
-        if (lAssetBundles == null) {
-            Debug.Log("[IMPORT MODEL] Error while loading asset bundle:" + SelectedFile.text);
-            // Warn user with notifier (TODO)
+        // Load AssetBundle
+        if ((lAssets = Utils.LoadAssetBundle(lPathSrc)) == null)
             return;
-        }
-
-        // Load all GameObject present in the AssetBundle
-        if ((lAssets = lAssetBundles.LoadAllAssets<GameObject>()) == null) {
-            Debug.Log("[IMPORT MODEL] Error while loading GameObject in bundle:" + SelectedFile.text);
-            AssetBundle.UnloadAllAssetBundles(true);
-            // Warn user with notifier (TODO)
-            return;
-        }
 
         // AssetBundle loading success, and GameObject has been found
         // So save the AssetBundle into SavedData
         try {
-            File.Copy(Path.Combine(mPath, SelectedFile.text), Application.dataPath + "/Resources/SavedData/" + SelectedFile.text);
+            File.Copy(lPathSrc, lPathDst);
         } catch (Exception ex) {
             Debug.LogError("[IMPORT MODEL] Error:" + ex.Message);
             // Warn user with notifier (TODO)
         }
 
         ModelLoader.Instance.UpdatePool();
-        //UIModelManager.UpdateAvailableModel();
+        UILibModel.UpdateAvailableModel();
 
         AssetBundle.UnloadAllAssetBundles(true);
         HideBrowser();

@@ -50,8 +50,11 @@ public sealed class ModelLoader
         GameObject[] lModelFiles = Resources.LoadAll<GameObject>(GameManager.EXTERN_ITEM_BANK_PATH);
         if (lModelFiles == null) {
             Debug.LogError("[MODEL_POOL] Error while loading items: " + GameManager.ITEM_BANK_PATH);
+
+        GameObject[] lModelFiles = null;
+        // Load AssetBundle
+        if ((lModelFiles = Utils.LoadAllAssetBundle(Application.dataPath + "/Resources/SavedData/Models/")) == null)
             return;
-        }
 
         Sprite lImportModelSprite = Resources.Load<Sprite>("Sprites/UI/ModelsSprites/ImportModel");
         if (lImportModelSprite == null) {
@@ -60,12 +63,14 @@ public sealed class ModelLoader
         }
 
         foreach (GameObject iModelFile in lModelFiles) {
-            if (mModelPool.ContainsKey(iModelFile.name) == false) {
-                mModelPool.Add(iModelFile.name, new Model { Type = ObjectDataSceneType.EXTERN, GameObject = iModelFile, Sprite = lImportModelSprite, });
+            string lImportName = "Imp_" + iModelFile.name;
+            if (mModelPool.ContainsKey(lImportName) == false) {
+                iModelFile.name = lImportName;
+                mModelPool.Add(lImportName, new Model { Type = ObjectDataSceneType.EXTERN, GameObject = iModelFile, Sprite = lImportModelSprite, });
                 Debug.Log("---- " + iModelFile.name + " loaded ----");
             }
-                else
-                    Debug.LogError("[MODEL_POOL] Error, model name already exist.");
+            else 
+                Debug.LogError("[MODEL_POOL] Error, a model with the same name already exist.");
         }
     }
 
@@ -81,8 +86,8 @@ public sealed class ModelLoader
         }
         
         foreach (GameObject iModelFile in lModelFiles) {
-            if ((lSprite = Resources.Load<Sprite>("Sprites/UI/ModelsSprites/" + iModelFile.name)) == null) {
-                Debug.LogError("[MODEL_POOL] Error while loading sprite:" + "Sprites/UI/ModelsSprites/" + iModelFile.name);
+            if ((lSprite = Resources.Load<Sprite>(GameManager.UIModelSpritePath + iModelFile.name)) == null) {
+                Debug.LogError("[MODEL_POOL] Error while loading sprite:" + GameManager.UIModelSpritePath+ iModelFile.name);
                 continue;
             }
             if (mModelPool.ContainsKey(iModelFile.name) == false) {
@@ -98,7 +103,7 @@ public sealed class ModelLoader
     // Call when user import new model
     public void UpdatePool()
     {
-        
+        LoadImportModel();
     }
 
     public GameObject GetModelGameObject(string iName)

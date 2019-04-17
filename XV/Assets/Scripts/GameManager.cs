@@ -10,6 +10,11 @@ public class GameManager : MonoBehaviour
 {
 	public const string ITEM_BANK_PATH = "Prefabs/ItemBank/";
 	public const string EXTERN_ITEM_BANK_PATH = "SavedData/Models/";
+	public const string ItemBankPath = "Prefabs/ItemBank/";
+	public const string ExternItemBankPath = "SavedData/Models/";
+    public const string UITemplatePath = "Prefabs/UI/";
+    public const string UIIconPath = "Sprites/UI/Icons/";
+    public const string UIModelSpritePath = "Sprites/UI/ModelsSprites/";
 
 	private static GameManager sInstance;
 	private static bool sLockInstance;
