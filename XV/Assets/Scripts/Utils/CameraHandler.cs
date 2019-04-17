@@ -96,9 +96,17 @@ public class CameraHandler : MonoBehaviour {
 
 	private void ApplyRotation()
 	{
-		float newRotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * MouseSensitivity;
-		float newRotationY = transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * MouseSensitivity;
-		transform.localEulerAngles = new Vector3(newRotationY, newRotationX, 0f);
+		float newRotationX = transform.eulerAngles.y + Input.GetAxis("Mouse X") * MouseSensitivity;
+		float newRotationY = transform.eulerAngles.x - Input.GetAxis("Mouse Y") * MouseSensitivity;
+		if (newRotationY > 90f && newRotationY < 270f) {
+			if (newRotationY < 180f) {
+				newRotationY = 90f;
+			}
+			else {
+				newRotationY = 270f;
+			}
+		}
+		transform.eulerAngles = new Vector3(newRotationY, newRotationX, 0f);
 	}
 
     private void SetLockedMode()
@@ -120,7 +128,7 @@ public class CameraHandler : MonoBehaviour {
 		mMode = Mode.SUBJECTIVE;
 		Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Locked;
-		StartCoroutine(SetSubjectivePosition(new Vector3(0f, 1f, 0f)));
+		StartCoroutine(SetSubjectivePosition(new Vector3(transform.position.x, 1f, transform.position.z)));
 	}
 
 	private IEnumerator SetSubjectivePosition(Vector3 iTarget)
