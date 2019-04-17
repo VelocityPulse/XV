@@ -2,12 +2,12 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
-      <Name>Kardex</Name>
+      <Name>Etageres2</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>0.778382063</x>
-        <y>-1.06497406E-16</y>
-        <z>5.744705</z>
+        <x>2.64422226</x>
+        <y>-4.341958E-17</y>
+        <z>2.255694</z>
       </Position>
       <Rotation>
         <x>0</x>
@@ -21,12 +21,88 @@
       </Scale>
     </ObjectDataScene>
     <ObjectDataScene>
-      <Name>Palette</Name>
+      <Name>Etageres2</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>0.252003</x>
-        <y>4.58237744E-17</y>
-        <z>-1.46374941</z>
+        <x>0.782066941</x>
+        <y>-7.01753959E-17</y>
+        <z>3.4606688</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>GerbeurElectrique</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>-0.7815176</x>
+        <y>-3.08012017E-17</y>
+        <z>2.20966268</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>Document</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>0.305065751</x>
+        <y>-3.406683E-17</y>
+        <z>1.68273354</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>ConvoyeurPalettes</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>0.894016147</x>
+        <y>3.67270376E-17</y>
+        <z>-1.17663217</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>ChariotRetractableElectrique</Name>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>1.88416028</x>
+        <y>-1.77132849E-18</y>
+        <z>0.608224332</z>
       </Position>
       <Rotation>
         <x>0</x>

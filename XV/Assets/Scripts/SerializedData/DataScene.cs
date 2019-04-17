@@ -25,7 +25,6 @@ public sealed class DataScene
 		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
 		Utils.CreateFolder(lFolderPath);
 
-		Debug.Log("Path : " + lFolderPath + FILE_NAME);
 		using (StreamWriter writer = new StreamWriter(lFolderPath + FILE_NAME)) {
 			XmlSerializer serializer = new XmlSerializer(typeof(DataScene));
 			serializer.Serialize(writer, iDataScene);
@@ -40,7 +39,6 @@ public sealed class DataScene
 		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
 		Utils.CreateFolder(lFolderPath);
 
-		Debug.Log("Path : " + lFolderPath + FILE_NAME);
 		using (StreamWriter writer = new StreamWriter(lFolderPath + FILE_NAME)) {
 			XmlSerializer serializer = new XmlSerializer(typeof(DataScene));
 			serializer.Serialize(writer, this);

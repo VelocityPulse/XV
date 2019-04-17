@@ -24,14 +24,13 @@ public class ObjectEntity : MonoBehaviour
 
 	private DataScene mDataScene;
 	private ObjectDataScene mODS;
+	private bool mBusy;
 	private bool mSelected;
 	private bool mSelecting;
 
 	private bool mMouseOver;
 	private bool mMouseDown;
 	private bool mMouseDrag;
-	private bool mDestroyingObject;
-	private bool mPoppingObject;
 
 	private Vector3 mMouseOriginClick;
 
@@ -60,21 +59,7 @@ public class ObjectEntity : MonoBehaviour
 		sAllEntites.Add(this);
 
 		gameObject.tag = TAG;
-		Transform[] lTransforms = GetComponentsInChildren<Transform>();
-
-		foreach (Transform childObject in lTransforms) {
-			MeshFilter meshFilter = childObject.gameObject.GetComponent<MeshFilter>();
-
-			if (meshFilter != null) {
-
-				ColliderMouseHandler lCMH = childObject.gameObject.AddComponent<ColliderMouseHandler>();
-				lCMH.OnMouseDownAction = OnMouseDown;
-				lCMH.OnMouseOverAction = OnMouseOver;
-				lCMH.OnMouseExitAction = OnMouseExit;
-				lCMH.OnMouseDragAction = OnMouseDrag;
-				lCMH.OnMouseUpAction = OnMouseUp;
-			}
-		}
+		StartCoroutine(PostPoppingAsync());
 	}
 
 	void Update()
@@ -95,6 +80,30 @@ public class ObjectEntity : MonoBehaviour
 		}
 	}
 
+	private IEnumerator PostPoppingAsync()
+	{
+		// Waiting the end of the GameManager initialization of this class
+		yield return new WaitForEndOfFrame();
+
+		while (mBusy)
+			yield return null;
+
+		Transform[] lTransforms = GetComponentsInChildren<Transform>();
+
+		foreach (Transform childObject in lTransforms) {
+			MeshFilter meshFilter = childObject.gameObject.GetComponent<MeshFilter>();
+
+			if (meshFilter != null) {
+				ColliderMouseHandler lCMH = childObject.gameObject.AddComponent<ColliderMouseHandler>();
+				lCMH.OnMouseDownAction = OnMouseDown;
+				lCMH.OnMouseOverAction = OnMouseOver;
+				lCMH.OnMouseExitAction = OnMouseExit;
+				lCMH.OnMouseDragAction = OnMouseDrag;
+				lCMH.OnMouseUpAction = OnMouseUp;
+			}
+		}
+	}
+
 	// Called by unity only !
 	public void OnDestroy()
 	{
@@ -104,13 +113,13 @@ public class ObjectEntity : MonoBehaviour
 	// Called by XV
 	public void Dispose()
 	{
-		if (!mDestroyingObject && !mPoppingObject)
+		if (!mBusy)
 			StartCoroutine(DestroyObjectsTimedAsync());
 	}
 
 	private IEnumerator DestroyObjectsTimedAsync()
 	{
-		mDestroyingObject = true;
+		mBusy = true;
 
 		Transform[] lTransforms = gameObject.GetComponentsInChildren<Transform>();
 		Array.Reverse(lTransforms);
@@ -125,72 +134,8 @@ public class ObjectEntity : MonoBehaviour
 				}
 			}
 		}
-		mDestroyingObject = false;
+		mBusy = false;
 	}
-
-	// ------------------- MOUSE EVENTS
-
-	private void OnMouseOver()
-	{
-		if (!mSelected)
-			return;
-
-		if (!mMouseOver && mSelected && !mMouseDrag)
-			GameManager.Instance.SetCursorHandOver();
-		mMouseOver = true;
-	}
-
-	private void OnMouseDrag()
-	{
-		if (!mSelected)
-			return;
-
-		if (!mMouseDrag) {
-			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
-			mMouseOriginClick = Input.mousePosition;
-			GameManager.Instance.SetCursorCatchedHand();
-			mMouseDrag = true;
-		}
-	}
-
-	private void OnMouseUp()
-	{
-		if (mMouseDrag) {
-			mMouseDown = false;
-			mMouseDrag = false;
-			if (mMouseOver)
-				GameManager.Instance.SetCursorHandOver();
-			else {
-				GameManager.Instance.SetCursorStandard();
-			}
-			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("dropable"));
-		}
-
-		SaveEntity();
-	}
-
-	private void OnMouseDown()
-	{
-		if (!mSelected) {
-			Debug.Log("Mouse Down");
-			GameManager.Instance.SelectedEntity = this;
-			mUIBubbleInfo.Display();
-		} else {
-			mMouseDown = true;
-			GameManager.Instance.SetCursorCatchedHand();
-		}
-	}
-
-	private void OnMouseExit()
-	{
-		if (mSelected && mMouseOver) {
-			mMouseOver = false;
-			if (!mMouseDrag)
-				GameManager.Instance.SetCursorStandard();
-		}
-	}
-
-	// ------------------- MOUSE EVENTS
 
 	public ObjectEntity InitDataScene(DataScene iDataScene)
 	{
@@ -200,7 +145,7 @@ public class ObjectEntity : MonoBehaviour
 
 	public ObjectEntity StartAnimation(bool iAnimatedPopping)
 	{
-		if (iAnimatedPopping && !mPoppingObject) {
+		if (iAnimatedPopping && !mBusy) {
 
 			Transform[] lTransforms = gameObject.GetComponentsInChildren<Transform>();
 			Array.Reverse(lTransforms);
@@ -223,7 +168,7 @@ public class ObjectEntity : MonoBehaviour
 
 	private IEnumerator PoppingObject(Transform[] iTransforms)
 	{
-		mPoppingObject = true;
+		mBusy = true;
 
 		if (iTransforms.Length > 0) {
 			float lWaiting = 0.05F / iTransforms.Length;
@@ -235,7 +180,7 @@ public class ObjectEntity : MonoBehaviour
 				}
 			}
 		}
-		mPoppingObject = false;
+		mBusy = false;
 	}
 
 	public ObjectEntity SetObjectDataScene(ObjectDataScene iODS)
@@ -285,4 +230,67 @@ public class ObjectEntity : MonoBehaviour
 		}
 		return this;
 	}
+
+	// ------------------- MOUSE EVENTS
+
+	private void OnMouseOver()
+	{
+		if (!mSelected || mBusy)
+			return;
+
+		if (!mMouseOver && mSelected && !mMouseDrag)
+			GameManager.Instance.SetCursorHandOver();
+		mMouseOver = true;
+	}
+
+	private void OnMouseDrag()
+	{
+		if (!mSelected || mBusy)
+			return;
+
+		if (!mMouseDrag) {
+			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
+			mMouseOriginClick = Input.mousePosition;
+			GameManager.Instance.SetCursorCatchedHand();
+			mMouseDrag = true;
+		}
+	}
+
+	private void OnMouseUp()
+	{
+		if (mMouseDrag) {
+			mMouseDown = false;
+			mMouseDrag = false;
+			if (mMouseOver)
+				GameManager.Instance.SetCursorHandOver();
+			else {
+				GameManager.Instance.SetCursorStandard();
+			}
+			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("dropable"));
+		}
+
+		SaveEntity();
+	}
+
+	private void OnMouseDown()
+	{
+		if (!mSelected || mBusy) {
+			GameManager.Instance.SelectedEntity = this;
+			mUIBubbleInfo.Display();
+		} else {
+			mMouseDown = true;
+			GameManager.Instance.SetCursorCatchedHand();
+		}
+	}
+
+	private void OnMouseExit()
+	{
+		if (mSelected && mMouseOver) {
+			mMouseOver = false;
+			if (!mMouseDrag)
+				GameManager.Instance.SetCursorStandard();
+		}
+	}
+
+	// ------------------- MOUSE EVENTS
 }

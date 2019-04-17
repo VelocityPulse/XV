@@ -60,18 +60,16 @@ public class GameManager : MonoBehaviour
 
 	void Start()
 	{
-		if (sInstance == null) {
+		if (sInstance == null)
 			sInstance = this;
-		} else if (!sLockInstance) {
+		else if (!sLockInstance) {
 			Destroy(this);
 			throw new Exception("An instance of this singleton already exists.");
 		}
 		sLockInstance = false;
 
-
 		OverTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_hand");
 		CatchedTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_catch");
-
 	}
 
 	void Update()
