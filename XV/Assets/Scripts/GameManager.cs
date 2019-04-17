@@ -109,13 +109,13 @@ public class GameManager : MonoBehaviour
 		GameObject oGameObject = null;
 
 		if (iODS.Type == ObjectDataSceneType.BUILT_IN) {
-			oGameObject = Resources.Load<GameObject>(ITEM_BANK_PATH + iODS.Name);
+            oGameObject = ModelLoader.Instance.GetModelGameObject(iODS.Name);
 			if (oGameObject == null) {
 				Debug.LogError("Load prefab " + iODS.Name + " failed.");
 				return oGameObject;
 			}
 		} else {
-			oGameObject = Resources.Load<GameObject>("SavedData/Models/" + iODS.Name);
+            oGameObject = ModelLoader.Instance.GetModelGameObject(iODS.Name);
 			if (oGameObject == null) {
 				Debug.LogError("Load model " + iODS.Name + " failed.");
 				return oGameObject;
