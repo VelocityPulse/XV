@@ -26,7 +26,6 @@ public class ObjectEntity : MonoBehaviour
 	private ObjectDataScene mODS;
 	private bool mBusy;
 	private bool mSelected;
-	private bool mSelecting;
 
 	private bool mMouseOver;
 	private bool mMouseDown;
@@ -102,6 +101,29 @@ public class ObjectEntity : MonoBehaviour
 				lCMH.OnMouseUpAction = OnMouseUp;
 			}
 		}
+
+		mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
+			Text = "Destroy",
+			ClickAction = (iObjectEntity) => {
+				Dispose();
+			}
+		});
+
+
+		mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
+			Text = "bubble test",
+			ClickAction = (iObjectEntity) => {
+				Debug.LogWarning("Test button of " + iObjectEntity.name + " has been clicked");
+			}
+		});
+
+		mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
+			Text = "bubble test",
+			ClickAction = (iObjectEntity) => {
+				Debug.LogWarning("Test button of " + iObjectEntity.name + " has been clicked");
+			}
+		});
+
 	}
 
 	// Called by unity only !

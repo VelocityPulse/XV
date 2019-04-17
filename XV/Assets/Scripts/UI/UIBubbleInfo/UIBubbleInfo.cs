@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIBubbleInfo : MonoBehaviour
 {
@@ -8,6 +9,12 @@ public class UIBubbleInfo : MonoBehaviour
 
 	private bool mDisplayed;
 	private CanvasGroup mCanvasGroup;
+
+	[SerializeField]
+	public GameObject GridContainer;
+
+	[SerializeField]
+	public GameObject SampleButton;
 
 	public ObjectEntity Parent { get; set; }
 
@@ -19,7 +26,8 @@ public class UIBubbleInfo : MonoBehaviour
 		enabled = false;
 	}
 
-	public void DestroyObject() {
+	public void DestroyObject()
+	{
 		Parent.RemoveEntity();
 		Parent.Dispose();
 	}
@@ -34,6 +42,24 @@ public class UIBubbleInfo : MonoBehaviour
 			transform.rotation = Quaternion.Slerp(
 				transform.rotation, lLookAt, Time.deltaTime * 2);
 		}
+	}
+
+	public void CreateButton(UIBubbleInfoButton iInfoButton)
+	{
+		if (iInfoButton == null)
+			return;
+		
+		GameObject lNewButton = Instantiate(SampleButton, GridContainer.transform);
+
+		lNewButton.GetComponent<Button>().onClick.AddListener(() => {
+			if (iInfoButton.ClickAction != null)
+				iInfoButton.ClickAction(Parent);
+		});
+
+		lNewButton.GetComponentInChildren<Text>().text = iInfoButton.Text;
+		lNewButton.name = iInfoButton.Text;
+		lNewButton.SetActive(true);
+		Canvas.ForceUpdateCanvases();
 	}
 
 	public void Display()

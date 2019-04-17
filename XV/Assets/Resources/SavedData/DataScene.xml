@@ -5,28 +5,9 @@
       <Name>Etageres2</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>2.64422226</x>
-        <y>-4.341958E-17</y>
-        <z>2.255694</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
-      <Name>Etageres2</Name>
-      <Type>BUILT_IN</Type>
-      <Position>
-        <x>0.782066941</x>
-        <y>-7.01753959E-17</y>
-        <z>3.4606688</z>
+        <x>1.98863149</x>
+        <y>2.032978E-17</y>
+        <z>-0.6153219</z>
       </Position>
       <Rotation>
         <x>0</x>
@@ -43,9 +24,9 @@
       <Name>GerbeurElectrique</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>-0.7815176</x>
-        <y>-3.08012017E-17</y>
-        <z>2.20966268</z>
+        <x>0.8273063</x>
+        <y>6.9914834E-17</y>
+        <z>-2.326184</z>
       </Position>
       <Rotation>
         <x>0</x>
@@ -59,12 +40,12 @@
       </Scale>
     </ObjectDataScene>
     <ObjectDataScene>
-      <Name>Document</Name>
+      <Name>GerbeurElectrique</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>0.305065751</x>
-        <y>-3.406683E-17</y>
-        <z>1.68273354</z>
+        <x>1.30220127</x>
+        <y>3.80098624E-17</y>
+        <z>-0.998175144</z>
       </Position>
       <Rotation>
         <x>0</x>
@@ -78,31 +59,12 @@
       </Scale>
     </ObjectDataScene>
     <ObjectDataScene>
-      <Name>ConvoyeurPalettes</Name>
+      <Name>ImprimanteClassique</Name>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>0.894016147</x>
-        <y>3.67270376E-17</y>
-        <z>-1.17663217</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
-      <Name>ChariotRetractableElectrique</Name>
-      <Type>BUILT_IN</Type>
-      <Position>
-        <x>1.88416028</x>
-        <y>-1.77132849E-18</y>
-        <z>0.608224332</z>
+        <x>0.470479548</x>
+        <y>3.06884834E-17</y>
+        <z>-1.23808646</z>
       </Position>
       <Rotation>
         <x>0</x>
