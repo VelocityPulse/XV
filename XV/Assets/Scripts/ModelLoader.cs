@@ -47,9 +47,9 @@ public sealed class ModelLoader
     // Test if it's possible to unload resources after store it in the dico
     private void LoadImportModel()
     {
-        GameObject[] lModelFiles = Resources.LoadAll<GameObject>(GameManager.ExternItemBankPath);
+        GameObject[] lModelFiles = Resources.LoadAll<GameObject>(GameManager.EXTERN_ITEM_BANK_PATH);
         if (lModelFiles == null) {
-            Debug.LogError("[MODEL_POOL] Error while loading items: " + GameManager.ItemBankPath);
+            Debug.LogError("[MODEL_POOL] Error while loading items: " + GameManager.ITEM_BANK_PATH);
             return;
         }
 
@@ -74,9 +74,9 @@ public sealed class ModelLoader
     {
         Sprite lSprite = null;
 
-        GameObject[] lModelFiles = Resources.LoadAll<GameObject>(GameManager.ItemBankPath);
+        GameObject[] lModelFiles = Resources.LoadAll<GameObject>(GameManager.ITEM_BANK_PATH);
         if (lModelFiles == null) {
-            Debug.LogError("[MODEL_POOL] Error while loading item:" + GameManager.ItemBankPath);
+            Debug.LogError("[MODEL_POOL] Error while loading item:" + GameManager.ITEM_BANK_PATH);
             return;
         }
         

@@ -9,12 +9,19 @@ public class UIBubbleInfo : MonoBehaviour
 	private bool mDisplayed;
 	private CanvasGroup mCanvasGroup;
 
+	public ObjectEntity Parent { get; set; }
+
 	// Use this for initialization
 	private void Start()
 	{
 		mCanvasGroup = GetComponent<CanvasGroup>();
 		mCanvasGroup.alpha = 0F;
 		enabled = false;
+	}
+
+	public void DestroyObject() {
+		Parent.RemoveEntity();
+		Parent.Dispose();
 	}
 
 	// Update is called once per frame
@@ -41,7 +48,6 @@ public class UIBubbleInfo : MonoBehaviour
 		mDisplayed = false;
 		StartCoroutine(FadeTo(0F, 0.4F));
 	}
-
 
 	IEnumerator FadeTo(float iValue, float iTime)
 	{

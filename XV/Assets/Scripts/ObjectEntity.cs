@@ -25,7 +25,10 @@ public class ObjectEntity : MonoBehaviour
 	private DataScene mDataScene;
 	private ObjectDataScene mODS;
 	private bool mSelected;
+	private bool mSelecting;
+
 	private bool mMouseOver;
+	private bool mMouseDown;
 	private bool mMouseDrag;
 	private bool mDestroyingObject;
 	private bool mPoppingObject;
@@ -76,9 +79,11 @@ public class ObjectEntity : MonoBehaviour
 
 	void Update()
 	{
-		if (mMouseDrag) {
+		if (mSelected && mMouseDrag && Input.mousePosition != mMouseOriginClick) {
+			mMouseOriginClick = Input.mousePosition;
+
 			RaycastHit lHit;
-			Ray lRay = Camera.main.ScreenPointToRay(mMouseOriginClick + Input.mousePosition);
+			Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 			if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
 				Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
@@ -100,10 +105,10 @@ public class ObjectEntity : MonoBehaviour
 	public void Dispose()
 	{
 		if (!mDestroyingObject && !mPoppingObject)
-			StartCoroutine(DestroyObjectsTimed());
+			StartCoroutine(DestroyObjectsTimedAsync());
 	}
 
-	private IEnumerator DestroyObjectsTimed()
+	private IEnumerator DestroyObjectsTimedAsync()
 	{
 		mDestroyingObject = true;
 
@@ -123,12 +128,56 @@ public class ObjectEntity : MonoBehaviour
 		mDestroyingObject = false;
 	}
 
+	// ------------------- MOUSE EVENTS
+
 	private void OnMouseOver()
 	{
-		if (mSelected && !mMouseOver) {
-			mMouseOver = true;
-			if (!mMouseDrag)
-				Cursor.SetCursor(GameManager.Instance.OverTexturCursor, Vector2.zero, CursorMode.Auto);
+		if (!mSelected)
+			return;
+
+		if (!mMouseOver && mSelected && !mMouseDrag)
+			GameManager.Instance.SetCursorHandOver();
+		mMouseOver = true;
+	}
+
+	private void OnMouseDrag()
+	{
+		if (!mSelected)
+			return;
+
+		if (!mMouseDrag) {
+			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
+			mMouseOriginClick = Input.mousePosition;
+			GameManager.Instance.SetCursorCatchedHand();
+			mMouseDrag = true;
+		}
+	}
+
+	private void OnMouseUp()
+	{
+		if (mMouseDrag) {
+			mMouseDown = false;
+			mMouseDrag = false;
+			if (mMouseOver)
+				GameManager.Instance.SetCursorHandOver();
+			else {
+				GameManager.Instance.SetCursorStandard();
+			}
+			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("dropable"));
+		}
+
+		SaveEntity();
+	}
+
+	private void OnMouseDown()
+	{
+		if (!mSelected) {
+			Debug.Log("Mouse Down");
+			GameManager.Instance.SelectedEntity = this;
+			mUIBubbleInfo.Display();
+		} else {
+			mMouseDown = true;
+			GameManager.Instance.SetCursorCatchedHand();
 		}
 	}
 
@@ -137,41 +186,11 @@ public class ObjectEntity : MonoBehaviour
 		if (mSelected && mMouseOver) {
 			mMouseOver = false;
 			if (!mMouseDrag)
-				Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+				GameManager.Instance.SetCursorStandard();
 		}
 	}
 
-	private void OnMouseDown()
-	{
-		if (!Selected) {
-			GameManager.Instance.SelectedEntity = this;
-			Debug.Log("ObjectEntity : " + mODS.Name + " has been selected");
-			mUIBubbleInfo.Display();
-		} else
-			Cursor.SetCursor(GameManager.Instance.CatchedTexturCursor, Vector2.zero, CursorMode.Auto);
-	}
-
-	private void OnMouseDrag()
-	{
-		if (!mMouseDrag) {
-			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
-			mMouseDrag = true;
-		}
-	}
-
-	private void OnMouseUp()
-	{
-		if (mMouseDrag) {
-			mMouseDrag = false;
-			if (mMouseOver)
-				Cursor.SetCursor(GameManager.Instance.OverTexturCursor, Vector2.zero, CursorMode.Auto);
-			else
-				Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("dropable"));
-		}
-
-		SaveEntity();
-	}
+	// ------------------- MOUSE EVENTS
 
 	public ObjectEntity InitDataScene(DataScene iDataScene)
 	{
@@ -230,6 +249,7 @@ public class ObjectEntity : MonoBehaviour
 	public ObjectEntity SetUIBubbleInfo(UIBubbleInfo iBubbleInfo)
 	{
 		mUIBubbleInfo = iBubbleInfo;
+		mUIBubbleInfo.Parent = this;
 		return this;
 	}
 
@@ -253,6 +273,15 @@ public class ObjectEntity : MonoBehaviour
 			mODS.Scale = transform.localScale;
 
 			mDataScene.Serialize();
+		}
+		return this;
+	}
+
+	public ObjectEntity RemoveEntity()
+	{
+		if (mODS != null) {
+			if (mDataScene.DataObjects.Contains(mODS))
+				mDataScene.DataObjects.Remove(mODS);
 		}
 		return this;
 	}

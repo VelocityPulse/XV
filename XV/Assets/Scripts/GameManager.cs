@@ -8,11 +8,11 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-	public const string ItemBankPath = "Prefabs/ItemBank/";
-	public const string ExternItemBankPath = "SavedData/Models/";
+	public const string ITEM_BANK_PATH = "Prefabs/ItemBank/";
+	public const string EXTERN_ITEM_BANK_PATH = "SavedData/Models/";
 
-	private static GameManager mInstance;
-	private static bool mLockInstance;
+	private static GameManager sInstance;
+	private static bool sLockInstance;
 
 	private readonly DataScene mDataScene = new DataScene();
 
@@ -50,23 +50,23 @@ public class GameManager : MonoBehaviour
 	{
 		get
 		{
-			if (mInstance == null) {
-				mLockInstance = true;
-				mInstance = new GameObject("GameManager").AddComponent<GameManager>();
+			if (sInstance == null) {
+				sLockInstance = true;
+				sInstance = new GameObject("GameManager").AddComponent<GameManager>();
 			}
-			return mInstance;
+			return sInstance;
 		}
 	}
 
 	void Start()
 	{
-		if (mInstance == null) {
-			mInstance = this;
-		} else if (!mLockInstance) {
+		if (sInstance == null) {
+			sInstance = this;
+		} else if (!sLockInstance) {
 			Destroy(this);
 			throw new Exception("An instance of this singleton already exists.");
 		}
-		mLockInstance = false;
+		sLockInstance = false;
 
 
 		OverTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_hand");
@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
 		GameObject oGameObject = null;
 
 		if (iODS.Type == ObjectDataSceneType.BUILT_IN) {
-			oGameObject = Resources.Load<GameObject>(ItemBankPath + iODS.Name);
+			oGameObject = Resources.Load<GameObject>(ITEM_BANK_PATH + iODS.Name);
 			if (oGameObject == null) {
 				Debug.LogError("Load prefab " + iODS.Name + " failed.");
 				return oGameObject;
@@ -191,5 +191,17 @@ public class GameManager : MonoBehaviour
 		foreach (ObjectDataScene lODS in iDataScene.DataObjects) {
 			BuildObject(lODS, true);
 		}
+	}
+
+	public void SetCursorHandOver() {
+		Cursor.SetCursor(GameManager.Instance.OverTexturCursor, Vector2.zero, CursorMode.Auto);
+	}
+
+	public void SetCursorStandard() {
+		Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+	}
+
+	public void SetCursorCatchedHand() {
+		Cursor.SetCursor(GameManager.Instance.CatchedTexturCursor, Vector2.zero, CursorMode.Auto);
 	}
 }
