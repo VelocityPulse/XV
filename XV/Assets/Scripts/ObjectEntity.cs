@@ -106,6 +106,7 @@ public class ObjectEntity : MonoBehaviour
 			Text = "Destroy",
 			ClickAction = (iObjectEntity) => {
 				Dispose();
+				RemoveEntity();
 			}
 		});
 
@@ -123,8 +124,13 @@ public class ObjectEntity : MonoBehaviour
 				Debug.LogWarning("Test button of " + iObjectEntity.name + " has been clicked");
 			}
 		});
-
 	}
+
+	// todo clem : wa
+	// Raycast passe a travers la GUI qu'elle est devant un autre ObjectEntity
+	// bouton rotation 
+	// bug de save
+	// binder le champ de text de la GUI
 
 	// Called by unity only !
 	public void OnDestroy()
@@ -208,8 +214,10 @@ public class ObjectEntity : MonoBehaviour
 	public ObjectEntity SetObjectDataScene(ObjectDataScene iODS)
 	{
 		mODS = iODS;
-		if (!mDataScene.DataObjects.Contains(mODS))
-			mDataScene.DataObjects.Add(mODS);
+		if (!mDataScene.IsDataObjectsContains(mODS)) {
+			mDataScene.AddODS(mODS);
+			mDataScene.Serialize();
+		}
 		return this;
 	}
 
@@ -247,8 +255,12 @@ public class ObjectEntity : MonoBehaviour
 	public ObjectEntity RemoveEntity()
 	{
 		if (mODS != null) {
-			if (mDataScene.DataObjects.Contains(mODS))
-				mDataScene.DataObjects.Remove(mODS);
+			if (mDataScene.IsDataObjectsContains(mODS)) {
+				Debug.Log("Removing ODS : " + mDataScene.RemoveODS(mODS));
+				mDataScene.Serialize();
+			} else {
+				Debug.Log("ODS not contained in DO");
+			}
 		}
 		return this;
 	}
@@ -296,6 +308,10 @@ public class ObjectEntity : MonoBehaviour
 
 	private void OnMouseDown()
 	{
+		// If the click is on a GUI : 
+		if (EventSystem.current.IsPointerOverGameObject()) 
+				return;
+
 		if (!mSelected || mBusy) {
 			GameManager.Instance.SelectedEntity = this;
 			mUIBubbleInfo.Display();

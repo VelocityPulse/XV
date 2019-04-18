@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Xml.Serialization;
 using UnityEngine;
 
@@ -18,6 +19,38 @@ public sealed class DataScene
 	public DataScene()
 	{
 		DataObjects = new List<ObjectDataScene>();
+	}
+
+	public bool IsDataObjectsContains(ObjectDataScene iODS)
+	{
+		foreach (ObjectDataScene lItem in DataObjects) {
+			if (lItem.GUID == iODS.GUID)
+				return true;
+		}
+		return false;
+	}
+
+	public bool RemoveODS(ObjectDataScene iODS)
+	{
+		foreach (ObjectDataScene lItem in DataObjects) {
+			if (lItem.GUID == iODS.GUID)
+				return DataObjects.Remove(lItem);
+		}
+		return false;
+	}
+
+	public void AddODS(ObjectDataScene iODS) {
+		foreach (ObjectDataScene lItem in DataObjects) {
+			
+			if (lItem.GUID == iODS.GUID) {
+				lItem.Name = iODS.Name;
+				lItem.Position = iODS.Position;
+				lItem.Rotation = iODS.Rotation;
+				lItem.Scale = iODS.Scale;
+				lItem.Type = iODS.Type;
+			}
+		}
+		DataObjects.Add(iODS);
 	}
 
 	static public string Serialize(DataScene iDataScene)
@@ -56,8 +89,11 @@ public sealed class DataScene
 
 		XmlSerializer lSerializer = new XmlSerializer(typeof(DataScene));
 
-		using (StringReader lStringReader = new StringReader(lFolderPath + FILE_NAME)) {
-			DataScene oDataScene = (DataScene)lSerializer.Deserialize(lStringReader);
+		using (StreamReader lStreamReader = new StreamReader(lFolderPath + FILE_NAME, Encoding.UTF8, true)) {
+
+			//System.Xml.XmlReader lReader = System.Xml.XmlReader.Create(lStreamReader);
+
+			DataScene oDataScene = (DataScene)lSerializer.Deserialize(lStreamReader);
 
 			if (oDataScene == null)
 				oDataScene = new DataScene();

@@ -171,7 +171,7 @@ public class GameManager : MonoBehaviour
 
 	public void LoadSceneDebug()
 	{
-		LoadScene(mDataScene);
+		LoadScene(DataScene.Unserialize());
 	}
 
 	public void LoadScene(DataScene iDataScene)

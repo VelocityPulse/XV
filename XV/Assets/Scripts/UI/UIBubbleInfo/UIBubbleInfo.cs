@@ -26,12 +26,6 @@ public class UIBubbleInfo : MonoBehaviour
 		enabled = false;
 	}
 
-	public void DestroyObject()
-	{
-		Parent.RemoveEntity();
-		Parent.Dispose();
-	}
-
 	// Update is called once per frame
 	private void Update()
 	{
