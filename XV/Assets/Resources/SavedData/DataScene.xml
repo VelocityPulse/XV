@@ -3,15 +3,16 @@
   <DataObjects>
     <ObjectDataScene>
       <Name>Etageres2</Name>
+      <GUID>e0c4a5d8-49be-46c8-a427-0e10ecaca5e9</GUID>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>1.98863149</x>
-        <y>2.032978E-17</y>
-        <z>-0.6153219</z>
+        <x>1.47879922</x>
+        <y>0</y>
+        <z>0.650220752</z>
       </Position>
       <Rotation>
         <x>0</x>
-        <y>0</y>
+        <y>169.5546</y>
         <z>0</z>
       </Rotation>
       <Scale>
@@ -22,15 +23,16 @@
     </ObjectDataScene>
     <ObjectDataScene>
       <Name>GerbeurElectrique</Name>
+      <GUID>bb62b296-643f-4cbe-b65f-3dc48a656be4</GUID>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>0.8273063</x>
-        <y>6.9914834E-17</y>
-        <z>-2.326184</z>
+        <x>-1.96584368</x>
+        <y>0</y>
+        <z>-3.35049462</z>
       </Position>
       <Rotation>
         <x>0</x>
-        <y>0</y>
+        <y>219.97644</y>
         <z>0</z>
       </Rotation>
       <Scale>
@@ -40,31 +42,13 @@
       </Scale>
     </ObjectDataScene>
     <ObjectDataScene>
-      <Name>GerbeurElectrique</Name>
+      <Name>PaletteRemplie</Name>
+      <GUID>b521ec9d-46c0-43e4-b654-ad72358af23f</GUID>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>1.30220127</x>
-        <y>3.80098624E-17</y>
-        <z>-0.998175144</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
+        <x>-2.38820434</x>
         <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
-      <Name>ImprimanteClassique</Name>
-      <Type>BUILT_IN</Type>
-      <Position>
-        <x>0.470479548</x>
-        <y>3.06884834E-17</y>
-        <z>-1.23808646</z>
+        <z>-0.3906808</z>
       </Position>
       <Rotation>
         <x>0</x>

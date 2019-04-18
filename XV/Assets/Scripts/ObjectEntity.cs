@@ -26,16 +26,19 @@ public class ObjectEntity : MonoBehaviour
 	private ObjectDataScene mODS;
 	private bool mBusy;
 	private bool mSelected;
-
-	private bool mMouseOver;
+	private bool mControlPushed;
 	private bool mMouseDown;
-	private bool mMouseDrag;
+
+	private bool mMouseOverObjectEntity;
+	private bool mMouseDownOnObjectEntity;
+	private bool mMouseDragObjectEntity;
 
 	private Vector3 mMouseOriginClick;
 
 	private UIBubbleInfo mUIBubbleInfo;
 	private Vector3 mCenter;
 	private Vector3 mSize;
+	private GameObject mCenteredObject;
 
 	public bool Selected
 	{
@@ -58,12 +61,65 @@ public class ObjectEntity : MonoBehaviour
 		sAllEntites.Add(this);
 
 		gameObject.tag = TAG;
+
+		Debug.Log(mCenter);
+		mCenteredObject = new GameObject();
+
+		mCenteredObject.transform.position = transform.position + mCenter;
+		transform.parent = mCenteredObject.transform;
+
+		transform.position = Vector3.zero;
+		transform.localPosition = -mCenter;
+
+
+
 		StartCoroutine(PostPoppingAsync());
 	}
 
 	void Update()
 	{
-		if (mSelected && mMouseDrag && Input.mousePosition != mMouseOriginClick) {
+		if (!mSelected)
+			return;
+
+		if (Input.GetKeyDown(KeyCode.Mouse0)) {
+			mMouseDown = true;
+			mMouseOriginClick = Input.mousePosition;
+		} else if (Input.GetKeyUp(KeyCode.Mouse0))
+			mMouseDown = false;
+
+		if (Input.GetKeyDown(KeyCode.LeftControl)) {
+			GameManager.Instance.SetCursorRotation();
+			mControlPushed = true;
+			mUIBubbleInfo.SetInteractable(false);
+		} else if (Input.GetKeyUp(KeyCode.LeftControl)) {
+			if (mMouseOverObjectEntity)
+				GameManager.Instance.SetCursorHandOver();
+			else
+				GameManager.Instance.SetCursorStandard();
+			mUIBubbleInfo.SetInteractable(true);
+			mControlPushed = false;
+
+		}
+
+		if (mControlPushed && mMouseDown) {
+
+
+			//var NewPos = .localEulerAngles;
+			//theChild.localEulerAngles = new Vector3(0, 0, 0);
+			//theParent.localEulerAngles = NewPos;
+
+			mCenteredObject.transform.rotation = Quaternion.Euler(
+				mCenteredObject.transform.rotation.eulerAngles.x,
+				mCenteredObject.transform.rotation.eulerAngles.y + (Input.mousePosition.x - mMouseOriginClick.x),
+				mCenteredObject.transform.rotation.eulerAngles.z);
+
+			mMouseOriginClick = Input.mousePosition;
+
+
+
+		}
+
+		if (mMouseDragObjectEntity && Input.mousePosition != mMouseOriginClick) {
 			mMouseOriginClick = Input.mousePosition;
 
 			RaycastHit lHit;
@@ -110,7 +166,6 @@ public class ObjectEntity : MonoBehaviour
 			}
 		});
 
-
 		mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
 			Text = "bubble test",
 			ClickAction = (iObjectEntity) => {
@@ -126,10 +181,8 @@ public class ObjectEntity : MonoBehaviour
 		});
 	}
 
-	// todo clem : wa
-	// Raycast passe a travers la GUI qu'elle est devant un autre ObjectEntity
-	// bouton rotation 
-	// bug de save
+	// todo clem : 
+
 	// binder le champ de text de la GUI
 
 	// Called by unity only !
@@ -269,33 +322,34 @@ public class ObjectEntity : MonoBehaviour
 
 	private void OnMouseOver()
 	{
-		if (!mSelected || mBusy)
+		if (!mSelected || mBusy || mControlPushed)
 			return;
 
-		if (!mMouseOver && mSelected && !mMouseDrag)
+		if (!mMouseOverObjectEntity && mSelected && !mMouseDragObjectEntity)
 			GameManager.Instance.SetCursorHandOver();
-		mMouseOver = true;
+		mMouseOverObjectEntity = true;
 	}
 
 	private void OnMouseDrag()
 	{
-		if (!mSelected || mBusy)
+		if (!mSelected || mBusy || mControlPushed)
 			return;
 
-		if (!mMouseDrag) {
+		if (!mMouseDragObjectEntity) {
 			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
 			mMouseOriginClick = Input.mousePosition;
 			GameManager.Instance.SetCursorCatchedHand();
-			mMouseDrag = true;
+			mMouseDragObjectEntity = true;
 		}
 	}
 
 	private void OnMouseUp()
 	{
-		if (mMouseDrag) {
-			mMouseDown = false;
-			mMouseDrag = false;
-			if (mMouseOver)
+		mMouseDownOnObjectEntity = false;
+
+		if (mMouseDragObjectEntity) {
+			mMouseDragObjectEntity = false;
+			if (mMouseOverObjectEntity)
 				GameManager.Instance.SetCursorHandOver();
 			else {
 				GameManager.Instance.SetCursorStandard();
@@ -309,23 +363,23 @@ public class ObjectEntity : MonoBehaviour
 	private void OnMouseDown()
 	{
 		// If the click is on a GUI : 
-		if (EventSystem.current.IsPointerOverGameObject()) 
-				return;
+		if (EventSystem.current.IsPointerOverGameObject())
+			return;
 
 		if (!mSelected || mBusy) {
 			GameManager.Instance.SelectedEntity = this;
 			mUIBubbleInfo.Display();
 		} else {
-			mMouseDown = true;
+			mMouseDownOnObjectEntity = true;
 			GameManager.Instance.SetCursorCatchedHand();
 		}
 	}
 
 	private void OnMouseExit()
 	{
-		if (mSelected && mMouseOver) {
-			mMouseOver = false;
-			if (!mMouseDrag)
+		if (mSelected && mMouseOverObjectEntity) {
+			mMouseOverObjectEntity = false;
+			if (!mMouseDragObjectEntity && !mControlPushed)
 				GameManager.Instance.SetCursorStandard();
 		}
 	}

@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour
 
 	public Texture2D CatchedTexturCursor { get; private set; }
 
+	public Texture2D RotationTexturCursor { get; private set; }
+
 	static public GameManager Instance
 	{
 		get
@@ -75,11 +77,12 @@ public class GameManager : MonoBehaviour
 
 		OverTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_hand");
 		CatchedTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_catch");
+		RotationTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_rotate");
 	}
 
 	void Update()
 	{
-		if (Input.GetMouseButtonDown(0)) {
+		if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftControl)) {
 			RaycastHit lHit;
 
 			// If the click is on a GUI : 
@@ -197,7 +200,7 @@ public class GameManager : MonoBehaviour
 	}
 
 	public void SetCursorHandOver() {
-		Cursor.SetCursor(GameManager.Instance.OverTexturCursor, Vector2.zero, CursorMode.Auto);
+		Cursor.SetCursor(OverTexturCursor, Vector2.zero, CursorMode.Auto);
 	}
 
 	public void SetCursorStandard() {
@@ -205,6 +208,10 @@ public class GameManager : MonoBehaviour
 	}
 
 	public void SetCursorCatchedHand() {
-		Cursor.SetCursor(GameManager.Instance.CatchedTexturCursor, Vector2.zero, CursorMode.Auto);
+		Cursor.SetCursor(CatchedTexturCursor, Vector2.zero, CursorMode.Auto);
+	}
+
+	public void SetCursorRotation() {
+		Cursor.SetCursor(RotationTexturCursor, Vector2.zero, CursorMode.Auto);
 	}
 }

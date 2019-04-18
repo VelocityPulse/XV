@@ -16,9 +16,9 @@ public enum ObjectDataSceneType
 [Serializable]
 public sealed class ObjectDataScene
 {
-
 	public string Name { get; set; }
 
+	// This variable shouldn't be edited manually!
 	public string GUID { get; set; }
 
 	public ObjectDataSceneType Type { get; set; }
@@ -34,5 +34,4 @@ public sealed class ObjectDataScene
 		if (GUID == null)
 			GUID = Guid.NewGuid().ToString();
 	}
-
 }

@@ -10,6 +10,9 @@ public class UIBubbleInfo : MonoBehaviour
 	private bool mDisplayed;
 	private CanvasGroup mCanvasGroup;
 
+	private List<Button> mButtons;
+	private InputField mModelName;
+
 	[SerializeField]
 	public GameObject GridContainer;
 
@@ -21,9 +24,10 @@ public class UIBubbleInfo : MonoBehaviour
 	// Use this for initialization
 	private void Start()
 	{
+		mButtons = new List<Button>();
+		mModelName = GetComponentInChildren<InputField>();
 		mCanvasGroup = GetComponent<CanvasGroup>();
 		mCanvasGroup.alpha = 0F;
-		enabled = false;
 	}
 
 	// Update is called once per frame
@@ -45,10 +49,12 @@ public class UIBubbleInfo : MonoBehaviour
 		
 		GameObject lNewButton = Instantiate(SampleButton, GridContainer.transform);
 
-		lNewButton.GetComponent<Button>().onClick.AddListener(() => {
+		Button lButtonComponant = lNewButton.GetComponent<Button>();
+		lButtonComponant.onClick.AddListener(() => {
 			if (iInfoButton.ClickAction != null)
 				iInfoButton.ClickAction(Parent);
 		});
+		mButtons.Add(lButtonComponant);
 
 		lNewButton.GetComponentInChildren<Text>().text = iInfoButton.Text;
 		lNewButton.name = iInfoButton.Text;
@@ -56,10 +62,16 @@ public class UIBubbleInfo : MonoBehaviour
 		Canvas.ForceUpdateCanvases();
 	}
 
+	public void SetInteractable(bool iInteractable) {
+		foreach (Button lButton in mButtons) {
+			lButton.interactable = iInteractable;
+		}
+		mModelName.interactable = iInteractable;
+	}
+
 	public void Display()
 	{
 		mDisplayed = true;
-		enabled = true;
 		StartCoroutine(FadeTo(1F, 0.4F));
 	}
 
