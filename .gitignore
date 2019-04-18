@@ -1,6 +1,6 @@
-# XV 
+# XV
 XV/Assets/AssetBundles/*
-
+AssetBundles.meta
 
 *.o
 *.a
