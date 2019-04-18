@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine;
@@ -65,23 +67,27 @@ public static class Utils {
     // Try to load all AssetBundle present in iPath
     // If iPath is not a directory, the iPath is used as an AssetBundle path
     // This function will warn the user using the Notifier when available
-    public static T[] LoadAllAssetBundle<T>(string iPath) where T : UnityEngine.Object
+    public static T[] LoadAllAssetBundle<T>(string iPath, Action<string> iOnError = null) where T : UnityEngine.Object
     {
         List<T> oAssets;
         T[] lAssetBundleContent;
 
         if ((oAssets = new List<T>()) == null) {
             UnityEngine.Debug.LogError("[ASSET BUNDLE LOADER] Error during allocation.");
+            if (iOnError != null)
+                iOnError("Error during allocation.");
             return null;
         }
 
         // If the path is not a directory, just try to import as an AssetBundle
         FileAttributes lAttr = File.GetAttributes(iPath);
         if ((lAttr & FileAttributes.Hidden) == FileAttributes.Hidden) {
+            if (iOnError != null)
+                iOnError("Humm, what are you trying to do ?");
             return null;
         }
         else if ((lAttr & FileAttributes.Directory) != FileAttributes.Directory)
-            return LoadAllAssetBundle<T>(iPath);
+            return LoadAllAssetBundle<T>(iPath, iOnError);
 
         // List all file in iPath
         List<string> lDirs = new List<string>(Directory.GetFileSystemEntries(iPath));
@@ -107,7 +113,7 @@ public static class Utils {
 
     // Try to load an AssetBundle file from iPath
     // This function will warn the user using the Notifier when available
-    public static T[] LoadAssetBundle<T>(string iPath) where T : UnityEngine.Object
+    public static T[] LoadAssetBundle<T>(string iPath, Action<string> iOnError = null) where T : UnityEngine.Object
     {
         AssetBundle lAssetBundles = null;
         T[] oAssets = null;
@@ -116,7 +122,8 @@ public static class Utils {
         if ((lFileInfo = new FileInfo(iPath)) != null) {
             if (!string.IsNullOrEmpty(lFileInfo.Extension)) {
                 UnityEngine.Debug.Log("[ASSET BUNDLE LOADER] Error choosen file is not an AssetBundle.");
-                // Warn user with notifier (TODO)
+                if (iOnError != null)
+                    iOnError("Error choosen file is not an AssetBundle.");
                 return null;
             }
         }
@@ -126,7 +133,8 @@ public static class Utils {
         // Load the AssetBundle file
         if (lAssetBundles == null) {
             UnityEngine.Debug.Log("[ASSET BUNDLE LOADER] Error while loading asset bundle:" + iPath);
-            // Warn user with notifier (TODO)
+            if (iOnError != null)
+                iOnError("Error while loading asset bundle.");
             return null;
         }
 
@@ -134,10 +142,25 @@ public static class Utils {
         if ((oAssets = lAssetBundles.LoadAllAssets<T>()) == null) {
             UnityEngine.Debug.Log("[ASSET BUNDLE LOADER] Error while loading " + typeof(T) + " in bundle:" + iPath);
             AssetBundle.UnloadAllAssetBundles(true);
-            // Warn user with notifier (TODO)
+            if (iOnError != null)
+                iOnError("Error while loading" + typeof(T) + " in bundle.");
             return null;
         }
         AssetBundle.UnloadAllAssetBundles(false);
         return oAssets;
+    }
+
+    public static IEnumerator FadeToAsync(float iValue, float iTime, CanvasGroup iCanvasGroup, Action iOnEndFade = null)
+    {
+        float lAlpha = iCanvasGroup.alpha;
+
+        for (float lTime = 0F; lTime < 1F; lTime += Time.deltaTime / iTime) {
+            float newAlpha = Mathf.SmoothStep(lAlpha, iValue, lTime);
+            iCanvasGroup.alpha = newAlpha;
+            yield return null;
+        }
+        iCanvasGroup.alpha = iValue;
+        if (iOnEndFade != null)
+            iOnEndFade();
     }
 }

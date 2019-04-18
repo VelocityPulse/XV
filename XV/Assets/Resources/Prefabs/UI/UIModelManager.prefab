@@ -279,7 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be50fe79eca5948609dcf8a60d4e3829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UiElement: {fileID: 1475068284339798, guid: 395310df4e4c54fa89ca044067d986d8, type: 2}
+  UiElement: {fileID: 1059886568928382, guid: 4e93e1b93601e422f8b8588de3e17862, type: 2}
 --- !u!114 &114632753154805812
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -294,12 +294,12 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
+    m_Top: 50
+    m_Bottom: 50
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 90, y: 90}
+  m_CellSize: {x: 100, y: 120}
   m_Spacing: {x: 25, y: 25}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -506,7 +506,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.000014915812}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224192240647194294

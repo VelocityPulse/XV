@@ -49,7 +49,7 @@ public sealed class ModelLoader
     {
         GameObject[] lModelFiles = null;
         // Load AssetBundle
-        if ((lModelFiles = Utils.LoadAllAssetBundle<GameObject>(Application.dataPath + "/Resources/SavedData/Models/")) == null)
+        if ((lModelFiles = Utils.LoadAllAssetBundle<GameObject>(Application.dataPath + "/Resources/SavedData/Models/", (iErrorMessage) => { XV_UI.Instance.Notify(1F, iErrorMessage); })) == null)
             return;
 
         Sprite lImportModelSprite = Resources.Load<Sprite>("Sprites/UI/ModelsSprites/ImportModel");

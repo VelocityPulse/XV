@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public sealed class FileBrowser : MonoBehaviour
 {
+    private const float NOTIFIER_DURATION = 1F;
+
     private const string SELECTION_FIELD = "Please select a model file to open";
 
     private readonly string STARTING_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -69,10 +71,10 @@ public sealed class FileBrowser : MonoBehaviour
         mSavedDataPath = Application.dataPath + "/Resources/SavedData/Models/";
         // Init some variables
         mPath = STARTING_PATH;
-        mCanvasGroup = GetComponent<CanvasGroup>();
-        mCanvasGroup.alpha = 0F;
-        mCanvasGroup.blocksRaycasts = false;
-        enabled = false;
+        if ((mCanvasGroup = GetComponent<CanvasGroup>()) != null)
+            mCanvasGroup.alpha = 0F;
+
+        gameObject.SetActive(false);
         mDisplayed = false;
         // Init selected file text
         SelectedFile.text = SELECTION_FIELD;
@@ -171,12 +173,12 @@ public sealed class FileBrowser : MonoBehaviour
         // Test if the file exist
         if (File.Exists(lPathDst)) {
             Debug.LogError("[IMPORT MODEL] Error file exist !");
-            // Warn user with notifier (TODO)
+            XV_UI.Instance.Notify(NOTIFIER_DURATION, "The file has already been imported.");
             return ;
         }
 
         // Load AssetBundle to test if the file is correct
-        if ((lAssets = Utils.LoadAssetBundle<GameObject>(lPathSrc)) == null)
+        if ((lAssets = Utils.LoadAssetBundle<GameObject>(lPathSrc, (iErrorMessage) => {XV_UI.Instance.Notify(NOTIFIER_DURATION, iErrorMessage);})) == null)
             return;
 
         // AssetBundle loading success, and GameObject has been found
@@ -185,7 +187,7 @@ public sealed class FileBrowser : MonoBehaviour
             File.Copy(lPathSrc, lPathDst);
         } catch (Exception ex) {
             Debug.LogError("[IMPORT MODEL] Error:" + ex.Message);
-            // Warn user with notifier (TODO)
+            XV_UI.Instance.Notify(NOTIFIER_DURATION, "An error occurred while copying the file");
         }
 
         ModelLoader.Instance.UpdatePool();
@@ -193,6 +195,7 @@ public sealed class FileBrowser : MonoBehaviour
 
         AssetBundle.UnloadAllAssetBundles(true);
         HideBrowser();
+        XV_UI.Instance.Notify(NOTIFIER_DURATION, "Your file has been imported.");
     }
 
     // This function toogle the display of the UI
@@ -200,11 +203,12 @@ public sealed class FileBrowser : MonoBehaviour
     {
         // Display
         if (!mDisplayed) {
+            gameObject.SetActive(true);
             UpdateFiles();
             mDisplayed = true;
-            enabled = true;
-            mCanvasGroup.blocksRaycasts = true;
-            StartCoroutine(FadeToAsync(1F, 0.4F, null));
+            gameObject.SetActive(true);
+            if (mCanvasGroup != null)
+                StartCoroutine(Utils.FadeToAsync(1F, 0.4F, mCanvasGroup));
         }
         // Hide
         else
@@ -215,22 +219,13 @@ public sealed class FileBrowser : MonoBehaviour
     {
         if (mDisplayed) {
             mDisplayed = false;
-            mCanvasGroup.blocksRaycasts = false;
-            StartCoroutine(FadeToAsync(0F, 0.4F, ClearFiles));
+            if (mCanvasGroup != null) {
+                StartCoroutine(Utils.FadeToAsync(0F, 0.4F, mCanvasGroup, () => 
+                {
+                    ClearFiles();
+                    gameObject.SetActive(false);
+                }));
+            }
         }
-    }
-
-    IEnumerator FadeToAsync(float iValue, float iTime, Action iOnEndFade)
-    {
-        float lAlpha = mCanvasGroup.alpha;
-
-        for (float lTime = 0F; lTime < 1F; lTime += Time.deltaTime / iTime) {
-            float newAlpha = Mathf.SmoothStep(lAlpha, iValue, lTime);
-            mCanvasGroup.alpha = newAlpha;
-            yield return null;
-        }
-        mCanvasGroup.alpha = iValue;
-        if (iOnEndFade != null)
-            iOnEndFade();
     }
 }
