@@ -30,11 +30,11 @@ public class UINotifier : MonoBehaviour {
             mIsBusy = true;
             Text.text = iMessage;
             gameObject.SetActive(true);
-            StartCoroutine(NotifyImpl(iDuration));
+            StartCoroutine(NotifyImplAsync(iDuration));
         }
     }
 
-    private IEnumerator NotifyImpl(float iDuration)
+    private IEnumerator NotifyImplAsync(float iDuration)
     {
         if (mCanvasGroup == null)
             yield return null;
