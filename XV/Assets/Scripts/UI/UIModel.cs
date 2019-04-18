@@ -40,7 +40,7 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         if (mElementColor)
             mElementColor.color = Color.white;
         if (mElementText)
-            mElementText.color = Color.grey;
+            mElementText.color = Color.white;
     }
 
     // If a selectedElement exist, cast a ray from the camera to the mouse,

@@ -49,7 +49,7 @@ public sealed class ModelLoader
     {
         GameObject[] lModelFiles = null;
         // Load AssetBundle
-        if ((lModelFiles = Utils.LoadAllAssetBundle(Application.dataPath + "/Resources/SavedData/Models/")) == null)
+        if ((lModelFiles = Utils.LoadAllAssetBundle<GameObject>(Application.dataPath + "/Resources/SavedData/Models/")) == null)
             return;
 
         Sprite lImportModelSprite = Resources.Load<Sprite>("Sprites/UI/ModelsSprites/ImportModel");
@@ -82,8 +82,8 @@ public sealed class ModelLoader
         }
         
         foreach (GameObject iModelFile in lModelFiles) {
-            if ((lSprite = Resources.Load<Sprite>(GameManager.UIModelSpritePath + iModelFile.name)) == null) {
-                Debug.LogError("[MODEL_POOL] Error while loading sprite:" + GameManager.UIModelSpritePath+ iModelFile.name);
+            if ((lSprite = Resources.Load<Sprite>(GameManager.UI_MODEL_SPRITE_PATH + iModelFile.name)) == null) {
+                Debug.LogError("[MODEL_POOL] Error while loading sprite:" + GameManager.UI_MODEL_SPRITE_PATH+ iModelFile.name);
                 continue;
             }
             if (mModelPool.ContainsKey(iModelFile.name) == false) {

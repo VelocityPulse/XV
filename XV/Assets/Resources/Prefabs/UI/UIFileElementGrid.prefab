@@ -84,7 +84,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: f9890350da72c495fa4b42682221a6e9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c3164811f007e4f62ba1b64fdbddb682, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -163,8 +163,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8979b53f88d24568809e7657fbba10c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 114298568992611004}
-  Text: {fileID: 114935351549773104}
+  icon: {fileID: 114298568992611004}
+  text: {fileID: 114935351549773104}
 --- !u!114 &114935351549773104
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -177,7 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.25490198, g: 0.4117647, b: 1, a: 1}
+  m_Color: {r: 0.3137255, g: 0.3137255, b: 0.3137255, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -197,7 +197,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: src
+  m_Text: xv_3dmodels.meta
 --- !u!114 &114956704601938520
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -2,23 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
-
-// Finalize the OpenSelectedFile function - update pool, etc ...
-// Update BuildObject function with AssetBundle
 
 public sealed class FileBrowser : MonoBehaviour
 {
     private const string SELECTION_FIELD = "Please select a model file to open";
 
     private readonly string STARTING_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-    private readonly Color32 ROYAL_BLUE = new Color32(65, 105, 255, 255);
-
-    private readonly Color32 ROYAL_GREY = new Color32(80, 80, 80, 255);
 
 	private string mSavedDataPath;
 
@@ -85,16 +76,16 @@ public sealed class FileBrowser : MonoBehaviour
         mDisplayed = false;
         // Init selected file text
         SelectedFile.text = SELECTION_FIELD;
-        SelectedFile.color = ROYAL_GREY;
+        SelectedFile.color = Utils.ROYAL_GREY;
 
         // Load Prefab
-        mFileUITemplate = Resources.Load<GameObject>(GameManager.UITemplatePath + "UIFileElementGrid");
+        mFileUITemplate = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "UIFileElementGrid");
         // Get the Script that give acces to settings
         mFileUIParam = mFileUITemplate.GetComponent<UIElementGridParam>();
 
         // Load Assets
-        mSpriteFile = Resources.Load<Sprite>(GameManager.UIIconPath + "FileBrowser/File");
-        mSpriteFolder = Resources.Load<Sprite>(GameManager.UIIconPath + "FileBrowser/Folder");
+        mSpriteFile = Resources.Load<Sprite>(GameManager.UI_ICON_PATH + "FileBrowser/File");
+        mSpriteFolder = Resources.Load<Sprite>(GameManager.UI_ICON_PATH + "FileBrowser/Folder");
 
         // Button setting
         GoBack.onClick.AddListener(GoToParentDir);
@@ -103,9 +94,8 @@ public sealed class FileBrowser : MonoBehaviour
         Cancel.onClick.AddListener(HideBrowser);
     }
 
-    // Update the list of element, which are file in FILE mode or GameObject in ASSET_BUNDLE mode
-    // iImportGameObject : The list of GameObject precedently import from an AssetBundle
-    private void UpdateFiles(GameObject[] iImportGameObject = null)
+    // Update the list of element
+    private void UpdateFiles()
     {
         PWD.text = "Path:" + mPath.Replace(STARTING_PATH, "");
         List<string> lDirs = new List<string>(Directory.GetFileSystemEntries(mPath));
@@ -116,17 +106,17 @@ public sealed class FileBrowser : MonoBehaviour
                 continue;
             else if ((lAttr & FileAttributes.Directory) == FileAttributes.Directory) {
                 if (mFileUIParam != null) {
-                    mFileUIParam.GetText().color = ROYAL_BLUE;
-                    mFileUIParam.GetImage().sprite = mSpriteFolder;
+                    mFileUIParam.Text.color = Utils.ROYAL_BLUE;
+                    mFileUIParam.Icon.sprite = mSpriteFolder;
                 }
             } else {
                 if (mFileUIParam != null) {
-                    mFileUIParam.GetText().color = ROYAL_GREY;
-                    mFileUIParam.GetImage().sprite = mSpriteFile;
+                    mFileUIParam.Text.color = Utils.ROYAL_GREY;
+                    mFileUIParam.Icon.sprite = mSpriteFile;
                 }
             }
             if (mFileUIParam != null)
-                mFileUIParam.GetText().text = lFile.Replace(mPath + "/", "");
+                mFileUIParam.Text.text = lFile.Replace(mPath + "/", "");
             GameObject lElement = Instantiate(mFileUITemplate, UIGridElement.transform);
             lElement.GetComponent<Button>().onClick.AddListener(() => { ElementSelection(lElement); });
         }
@@ -141,7 +131,6 @@ public sealed class FileBrowser : MonoBehaviour
 
     public void ElementSelection(GameObject iButtonClicked = null)
     {
-
         if (iButtonClicked) {
             Text lButtonText = iButtonClicked.GetComponentInChildren<Text>();
             if (lButtonText != null) {
@@ -186,8 +175,8 @@ public sealed class FileBrowser : MonoBehaviour
             return ;
         }
 
-        // Load AssetBundle
-        if ((lAssets = Utils.LoadAssetBundle(lPathSrc)) == null)
+        // Load AssetBundle to test if the file is correct
+        if ((lAssets = Utils.LoadAssetBundle<GameObject>(lPathSrc)) == null)
             return;
 
         // AssetBundle loading success, and GameObject has been found
@@ -240,6 +229,7 @@ public sealed class FileBrowser : MonoBehaviour
             mCanvasGroup.alpha = newAlpha;
             yield return null;
         }
+        mCanvasGroup.alpha = iValue;
         if (iOnEndFade != null)
             iOnEndFade();
     }

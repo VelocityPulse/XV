@@ -1,12 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 public static class Utils {
-	
+
+    public static readonly Color32 ROYAL_BLUE = new Color32(65, 105, 255, 255);
+
+    public static readonly Color32 ROYAL_GREY = new Color32(80, 80, 80, 255);
+
 	public static bool CreateFolder(string iPath) {
 		if (string.IsNullOrEmpty(iPath))
 			return false;
@@ -63,12 +65,12 @@ public static class Utils {
     // Try to load all AssetBundle present in iPath
     // If iPath is not a directory, the iPath is used as an AssetBundle path
     // This function will warn the user using the Notifier when available
-    public static GameObject[] LoadAllAssetBundle(string iPath)
+    public static T[] LoadAllAssetBundle<T>(string iPath) where T : UnityEngine.Object
     {
-        List<GameObject> oAssets;
-        GameObject[] lAssetBundleContent;
+        List<T> oAssets;
+        T[] lAssetBundleContent;
 
-        if ((oAssets = new List<GameObject>()) == null) {
+        if ((oAssets = new List<T>()) == null) {
             UnityEngine.Debug.LogError("[ASSET BUNDLE LOADER] Error during allocation.");
             return null;
         }
@@ -79,7 +81,7 @@ public static class Utils {
             return null;
         }
         else if ((lAttr & FileAttributes.Directory) != FileAttributes.Directory)
-            return LoadAllAssetBundle(iPath);
+            return LoadAllAssetBundle<T>(iPath);
 
         // List all file in iPath
         List<string> lDirs = new List<string>(Directory.GetFileSystemEntries(iPath));
@@ -92,10 +94,10 @@ public static class Utils {
                 continue;
             else if ((lAttr & FileAttributes.Directory) != FileAttributes.Directory) {
 
-                if ((lAssetBundleContent = LoadAssetBundle(lFile)) == null)
+                if ((lAssetBundleContent = LoadAssetBundle<T>(lFile)) == null)
                     continue;
                 else {
-                    foreach (GameObject lAsset in lAssetBundleContent)
+                    foreach (T lAsset in lAssetBundleContent)
                         oAssets.Add(lAsset);
                 }
             }
@@ -105,10 +107,10 @@ public static class Utils {
 
     // Try to load an AssetBundle file from iPath
     // This function will warn the user using the Notifier when available
-    public static GameObject[] LoadAssetBundle(string iPath)
+    public static T[] LoadAssetBundle<T>(string iPath) where T : UnityEngine.Object
     {
         AssetBundle lAssetBundles = null;
-        GameObject[] oAssets = null;
+        T[] oAssets = null;
         FileInfo lFileInfo = null;
 
         if ((lFileInfo = new FileInfo(iPath)) != null) {
@@ -129,8 +131,8 @@ public static class Utils {
         }
 
         // Load all GameObject present in the AssetBundle
-        if ((oAssets = lAssetBundles.LoadAllAssets<GameObject>()) == null) {
-            UnityEngine.Debug.Log("[ASSET BUNDLE LOADER] Error while loading GameObject in bundle:" + iPath);
+        if ((oAssets = lAssetBundles.LoadAllAssets<T>()) == null) {
+            UnityEngine.Debug.Log("[ASSET BUNDLE LOADER] Error while loading " + typeof(T) + " in bundle:" + iPath);
             AssetBundle.UnloadAllAssetBundles(true);
             // Warn user with notifier (TODO)
             return null;

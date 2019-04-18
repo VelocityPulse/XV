@@ -6,18 +6,12 @@ using UnityEngine.UI;
 public class UIElementGridParam : MonoBehaviour {
 
     [SerializeField]
-    private Image Icon;
+    private Image icon;
 
     [SerializeField]
-    private Text Text;
+    private Text text;
 
-    public Image GetImage()
-    {
-        return Icon;
-    }
+    public Image Icon { get { return icon; } }
 
-    public Text GetText()
-    {
-        return Text;
-    }
+    public Text Text { get { return text; } }
 }
