@@ -53,6 +53,8 @@ public class GameManager : MonoBehaviour
 
 	public Texture2D RotationTexturCursor { get; private set; }
 
+    public bool KeyboardDeplacementActive { get; set; }
+
 	static public GameManager Instance
 	{
 		get
@@ -92,17 +94,14 @@ public class GameManager : MonoBehaviour
 				Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 				if (Physics.Raycast(lRay, out lHit)) {
-					if (lHit.transform == null) {
-						Debug.Log("Collider hit is null");
+					if (lHit.transform == null)
 						SelectedEntity = null;
-					} else if (lHit.transform.tag != ObjectEntity.TAG && lHit.transform.tag != UIBubbleInfo.TAG) {
+					else if (lHit.transform.tag != ObjectEntity.TAG && lHit.transform.tag != UIBubbleInfo.TAG) {
 						Debug.Log(lHit.transform.tag);
 						SelectedEntity = null;
 					}
-				} else {
-					Debug.Log("Raycast hasnt hit nothing");
+				} else
 					SelectedEntity = null;
-				}
 			}
 		}
 	}
@@ -150,7 +149,7 @@ public class GameManager : MonoBehaviour
 		GameObject lUIBubbleInfo;
 		if ((lUIBubbleInfo = Resources.Load<GameObject>("Prefabs/UI/UIBubbleInfo")) != null) {
 			lUIBubbleInfo = Instantiate(lUIBubbleInfo, oGameObject.transform);
-			lUIBubbleInfo.GetComponent<RectTransform>().position = new Vector3(lBounds.center.x, lBounds.size.y + 1, lBounds.center.z);
+            // The set position is make in ObjectEntity after the hierachy rework Start();
 		}
 
 		// Setting positions

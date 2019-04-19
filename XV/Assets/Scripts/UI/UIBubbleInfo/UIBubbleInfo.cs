@@ -11,24 +11,26 @@ public class UIBubbleInfo : MonoBehaviour
 	private CanvasGroup mCanvasGroup;
 
 	private List<Button> mButtons;
-	private InputField mModelName;
+	
 
 	[SerializeField]
-	public GameObject GridContainer;
+	private GameObject GridContainer;
 
 	[SerializeField]
-	public GameObject SampleButton;
+	private GameObject SampleButton;
 
-	public ObjectEntity Parent { get; set; }
+    [SerializeField]
+    private InputField ModelName;
 
-	// Use this for initialization
-	private void Start()
-	{
-		mButtons = new List<Button>();
-		mModelName = GetComponentInChildren<InputField>();
-		mCanvasGroup = GetComponent<CanvasGroup>();
-		mCanvasGroup.alpha = 0F;
-	}
+    public ObjectEntity Parent { get; set; }
+
+    // Use this for initialization
+    private void Start()
+    {
+        mButtons = new List<Button>();
+        mCanvasGroup = GetComponent<CanvasGroup>();
+        mCanvasGroup.alpha = 0F;
+    }
 
 	// Update is called once per frame
 	private void Update()
@@ -39,6 +41,11 @@ public class UIBubbleInfo : MonoBehaviour
 
 			transform.rotation = Quaternion.Slerp(
 				transform.rotation, lLookAt, Time.deltaTime * 2);
+
+            if (ModelName.isFocused)
+                GameManager.Instance.KeyboardDeplacementActive = false;
+            else
+                GameManager.Instance.KeyboardDeplacementActive = true;
 		}
 	}
 
@@ -66,7 +73,7 @@ public class UIBubbleInfo : MonoBehaviour
 		foreach (Button lButton in mButtons) {
 			lButton.interactable = iInteractable;
 		}
-		mModelName.interactable = iInteractable;
+		ModelName.interactable = iInteractable;
 	}
 
 	public void Display()

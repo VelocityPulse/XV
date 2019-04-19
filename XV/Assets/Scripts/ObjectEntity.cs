@@ -38,7 +38,7 @@ public class ObjectEntity : MonoBehaviour
 	private UIBubbleInfo mUIBubbleInfo;
 	private Vector3 mCenter;
 	private Vector3 mSize;
-	private GameObject mCenteredObject;
+	private GameObject mCenteredParent;
 
 	public bool Selected
 	{
@@ -56,24 +56,36 @@ public class ObjectEntity : MonoBehaviour
 
 	void Start()
 	{
+        // Adding this to all ObjectEntities
 		if (sAllEntites == null)
 			sAllEntites = new List<ObjectEntity>();
 		sAllEntites.Add(this);
 
+        // Set tag
 		gameObject.tag = TAG;
 
-		Debug.Log(mCenter);
-		mCenteredObject = new GameObject();
+        // --------------------- CENTERING OBJECT ENTITY
+        // Creating a new empty GameObject
+        mCenteredParent = new GameObject();
 
-		mCenteredObject.transform.position = transform.position + mCenter;
-		transform.parent = mCenteredObject.transform;
+        // Setting the future parent position to the center bound of the ObjectEntity
+        mCenteredParent.transform.position = transform.position + mCenter;
+        // Put the ObjectEntity as a child of the new parent GameObject
+		transform.parent = mCenteredParent.transform;
 
-		transform.position = Vector3.zero;
-		transform.localPosition = -mCenter;
+        // Setting the offset placement of the ObjectEntity regarding the new parent.
+        transform.position = Vector3.zero;
+        transform.localPosition = -mCenter;
+
+        // Setting new names
+        mCenteredParent.name = name;
+        name = name + "_mesh";
+        // ---------------------- CENTERING OBJECT ENTITY
 
 
+        mUIBubbleInfo.GetComponent<RectTransform>().localPosition = new Vector3(mCenter.x, mSize.y + 1, mCenter.z);
 
-		StartCoroutine(PostPoppingAsync());
+        StartCoroutine(PostPoppingAsync());
 	}
 
 	void Update()
@@ -101,24 +113,17 @@ public class ObjectEntity : MonoBehaviour
 
 		}
 
+        // Rotation section
 		if (mControlPushed && mMouseDown) {
-
-
-			//var NewPos = .localEulerAngles;
-			//theChild.localEulerAngles = new Vector3(0, 0, 0);
-			//theParent.localEulerAngles = NewPos;
-
-			mCenteredObject.transform.rotation = Quaternion.Euler(
-				mCenteredObject.transform.rotation.eulerAngles.x,
-				mCenteredObject.transform.rotation.eulerAngles.y + (Input.mousePosition.x - mMouseOriginClick.x),
-				mCenteredObject.transform.rotation.eulerAngles.z);
+			mCenteredParent.transform.rotation = Quaternion.Euler(
+				mCenteredParent.transform.rotation.eulerAngles.x,
+				mCenteredParent.transform.rotation.eulerAngles.y + (Input.mousePosition.x - mMouseOriginClick.x),
+				mCenteredParent.transform.rotation.eulerAngles.z);
 
 			mMouseOriginClick = Input.mousePosition;
-
-
-
 		}
 
+        // Moving section
 		if (mMouseDragObjectEntity && Input.mousePosition != mMouseOriginClick) {
 			mMouseOriginClick = Input.mousePosition;
 
@@ -128,13 +133,13 @@ public class ObjectEntity : MonoBehaviour
 			if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
 				Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
 
-				transform.position = lHit.point;
-				transform.position += (transform.position - transform.TransformPoint(mCenter));
-				transform.position = new Vector3(transform.position.x, lHit.point.y, transform.position.z);
+                lHit.point = new Vector3(lHit.point.x, mCenter.y, lHit.point.z);
+				mCenteredParent.transform.position = lHit.point;
 			}
 		}
 	}
 
+    // Place all the code you want to execute only after all the mesh enable animations
 	private IEnumerator PostPoppingAsync()
 	{
 		// Waiting the end of the GameManager initialization of this class
@@ -149,7 +154,7 @@ public class ObjectEntity : MonoBehaviour
 			MeshFilter meshFilter = childObject.gameObject.GetComponent<MeshFilter>();
 
 			if (meshFilter != null) {
-				ColliderMouseHandler lCMH = childObject.gameObject.AddComponent<ColliderMouseHandler>();
+				MouseHandler lCMH = childObject.gameObject.AddComponent<MouseHandler>();
 				lCMH.OnMouseDownAction = OnMouseDown;
 				lCMH.OnMouseOverAction = OnMouseOver;
 				lCMH.OnMouseExitAction = OnMouseExit;
@@ -180,10 +185,6 @@ public class ObjectEntity : MonoBehaviour
 			}
 		});
 	}
-
-	// todo clem : 
-
-	// binder le champ de text de la GUI
 
 	// Called by unity only !
 	public void OnDestroy()

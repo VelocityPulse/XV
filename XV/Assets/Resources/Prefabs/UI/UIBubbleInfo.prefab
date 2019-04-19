@@ -227,6 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GridContainer: {fileID: 1183874885374204}
   SampleButton: {fileID: 1765996410990822}
+  ModelName: {fileID: 114450347458116688}
 --- !u!114 &114322193767947766
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -359,7 +360,7 @@ MonoBehaviour:
   m_LineType: 0
   m_HideMobileInput: 0
   m_CharacterValidation: 0
-  m_CharacterLimit: 0
+  m_CharacterLimit: 11
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []

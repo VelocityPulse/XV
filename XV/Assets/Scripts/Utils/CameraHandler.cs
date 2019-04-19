@@ -89,7 +89,10 @@ public sealed class CameraHandler : MonoBehaviour {
 			ViewMode = (ViewMode == Mode.FREE) ? Mode.SUBJECTIVE : Mode.FREE;
 		}
 
-		if (!mIsRepositioning) {
+        if (!GameManager.Instance.KeyboardDeplacementActive)
+            return;
+
+        if (!mIsRepositioning) {
 			ApplyMovement();
 		}
 		if (CurrentMode != Mode.LOCKED) {
