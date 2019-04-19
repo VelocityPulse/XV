@@ -186,19 +186,19 @@ public class ObjectEntity : MonoBehaviour
 			}
 		});
 
-		mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
-			Text = "bubble test",
-			ClickAction = (iObjectEntity) => {
-				Debug.LogWarning("Test button of " + iObjectEntity.name + " has been clicked");
-			}
-		});
+		//mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
+		//	Text = "bubble test",
+		//	ClickAction = (iObjectEntity) => {
+		//		Debug.LogWarning("Test button of " + iObjectEntity.name + " has been clicked");
+		//	}
+		//});
 
-		mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
-			Text = "bubble test",
-			ClickAction = (iObjectEntity) => {
-				Debug.LogWarning("Test button of " + iObjectEntity.name + " has been clicked");
-			}
-		});
+		//mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
+		//	Text = "bubble test",
+		//	ClickAction = (iObjectEntity) => {
+		//		Debug.LogWarning("Test button of " + iObjectEntity.name + " has been clicked");
+		//	}
+		//});
 	}
 
 	// Called by unity only !

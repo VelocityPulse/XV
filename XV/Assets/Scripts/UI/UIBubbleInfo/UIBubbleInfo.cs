@@ -49,10 +49,10 @@ public class UIBubbleInfo : MonoBehaviour
 		}
 	}
 
-	public void CreateButton(UIBubbleInfoButton iInfoButton)
+    public Button CreateButton(UIBubbleInfoButton iInfoButton)
 	{
 		if (iInfoButton == null)
-			return;
+			return null;
 		
 		GameObject lNewButton = Instantiate(SampleButton, GridContainer.transform);
 
@@ -61,12 +61,13 @@ public class UIBubbleInfo : MonoBehaviour
 			if (iInfoButton.ClickAction != null)
 				iInfoButton.ClickAction(Parent);
 		});
-		mButtons.Add(lButtonComponant);
+        mButtons.Add(lButtonComponant);
 
 		lNewButton.GetComponentInChildren<Text>().text = iInfoButton.Text;
 		lNewButton.name = iInfoButton.Text;
 		lNewButton.SetActive(true);
 		Canvas.ForceUpdateCanvases();
+        return lButtonComponant;
 	}
 
 	public void SetInteractable(bool iInteractable) {

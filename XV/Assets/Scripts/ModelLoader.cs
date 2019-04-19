@@ -63,7 +63,6 @@ public sealed class ModelLoader
             if (mModelPool.ContainsKey(lImportName) == false) {
                 iModelFile.name = lImportName;
                 mModelPool.Add(lImportName, new Model { Type = ObjectDataSceneType.EXTERN, GameObject = iModelFile, Sprite = lImportModelSprite, });
-                Debug.Log("---- " + iModelFile.name + " loaded ----");
             }
             else 
                 Debug.LogError("[MODEL_POOL] Error, a model with the same name already exist.");
@@ -88,7 +87,6 @@ public sealed class ModelLoader
             }
             if (mModelPool.ContainsKey(iModelFile.name) == false) {
                 mModelPool.Add(iModelFile.name, new Model { Type = ObjectDataSceneType.BUILT_IN, GameObject = iModelFile, Sprite = lSprite, });
-                Debug.Log("---- " + iModelFile.name + " loaded ----");
             } 
             else
                 Debug.LogError("[MODEL_POOL] Error, model name already exist.");
