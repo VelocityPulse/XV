@@ -52,7 +52,22 @@ public class ObjectEntity : MonoBehaviour
 			}
 			mSelected = value;
 		}
-	}
+	} 
+
+    public string Name {
+        get { return mCenteredParent.name; }
+
+        set
+        {
+            if (string.IsNullOrEmpty(value))
+                return;
+
+            mCenteredParent.name = value;
+            name = value + "_mesh";
+            mODS.Name = value;
+            SaveEntity();
+        }
+    }
 
 	void Start()
 	{

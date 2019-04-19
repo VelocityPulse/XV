@@ -76,19 +76,27 @@ public class UIBubbleInfo : MonoBehaviour
 		ModelName.interactable = iInteractable;
 	}
 
+    public void OnEndEdit()
+    {
+        if (string.IsNullOrEmpty(ModelName.text))
+            ModelName.text = Parent.Name;
+        else
+            Parent.Name = ModelName.text;
+    }
+
 	public void Display()
 	{
 		mDisplayed = true;
-		StartCoroutine(FadeTo(1F, 0.4F));
+		StartCoroutine(FadeToAsync(1F, 0.4F));
 	}
 
 	public void Hide()
 	{
 		mDisplayed = false;
-		StartCoroutine(FadeTo(0F, 0.4F));
+		StartCoroutine(FadeToAsync(0F, 0.4F));
 	}
 
-	IEnumerator FadeTo(float iValue, float iTime)
+	IEnumerator FadeToAsync(float iValue, float iTime)
 	{
 		float lAlpha = mCanvasGroup.alpha;
 
