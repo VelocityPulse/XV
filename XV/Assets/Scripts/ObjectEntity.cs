@@ -53,55 +53,56 @@ public class ObjectEntity : MonoBehaviour
 			}
 			mSelected = value;
 		}
-	} 
+	}
 
-    public string Name {
-        get { return mCenteredParent.name; }
+	public string Name
+	{
+		get { return mCenteredParent.name; }
 
-        set
-        {
-            if (string.IsNullOrEmpty(value))
-                return;
+		set
+		{
+			if (string.IsNullOrEmpty(value))
+				return;
 
-            mCenteredParent.name = value;
-            name = value + "_mesh";
-            mODS.Name = value;
-            SaveEntity();
-        }
-    }
+			mCenteredParent.name = value;
+			name = value + "_mesh";
+			mODS.Name = value;
+			SaveEntity();
+		}
+	}
 
 	void Start()
 	{
-        // Adding this to all ObjectEntities
+		// Adding this to all ObjectEntities
 		if (sAllEntites == null)
 			sAllEntites = new List<ObjectEntity>();
 		sAllEntites.Add(this);
 
-        // Set tag
+		// Set tag
 		gameObject.tag = TAG;
 
-        // --------------------- CENTERING OBJECT ENTITY
-        // Creating a new empty GameObject
-        mCenteredParent = new GameObject();
+		// --------------------- CENTERING OBJECT ENTITY
+		// Creating a new empty GameObject
+		mCenteredParent = new GameObject();
 
-        // Setting the future parent position to the center bound of the ObjectEntity
-        mCenteredParent.transform.position = transform.position + mCenter;
-        // Put the ObjectEntity as a child of the new parent GameObject
+		// Setting the future parent position to the center bound of the ObjectEntity
+		mCenteredParent.transform.position = transform.position + mCenter;
+		// Put the ObjectEntity as a child of the new parent GameObject
 		transform.parent = mCenteredParent.transform;
 
-        // Setting the offset placement of the ObjectEntity regarding the new parent.
-        transform.position = Vector3.zero;
-        transform.localPosition = -mCenter;
+		// Setting the offset placement of the ObjectEntity regarding the new parent.
+		transform.position = Vector3.zero;
+		transform.localPosition = -mCenter;
 
-        // Setting new names
-        mCenteredParent.name = name;
-        name = name + "_mesh";
-        // ---------------------- CENTERING OBJECT ENTITY
+		// Setting new names
+		mCenteredParent.name = name;
+		name = name + "_mesh";
+		// ---------------------- CENTERING OBJECT ENTITY
 
 
-        mUIBubbleInfo.GetComponent<RectTransform>().localPosition = new Vector3(mCenter.x, mSize.y + 1, mCenter.z);
+		mUIBubbleInfo.GetComponent<RectTransform>().localPosition = new Vector3(mCenter.x, mSize.y + 1, mCenter.z);
 
-        StartCoroutine(PostPoppingAsync());
+		StartCoroutine(PostPoppingAsync());
 	}
 
 	void Update()
@@ -129,7 +130,7 @@ public class ObjectEntity : MonoBehaviour
 
 		}
 
-        // Rotation section
+		// Rotation section
 		if (mControlPushed && mMouseDown) {
 			mCenteredParent.transform.rotation = Quaternion.Euler(
 				mCenteredParent.transform.rotation.eulerAngles.x,
@@ -139,7 +140,7 @@ public class ObjectEntity : MonoBehaviour
 			mMouseOriginClick = Input.mousePosition;
 		}
 
-        // Moving section
+		// Moving section
 		if (mMouseDragObjectEntity && Input.mousePosition != mMouseOriginClick) {
 			mMouseOriginClick = Input.mousePosition;
 
@@ -149,13 +150,13 @@ public class ObjectEntity : MonoBehaviour
 			if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
 				Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
 
-                lHit.point = new Vector3(lHit.point.x, mCenter.y, lHit.point.z);
+				lHit.point = new Vector3(lHit.point.x, mCenter.y, lHit.point.z);
 				mCenteredParent.transform.position = lHit.point;
 			}
 		}
 	}
 
-    // Place all the code you want to execute only after all the mesh enable animations
+	// Place all the code you want to execute only after all the mesh enable animations
 	private IEnumerator PostPoppingAsync()
 	{
 		// Waiting the end of the GameManager initialization of this class

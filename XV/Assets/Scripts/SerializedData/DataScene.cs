@@ -39,9 +39,10 @@ public sealed class DataScene
 		return false;
 	}
 
-	public void AddODS(ObjectDataScene iODS) {
+	public void AddODS(ObjectDataScene iODS)
+	{
 		foreach (ObjectDataScene lItem in DataObjects) {
-			
+
 			if (lItem.GUID == iODS.GUID) {
 				lItem.Name = iODS.Name;
 				lItem.Position = iODS.Position;
