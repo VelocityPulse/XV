@@ -4,14 +4,24 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
-public class UIClip : MonoBehaviour, IPointerDownHandler, IDragHandler {
+public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IDragHandler {
 
     private RectTransform mTrackRectTransform;
 	private RectTransform mRectTransform;
+	private UITrack mTrack;
+
+	public float Size
+	{
+		get
+		{
+			return mRectTransform.sizeDelta.x;
+		}
+	}
 
     private void Start() {
         mTrackRectTransform = transform.parent as RectTransform;
 		mRectTransform = transform as RectTransform;
+		mTrack = transform.parent.GetComponent<UITrack>();
     }
 
     public void OnPointerDown(PointerEventData iData) {
@@ -41,4 +51,45 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IDragHandler {
 
         return new Vector2(lClampedX, mTrackRectTransform.position.y);
     }
+
+	public void OnPointerClick(PointerEventData iData)
+	{
+		if (iData.button == PointerEventData.InputButton.Middle) {
+			if (mTrack != null) {
+				mTrack.DeleteClip(this);
+			}
+		}
+	}
+
+	public float GetLeftLimit()
+	{
+		float lLeftLimit = 0F;
+		if (mTrack != null) {
+			int lClipIndex = mTrack.GetPreviousAtPosition(transform.localPosition.x);
+			UIClip lPreviousClip = mTrack.GetClip(lClipIndex);
+			if (lPreviousClip != null) {
+				lLeftLimit = lPreviousClip.transform.localPosition.x + lPreviousClip.Size / 2.0F;
+			}
+			else {
+				// Clamp to track limits ?
+			}
+		}
+		return lLeftLimit;
+	}
+
+	public float GetRightLimit()
+	{
+		float lRightLimit = 0F;
+		if (mTrack != null) {
+			int lClipIndex = mTrack.GetNextAtPosition(transform.localPosition.x);
+			UIClip lNextClip = mTrack.GetClip(lClipIndex);
+			if (lNextClip != null) {
+				lRightLimit = lNextClip.transform.localPosition.x - lNextClip.Size / 2.0F;
+			}
+			else {
+				// Clamp to track limits ?
+			}
+		}
+		return lRightLimit;
+	}
 }
