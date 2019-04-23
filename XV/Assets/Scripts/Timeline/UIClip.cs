@@ -29,27 +29,18 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
     }
 
     public void OnDrag(PointerEventData iData) {
-        Vector2 lPointerPostion = ClampToTrack(iData);
+        Vector2 lPointerPostion = iData.position;
         Vector2 lLocalPointerPosition;
 
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle (
             mTrackRectTransform, lPointerPostion, iData.pressEventCamera, out lLocalPointerPosition
         )) {
+			float lXMin = GetLeftLimit() + Size / 2F;
+			float lXMax = GetRightLimit() - Size / 2F;
+			lLocalPointerPosition.x = Mathf.Clamp(lLocalPointerPosition.x, lXMin, lXMax);
+			lLocalPointerPosition.y = 0F;
             mRectTransform.localPosition = lLocalPointerPosition;
         }
-    }
-
-    Vector2 ClampToTrack(PointerEventData iData) {
-        float lRawPointerPosition = iData.position.x;
-        Vector3[] lTrackCorners = new Vector3[4];
-
-        mTrackRectTransform.GetWorldCorners(lTrackCorners);
-
-		float lMinX = lTrackCorners[0].x + mRectTransform.sizeDelta.x / 2.0F;
-		float lMaxX = lTrackCorners[2].x - mRectTransform.sizeDelta.x / 2.0F;
-        float lClampedX = Mathf.Clamp(lRawPointerPosition, lMinX, lMaxX);
-
-        return new Vector2(lClampedX, mTrackRectTransform.position.y);
     }
 
 	public void OnPointerClick(PointerEventData iData)
@@ -71,7 +62,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 				lLeftLimit = lPreviousClip.transform.localPosition.x + lPreviousClip.Size / 2.0F;
 			}
 			else {
-				// Clamp to track limits ?
+				lLeftLimit = mTrack.GetLimits().x;
 			}
 		}
 		return lLeftLimit;
@@ -87,7 +78,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 				lRightLimit = lNextClip.transform.localPosition.x - lNextClip.Size / 2.0F;
 			}
 			else {
-				// Clamp to track limits ?
+				lRightLimit = mTrack.GetLimits().y;
 			}
 		}
 		return lRightLimit;

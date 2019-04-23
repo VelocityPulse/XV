@@ -93,6 +93,14 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		return null;
 	}
 
+	public Vector2 GetLimits()
+	{
+        Vector3[] lTrackCorners = new Vector3[4];
+
+		mRectTransform.GetLocalCorners(lTrackCorners);
+		return new Vector2(lTrackCorners[0].x, lTrackCorners[2].x);
+	}
+
 	public void OnPointerClick(PointerEventData iData)
 	{
 		Vector2 lLocalPointerPosition;
