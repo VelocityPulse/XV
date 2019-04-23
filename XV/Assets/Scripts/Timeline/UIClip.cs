@@ -9,13 +9,11 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
     private RectTransform mTrackRectTransform;
 	private RectTransform mRectTransform;
 	private UITrack mTrack;
+	private float mOffset;
 
 	public float Size
 	{
-		get
-		{
-			return mRectTransform.sizeDelta.x;
-		}
+		get { return mRectTransform.sizeDelta.x; }
 	}
 
     private void Start() {
@@ -25,21 +23,24 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
     }
 
     public void OnPointerDown(PointerEventData iData) {
+		Vector2 lLocalPointerPosition;
         mRectTransform.SetAsLastSibling ();
+		RectTransformUtility.ScreenPointToLocalPointInRectangle(mTrackRectTransform, iData.position, iData.pressEventCamera, out lLocalPointerPosition);
+		mOffset = mRectTransform.localPosition.x - lLocalPointerPosition.x;
     }
 
     public void OnDrag(PointerEventData iData) {
         Vector2 lPointerPostion = iData.position;
         Vector2 lLocalPointerPosition;
 
-        if (RectTransformUtility.ScreenPointToLocalPointInRectangle (
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
             mTrackRectTransform, lPointerPostion, iData.pressEventCamera, out lLocalPointerPosition
         )) {
-			float lXMin = GetLeftLimit() + Size / 2F;
-			float lXMax = GetRightLimit() - Size / 2F;
+			float lXMin = GetLeftLimit() + Size / 2F - mOffset;
+			float lXMax = GetRightLimit() - Size / 2F - mOffset;
 			lLocalPointerPosition.x = Mathf.Clamp(lLocalPointerPosition.x, lXMin, lXMax);
 			lLocalPointerPosition.y = 0F;
-            mRectTransform.localPosition = lLocalPointerPosition;
+            mRectTransform.localPosition = lLocalPointerPosition + new Vector2(mOffset, 0F);
         }
     }
 

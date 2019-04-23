@@ -17,7 +17,7 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 	{
 		mRectTransform = transform as RectTransform;
 		mClips = new List<UIClip>();
-		UIClipPrefab = Resources.Load<UIClip>(GameManager.UITemplatePath + "UIClip");
+		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "UIClip");
 	}
 
 	public void AddClip(float iClipX)

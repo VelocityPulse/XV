@@ -13,7 +13,7 @@ public class UITimeline : MonoBehaviour {
 
 	private void Start()
 	{
-		mUITrackPrefab = Resources.Load<UITrack>(GameManager.UITemplatePath + "UITrack");
+		mUITrackPrefab = Resources.Load<UITrack>(GameManager.UI_TEMPLATE_PATH + "UITrack");
 		mTracks = new Stack<UITrack>();
 	}
 
