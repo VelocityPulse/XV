@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ObjectEntity : MonoBehaviour
 {
@@ -185,21 +186,14 @@ public class ObjectEntity : MonoBehaviour
 				RemoveEntity();
 			}
 		});
-
-		//mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
-		//	Text = "bubble test",
-		//	ClickAction = (iObjectEntity) => {
-		//		Debug.LogWarning("Test button of " + iObjectEntity.name + " has been clicked");
-		//	}
-		//});
-
-		//mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
-		//	Text = "bubble test",
-		//	ClickAction = (iObjectEntity) => {
-		//		Debug.LogWarning("Test button of " + iObjectEntity.name + " has been clicked");
-		//	}
-		//});
 	}
+
+    public Button CreateBubleInfoButton(UIBubbleInfoButton iButtonInfo) 
+    {
+        if (iButtonInfo == null)
+            return null;
+        return mUIBubbleInfo.CreateButton(iButtonInfo);
+    }
 
 	// Called by unity only !
 	public void OnDestroy()

@@ -14,7 +14,11 @@ public sealed class MovableEntity : AInteraction
         ROTATE,
     }
 
-    private UIBubbleInfo mUIBuble;
+    private const float SPEED = 1.5F;
+
+    private const float LIMIT = 0.2F;
+
+    private ObjectEntity mEntity;
 
     private Image mMoveButtonColor;
 
@@ -25,7 +29,7 @@ public sealed class MovableEntity : AInteraction
     private void Start()
 	{
         mEditionMode = EditionMode.NONE;
-        mUIBuble = null;
+        mEntity = null;
         mMoveButtonColor = null;
         mRotateButtonColor = null;
         StartCoroutine(PostPoppingAsync());
@@ -36,12 +40,12 @@ public sealed class MovableEntity : AInteraction
         // Waiting the end of the GameManager initialization of this class
         yield return new WaitForEndOfFrame();
 
-        if ((mUIBuble = GetComponentInChildren<UIBubbleInfo>()) == null)
+        if ((mEntity = GetComponentInChildren<ObjectEntity>()) == null)
             yield break;
 
         // bouton deplacer
         Button lButton;
-        lButton = mUIBuble.CreateButton(new UIBubbleInfoButton {
+        lButton = mEntity.CreateBubleInfoButton(new UIBubbleInfoButton {
             Text = "Move",
             ClickAction = (iObjectEntity) => {
                 Debug.LogWarning("Deplacer: " + iObjectEntity.name + " has been clicked");
@@ -52,7 +56,7 @@ public sealed class MovableEntity : AInteraction
         mMoveButtonColor = lButton.GetComponent<Image>();
 
         // bouton orienter vers
-        lButton = mUIBuble.CreateButton(new UIBubbleInfoButton {
+        lButton = mEntity.CreateBubleInfoButton(new UIBubbleInfoButton {
             Text = "Rotate",
             ClickAction = (iObjectEntity) => {
                 Debug.LogWarning("Orienter: " + iObjectEntity.name + " has been clicked");
@@ -62,12 +66,10 @@ public sealed class MovableEntity : AInteraction
         // Keep track of the button image to edit color
         mRotateButtonColor = lButton.GetComponent<Image>();
 
-
-
         // TMP
-        // bouton debug qui execute les actions de la timeline tempporaire
+        // bouton debug qui execute les actions de la timeline temporaire
         // Wait for TimelineManager
-        mUIBuble.CreateButton(new UIBubbleInfoButton {
+        mEntity.CreateBubleInfoButton(new UIBubbleInfoButton {
             Text = "Play",
             ClickAction = (iObjectEntity) => {
                 if (!TimeLineIsBusy) {
@@ -89,12 +91,22 @@ public sealed class MovableEntity : AInteraction
                 mEditionMode = EditionMode.NONE;
                 // reset cursors
 
+                Vector3 lHitPoint = Vector3.zero;
                 float lDuration = 0F;
                 // Check the hit.point clicked is the ground
-                // Calcul the distance between position & destination
-                // Calcul the Duration of the movement
-                // Add the code that do the animation in the Action
-                AddToTimeline(() => { Debug.LogWarning("-- MOVE ANIM --"); }, lDuration);
+                if ((GetMouseClic(ref lHitPoint))) {
+                    // Calcul the distance between position & destination
+                    float lDist = Vector3.Distance(transform.position, lHitPoint);
+                    // Calcul the Duration of the movement
+                    // Add the code that do the animation in the Action
+                    AddToTimeline((iBool) => 
+                    {
+                        if (Vector3.Distance(transform.position, lHitPoint) < LIMIT)
+                            return true;
+                        transform.position = Vector3.Lerp(transform.position, lHitPoint, SPEED * Time.deltaTime);
+                        return false;
+                    }, lDuration);
+                }
             }
         }
         else if (mEditionMode == EditionMode.ROTATE) {
@@ -108,10 +120,22 @@ public sealed class MovableEntity : AInteraction
                 // Calcul the distance between position & destination
                 // Calcul the Duration of the movement
                 // Add the code that do the animation in the following Action
-                AddToTimeline(() => { Debug.LogWarning("-- ROTATE ANIM --");}, lDuration);
+                AddToTimeline((iBool) => { Debug.LogWarning("-- ROTATE ANIM --"); return true; }, lDuration);
             }
         }
 	}
+
+    private bool GetMouseClic(ref Vector3 iHitPoint)
+    {
+        RaycastHit lHit;
+        Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
+            Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
+            iHitPoint = lHit.point;
+            return true;
+        }
+        return false;
+    }
 
 	//  Deplacement animation for all VEHICLE
 	//  UIBubleInfo `Move` bind with this func.
@@ -137,32 +161,3 @@ public sealed class MovableEntity : AInteraction
         return true;
     }
 }
-
-/* Code temporaire de CreateButton de UIBubleInfo, a remplacer par une func, dans ObjectEntity => GetComponent<ObjectEntity>().CreateBubbleButton(UIBubbleInfo Button iInfoButton)
-    public void CreateButton(UIBubbleInfoButton iInfoButton)
-    {
-        if (iInfoButton == null)
-            return;
-        
-        GameObject lNewButton = Instantiate(SampleButton, GridContainer.transform);
-
-        Button lButtonComponant = lNewButton.GetComponent<Button>();
-        lButtonComponant.onClick.AddListener(() => {
-            if (iInfoButton.ClickAction != null)
-                iInfoButton.ClickAction(Parent);
-        });
-        mButtons.Add(lButtonComponant);
-
-        lNewButton.GetComponentInChildren<Text>().text = iInfoButton.Text;
-        lNewButton.name = iInfoButton.Text;
-        lNewButton.SetActive(true);
-        Canvas.ForceUpdateCanvases();
-    }
-
-    public void SetInteractable(bool iInteractable) {
-        foreach (Button lButton in mButtons) {
-            lButton.interactable = iInteractable;
-        }
-        ModelName.interactable = iInteractable;
-    }
-*/

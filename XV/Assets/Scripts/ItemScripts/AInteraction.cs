@@ -79,7 +79,7 @@ using UnityEngine;
 public abstract class AInteraction : MonoBehaviour
 {
     // Wait for TimelineManager
-    List<Action> mTimeline = new List<Action>();
+    List<Predicate<bool>> mTimeline = new List<Predicate<bool>>();
 
     private bool mIsBusy;
 
@@ -90,7 +90,7 @@ public abstract class AInteraction : MonoBehaviour
         mIsBusy = false;
 	}
 
-	protected void AddToTimeline(Action iAction, float iDuration)
+    protected void AddToTimeline(Predicate<bool> iAction, float iDuration)
     {
         if (mTimeline != null)
             mTimeline.Add(iAction);
@@ -104,8 +104,18 @@ public abstract class AInteraction : MonoBehaviour
         if (mTimeline == null)
             return;
         mIsBusy = true;
-        foreach (Action lActionClip in mTimeline) {
-            lActionClip();
+ 
+        StartCoroutine(ActionPlayerAsync(mTimeline));
+    }
+
+    // This function browse and execute all of ActionClip
+    // When an ActionClip if finished, it return true, then the coroutine launch the next ActionClip
+    private IEnumerator ActionPlayerAsync(List<Predicate<bool>> iTimeline)
+    {
+        if (iTimeline == null)
+            yield break;
+        foreach (Predicate<bool> lActionClip in iTimeline) {
+            yield return new WaitUntil(() => { return lActionClip(true); });
         }
         mIsBusy = false;
     }
