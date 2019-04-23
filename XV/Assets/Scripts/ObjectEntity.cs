@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -30,16 +31,26 @@ public class ObjectEntity : MonoBehaviour
 	private bool mControlPushed;
 	private bool mMouseDown;
 
-	private bool mMouseOverObjectEntity;
-	private bool mMouseDownOnObjectEntity;
-	private bool mMouseDragObjectEntity;
+    private bool mMouseOverObjectEntity;
+    private bool mMouseDownOnObjectEntity;
+    private bool mMouseDragObjectEntity;
 
-	private Vector3 mMouseOriginClick;
+    private Vector3 mMouseOriginClick;
 
-	private UIBubbleInfo mUIBubbleInfo;
-	private Vector3 mCenter;
-	private Vector3 mSize;
-	private GameObject mCenteredParent;
+    private UIBubbleInfo mUIBubbleInfo;
+    private Vector3 mCenter;
+    private Vector3 mSize;
+    private GameObject mCenteredParent;
+
+    public Vector3 Size
+    {
+        get { return mSize; }
+    }
+
+    public Vector3 Center
+    {
+        get { return mCenter; }
+    }
 
 	public bool Selected
 	{
@@ -215,6 +226,12 @@ public class ObjectEntity : MonoBehaviour
 	private IEnumerator DestroyObjectsTimedAsync()
 	{
 		mBusy = true;
+
+        // Detach from parent & delete parent
+        //if (transform.parent != null) {
+        //    transform.parent = null;
+        //    Destroy(mCenteredParent);
+        //}
 
 		Transform[] lTransforms = gameObject.GetComponentsInChildren<Transform>();
 		Array.Reverse(lTransforms);

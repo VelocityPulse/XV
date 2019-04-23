@@ -56,7 +56,7 @@ using UnityEngine;
 **  (Ex: Table d'emballage -> 'Emballer/Etiquetter un carton')
 **
 **  TROLLEY:
-**  Objets asismilable a un 'chariot' (trolley), utilisables et qui peut donner ou non la possibilite
+**  Objets assimilable a un 'chariot' (trolley), utilisables et qui peut donner ou non la possibilite
 **  de deplacer les HEAVY_ITEM / MEDIUM_ITEM. (Ex: un chariot donne acces a -> 'deplacer palette')
 **  
 **  VEHICLE:
@@ -97,7 +97,7 @@ public abstract class AInteraction : MonoBehaviour
         // Code Interface with TimelineManager
     }
 
-    // Debug - Tmp func
+    // --------- Debug - Tmp func ----------------
     // Wait for TimelineManager
     protected void PlayTimeline()
     {
@@ -114,9 +114,11 @@ public abstract class AInteraction : MonoBehaviour
     {
         if (iTimeline == null)
             yield break;
+
         foreach (Predicate<bool> lActionClip in iTimeline) {
             yield return new WaitUntil(() => { return lActionClip(true); });
         }
         mIsBusy = false;
+        mTimeline.Clear();
     }
 }

@@ -2,13 +2,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 // This class impl. generic animation movement
 
+// --- TODO ---
+
+// Need to create parent on each prefab & manually set the offset to have good orientation
+
+// NavMesh Obstacle box is unconsistent using ObjectEntity.Center + ObjectEntity.Size
+
+// Put NavMeshObstacle generation into ObjectEntity
+
+// Update this code
+
 public sealed class MovableEntity : AInteraction
 {
-    private enum EditionMode {
+    private enum EditionMode
+    {
         NONE,
         MOVE,
         ROTATE,
@@ -26,8 +38,12 @@ public sealed class MovableEntity : AInteraction
 
     private EditionMode mEditionMode;
 
+    private NavMeshAgent mAgent;
+
+    private NavMeshObstacle mObstacle;
+
     private void Start()
-	{
+    {
         mEditionMode = EditionMode.NONE;
         mEntity = null;
         mMoveButtonColor = null;
@@ -78,38 +94,70 @@ public sealed class MovableEntity : AInteraction
                 }
             }
         });
+
+        if ((mAgent = transform.parent.gameObject.AddComponent<NavMeshAgent>()) != null) {
+            mAgent.radius = (mEntity.Size.x > mEntity.Size.z) ? (mEntity.Size.x / 2) : (mEntity.Size.z / 2);
+            mAgent.radius += 0.1F;
+            mAgent.baseOffset = -transform.position.y;
+            mAgent.stoppingDistance = LIMIT;
+            mAgent.enabled = false;
+        }
+
+        if ((mObstacle = transform.parent.gameObject.AddComponent<NavMeshObstacle>()) != null) {
+            //mObstacle.center = mEntity.Center;
+            mObstacle.size = mEntity.Size;
+            mObstacle.carving = true;
+        }
     }
 
-	private void Update()
-	{
+    private void Update()
+    {
         if (mEditionMode == EditionMode.NONE)
             return;
         else if (mEditionMode == EditionMode.MOVE) {
             // On click leave this mode and continue animation adding process
             if (Input.GetMouseButtonDown(0)) {
+                
                 mMoveButtonColor.color = Color.white;
                 mEditionMode = EditionMode.NONE;
                 // reset cursors
 
                 Vector3 lHitPoint = Vector3.zero;
                 float lDuration = 0F;
+
                 // Check the hit.point clicked is the ground
                 if ((GetMouseClic(ref lHitPoint))) {
+
                     // Calcul the distance between position & destination
                     float lDist = Vector3.Distance(transform.position, lHitPoint);
+
                     // Calcul the Duration of the movement
+
                     // Add the code that do the animation in the Action
-                    AddToTimeline((iBool) => 
-                    {
-                        if (Vector3.Distance(transform.position, lHitPoint) < LIMIT)
+                    AddToTimeline((iBool) => {
+
+                        // Switch into Agent mode
+                        if (mObstacle.enabled) {
+                            mObstacle.enabled = false;
+                            mAgent.enabled = true;
+							mAgent.SetDestination(lHitPoint);
+                            return false;
+                        }
+
+
+                        if (mAgent.remainingDistance < LIMIT && mAgent.velocity.x == 0F && mAgent.velocity.z == 0F) {
+                            // Switch into obstacle mode
+							mAgent.enabled = false;
+                            mObstacle.enabled = true;
                             return true;
-                        transform.position = Vector3.Lerp(transform.position, lHitPoint, SPEED * Time.deltaTime);
+                        }
+
                         return false;
                     }, lDuration);
+
                 }
             }
-        }
-        else if (mEditionMode == EditionMode.ROTATE) {
+        } else if (mEditionMode == EditionMode.ROTATE) {
             // On click leave this mode and continue animation adding process
             if (Input.GetMouseButtonDown(0)) {
                 mRotateButtonColor.color = Color.white;
@@ -123,7 +171,7 @@ public sealed class MovableEntity : AInteraction
                 AddToTimeline((iBool) => { Debug.LogWarning("-- ROTATE ANIM --"); return true; }, lDuration);
             }
         }
-	}
+    }
 
     private bool GetMouseClic(ref Vector3 iHitPoint)
     {
@@ -137,13 +185,14 @@ public sealed class MovableEntity : AInteraction
         return false;
     }
 
-	//  Deplacement animation for all VEHICLE
-	//  UIBubleInfo `Move` bind with this func.
-	private bool GoTo()
+    //  Deplacement animation for all VEHICLE
+    //  UIBubleInfo `Move` bind with this func.
+    private bool GoTo()
     {
         // Enter in move edition mode
         mEditionMode = EditionMode.MOVE;
         mMoveButtonColor.color = Color.red;
+
         // Change cursor
         // Warn the user to click somewhere to get a destination
         return true;
@@ -156,6 +205,7 @@ public sealed class MovableEntity : AInteraction
         // Enter in move edition mode
         mEditionMode = EditionMode.ROTATE;
         mRotateButtonColor.color = Color.red;
+
         // Change cursor
         // Warn the user to click somewhere to get a destination
         return true;
