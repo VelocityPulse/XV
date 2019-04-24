@@ -15,14 +15,14 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 
 	private void Start()
 	{
-		mRectTransform = transform as RectTransform;
+		mRectTransform = transform.Find("Track") as RectTransform;
 		mClips = new List<UIClip>();
 		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "UIClip");
 	}
 
 	public void AddClip(float iClipX)
 	{
-		UIClip lClip = Instantiate(UIClipPrefab, transform);
+		UIClip lClip = Instantiate(UIClipPrefab, mRectTransform);
 
 		lClip.name = "CLIP" + mCounter.ToString();
 		mCounter++;

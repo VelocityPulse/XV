@@ -19,7 +19,8 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
     private void Start() {
         mTrackRectTransform = transform.parent as RectTransform;
 		mRectTransform = transform as RectTransform;
-		mTrack = transform.parent.GetComponent<UITrack>();
+		mTrack = transform.GetComponentInParent<UITrack>();
+		FitInPlace();
     }
 
     public void OnPointerDown(PointerEventData iData) {
@@ -50,6 +51,22 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 			if (mTrack != null) {
 				mTrack.DeleteClip(this);
 			}
+		}
+	}
+
+	private void FitInPlace()
+	{
+		float lPotentialSize = GetRightLimit() - GetLeftLimit();
+		if (lPotentialSize < Size) {
+			mRectTransform.sizeDelta = new Vector2(lPotentialSize, mRectTransform.sizeDelta.y);
+		}
+		if (mRectTransform.localPosition.x - Size / 2F < GetLeftLimit()) {
+			float lOffset = GetLeftLimit() - (mRectTransform.localPosition.x - Size / 2F);
+			mRectTransform.anchoredPosition += new Vector2(lOffset, 0F);
+		}
+		if (mRectTransform.localPosition.x + Size / 2F > GetRightLimit()) {
+			float lOffset = (mRectTransform.localPosition.x + Size / 2F) - GetRightLimit();
+			mRectTransform.anchoredPosition -= new Vector2(lOffset, 0F);
 		}
 	}
 
