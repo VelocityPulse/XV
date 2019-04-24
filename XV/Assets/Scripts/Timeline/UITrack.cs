@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Timeline;
+using UnityEngine.UI;
 
 public class UITrack : MonoBehaviour, IPointerClickHandler {
 
@@ -13,18 +14,39 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 	private UIClip UIClipPrefab;
 	private int mCounter;
 
-	private void Start()
+	[SerializeField]
+	private Text nameText;
+
+	public string Name
+	{
+		get { return nameText.text; }
+		set
+		{
+			if (value != string.Empty) {
+				nameText.text = value;
+			}
+		}
+	}
+
+	private void Awake()
 	{
 		mRectTransform = transform.Find("Track") as RectTransform;
 		mClips = new List<UIClip>();
 		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "UIClip");
 	}
 
+	public void AddClip()
+	{
+		AddClip(GetLimits().x);
+	}
+
 	public void AddClip(float iClipX)
 	{
 		UIClip lClip = Instantiate(UIClipPrefab, mRectTransform);
 
-		lClip.name = "CLIP" + mCounter.ToString();
+		string lClipName = "Clip " + mCounter.ToString();
+		lClip.name = lClipName;
+		lClip.Name = lClipName;
 		mCounter++;
 
 		lClip.transform.localPosition = new Vector3(iClipX, 0F, 0F);
@@ -39,13 +61,6 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		else {
 			mClips.Insert(lPrevIndex + 1, lClip);
 		}
-		// Debug
-		/*
-		for (int i = 0; i < mClips.Count; i++) {
-			Debug.Log(i + " -> " + mClips[i].name);
-		}
-		Debug.Log("--------------");
-		*/
 	}
 
 	public void DeleteClip(UIClip iClip)

@@ -11,13 +11,16 @@ public class TimelineManager : MonoBehaviour {
 
 	public static TimelineManager Instance { get; private set; }
 
-	private PlayableDirector mDirector;
-	private TimelineAsset mTimeline;
-	private List<GameObject> mBoundObjects;
-
 #if UNITY_EDITOR
 	private EditorWindow mTimelineWindow;
 #endif
+
+	private PlayableDirector mDirector;
+	private TimelineAsset mTimeline;
+	private Dictionary<int, AnimationTrack> mBindings;
+
+	[SerializeField]
+	private UITimeline UI;
 
 	private void Start()
 	{
@@ -26,18 +29,20 @@ public class TimelineManager : MonoBehaviour {
 		}
 		mDirector = GetComponent<PlayableDirector>();
 		mTimeline = (TimelineAsset)mDirector.playableAsset;
+		mBindings = new Dictionary<int, AnimationTrack>();
 		ClearTimeline();
 	}
 
-	public void AddObject(GameObject iObject)
+	public void AddAnimation(GameObject iObject, AnimationClip iClip)
 	{
 		if (iObject != null) {
-			AnimationTrack lTrack = (AnimationTrack)mTimeline.CreateTrack(typeof(AnimationTrack), null, iObject.name);
-			mDirector.SetGenericBinding(lTrack, iObject);
+			AnimationTrack lTrack = GetTrackFromObject(iObject);
+			lTrack.CreateClip(iClip);
+			UI.AddClipToTrack(iObject.GetInstanceID().ToString(), "New Clip"); // Temporary
 		}
 	}
 
-	public void RemoveObject(GameObject iObject)
+	public void RemoveAnimation(GameObject iObject, AnimationClip iClip)
 	{
 #if UNITY_EDITOR
 		// Removing a track from the timeline at runtime causes errors in the timeline EditorWindow.
@@ -45,11 +50,33 @@ public class TimelineManager : MonoBehaviour {
 		CloseTimelineWindow();
 #endif
 		if (iObject != null) {
-			TrackAsset lTrackToDelete = GetTrackWithName(iObject.name);
+			/*
+			TrackAsset lTrackToDelete = GetTrackWithName(iObject.GetInstanceID().ToString());
 			if (lTrackToDelete != null) {
 				mTimeline.DeleteTrack(lTrackToDelete);
 			}
+			*/
 		}
+	}
+
+	private AnimationTrack GetTrackFromObject(GameObject iObject)
+	{
+		AnimationTrack lTrack = null;
+		if (iObject != null) {
+			int lID = iObject.GetInstanceID();
+			// If the object is already bound to a track
+			if (mBindings.ContainsKey(lID)) {
+				mBindings.TryGetValue(lID, out lTrack);
+			}
+			// Otherwise create a new binding
+			else {
+				lTrack = (AnimationTrack)mTimeline.CreateTrack(typeof(AnimationTrack), null, lID.ToString());
+				mBindings.Add(lID, lTrack);
+				mDirector.SetGenericBinding(lTrack, iObject);
+				UI.NewTrack(lID.ToString());
+			}
+		}
+		return lTrack;
 	}
 
 	private TrackAsset GetTrackWithName(string iTrackName) {

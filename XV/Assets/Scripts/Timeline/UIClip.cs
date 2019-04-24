@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
@@ -10,6 +11,19 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	private RectTransform mRectTransform;
 	private UITrack mTrack;
 	private float mOffset;
+
+	[SerializeField]
+	private Text nameText;
+	public string Name
+	{
+		get { return nameText.text; }
+		set
+		{
+			if (value != string.Empty) {
+				nameText.text = value;
+			}
+		}
+	}
 
 	public float Size
 	{
