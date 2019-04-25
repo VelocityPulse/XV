@@ -9,9 +9,12 @@ using UnityEngine.UI;
 
 // --- TODO ---
 
-// Need to create parent on each prefab & manually set the offset to have good orientation
-
-// NavMesh Obstacle box is unconsistent using ObjectEntity.Center + ObjectEntity.Size
+// Setting up offset rotation for each object that can move
+// Find the value of the offset
+// The final object hierarchy will be:
+// OffsetPositionParent
+// |-> OffsetRotationParent
+//       |-> Chariot
 
 // Put NavMeshObstacle generation into ObjectEntity
 
@@ -41,6 +44,9 @@ public sealed class MovableEntity : AInteraction
     private NavMeshAgent mAgent;
 
     private NavMeshObstacle mObstacle;
+
+    [SerializeField]
+    private Vector3 RotationOffset;
 
     private void Start()
     {
@@ -103,11 +109,31 @@ public sealed class MovableEntity : AInteraction
             mAgent.enabled = false;
         }
 
-        if ((mObstacle = transform.parent.gameObject.AddComponent<NavMeshObstacle>()) != null) {
-            //mObstacle.center = mEntity.Center;
+        if ((mObstacle = transform.gameObject.AddComponent<NavMeshObstacle>()) != null) {
+            mObstacle.center = mEntity.Center;
             mObstacle.size = mEntity.Size;
             mObstacle.carving = true;
         }
+
+        // Upgrade that
+        GameObject parent = new GameObject();
+        GameObject tmp;
+
+        // save parent
+        tmp = transform.parent.gameObject;
+
+        // change parent
+        transform.parent = parent.transform;
+
+        // restore big parent
+        parent.transform.parent = tmp.transform;
+
+        transform.position = Vector3.zero;
+        transform.localPosition = -mEntity.Center;
+
+        transform.parent.transform.position = Vector3.zero;
+        transform.parent.transform.localPosition = Vector3.zero;
+        transform.parent.transform.rotation = Quaternion.Euler(RotationOffset);
     }
 
     private void Update()

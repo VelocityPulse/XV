@@ -397,8 +397,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4751737190641760}
-  - component: {fileID: 95436767039033986}
-  - component: {fileID: 114036236026039820}
+  - component: {fileID: 95159135068693262}
+  - component: {fileID: 114056519190043968}
   m_Layer: 9
   m_Name: ChariotPlateForme
   m_TagString: Untagged
@@ -948,7 +948,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1793783825449312}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1872,7 +1872,7 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300026, guid: 2e35cf9bf68a944a48419a801ce3178d, type: 3}
---- !u!95 &95436767039033986
+--- !u!95 &95159135068693262
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
@@ -1889,7 +1889,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114036236026039820
+--- !u!114 &114056519190043968
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
