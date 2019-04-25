@@ -110,10 +110,8 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 
 	public Vector2 GetLimits()
 	{
-        Vector3[] lTrackCorners = new Vector3[4];
-
-		mRectTransform.GetLocalCorners(lTrackCorners);
-		return new Vector2(lTrackCorners[0].x, lTrackCorners[2].x);
+		float lHalfSize = mRectTransform.rect.size.x / 2F;
+		return new Vector2(-lHalfSize, lHalfSize);
 	}
 
 	public void OnPointerClick(PointerEventData iData)

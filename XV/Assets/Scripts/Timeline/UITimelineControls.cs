@@ -7,14 +7,22 @@ public class UITimelineControls : MonoBehaviour
 {
 	[SerializeField]
 	private Slider slider;
+
+	[SerializeField]
+	private Transform timeScale;
+
 	private bool mIsPlaying;
 	private bool mLooping;
+	private int mCurrentTimeScale;
+	private GameObject mTimeScaleLinePrefab;
 
 	private void Start()
 	{
 		mIsPlaying = false;
 		mLooping = false;
 		slider.value = slider.minValue;
+		mTimeScaleLinePrefab = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "UITimeScaleLine");
+		SetTimeScale("25");
 	}
 
 	private void Update()
@@ -41,5 +49,19 @@ public class UITimelineControls : MonoBehaviour
 	{
 		slider.value = slider.minValue;
 		mIsPlaying = false;
+	}
+
+	public void SetTimeScale(string iStringValue)
+	{
+		int lIntValue = int.Parse(iStringValue);
+		if (mCurrentTimeScale != lIntValue) {
+			foreach (Transform lChild in timeScale) {
+				Destroy(lChild.gameObject);
+			}
+			for (int lCount = 0; lCount < lIntValue; lCount++) {
+				Instantiate(mTimeScaleLinePrefab, timeScale);
+			}
+			slider.maxValue = lIntValue;
+		}
 	}
 }
