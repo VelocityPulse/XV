@@ -12,6 +12,18 @@ public class UITimeline : MonoBehaviour {
 	[SerializeField]
 	private Transform contentPanel;
 
+	private void OnEnable()
+	{
+		TimelineEvent.AddTrackEvent += NewTrack;
+		TimelineEvent.AddClipEvent += AddClipToTrack;
+	}
+
+	private void OnDisable()
+	{
+		TimelineEvent.AddTrackEvent -= NewTrack;
+		TimelineEvent.AddClipEvent -= AddClipToTrack;
+	}
+
 	private void Start()
 	{
 		mUITrackPrefab = Resources.Load<UITrack>(GameManager.UI_TEMPLATE_PATH + "UITrack");
@@ -19,17 +31,18 @@ public class UITimeline : MonoBehaviour {
 		mAnimator = GetComponent<Animator>();
 	}
 
-	public void NewTrack(string iTrackName)
+	private void NewTrack(TimelineEvent.Data iData)
 	{
 		if (!mAnimator.GetBool("IsVisible")) {
 			ToggleVisibility();
 		}
 		UITrack lNewTrack = Instantiate(mUITrackPrefab, contentPanel);
-		lNewTrack.Name = iTrackName;
+		lNewTrack.ID = iData.TrackID;
+		lNewTrack.Name = iData.TrackID.ToString();
 		mTracks.Add(lNewTrack);
 	}
 
-	public void DeleteTrack()
+	private void DeleteTrack()
 	{
 		if (!mAnimator.GetBool("IsVisible")) {
 			ToggleVisibility();
@@ -40,10 +53,10 @@ public class UITimeline : MonoBehaviour {
 		}
 	}
 	
-	public void AddClipToTrack(string iTrackName, string iClipName)
+	private void AddClipToTrack(TimelineEvent.Data iData)
 	{
 		foreach (UITrack lTrack in mTracks) {
-			if (lTrack.Name == iTrackName) {
+			if (lTrack.ID == iData.TrackID) {
 				lTrack.AddClip();
 			}
 		}

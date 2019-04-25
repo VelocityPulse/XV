@@ -22,7 +22,7 @@ public class UITimelineControls : MonoBehaviour
 		mLooping = false;
 		slider.value = slider.minValue;
 		mTimeScaleLinePrefab = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "UITimeScaleLine");
-		SetTimeScale("25");
+		SetTimeScale(TimelineManager.Instance.Duration.ToString());
 	}
 
 	private void Update()

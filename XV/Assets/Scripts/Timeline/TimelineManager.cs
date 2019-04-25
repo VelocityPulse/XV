@@ -9,9 +9,14 @@ using UnityEditor;
 #endif
 
 [RequireComponent(typeof(PlayableDirector))]
-public class TimelineManager : MonoBehaviour {
-
+public sealed class TimelineManager : MonoBehaviour
+{
 	public static TimelineManager Instance { get; private set; }
+
+	public double Duration
+	{
+		get { return mTimeline.duration; }
+	}
 
 #if UNITY_EDITOR
 	private EditorWindow mTimelineWindow;
@@ -20,9 +25,6 @@ public class TimelineManager : MonoBehaviour {
 	private PlayableDirector mDirector;
 	private TimelineAsset mTimeline;
 	private Dictionary<int, AnimationTrack> mBindings;
-
-	[SerializeField]
-	private UITimeline UI;
 
 	private void Start()
 	{
@@ -38,9 +40,14 @@ public class TimelineManager : MonoBehaviour {
 	public void AddAnimation(GameObject iObject, AnimationClip iClip)
 	{
 		if (iObject != null) {
+			
 			AnimationTrack lTrack = GetTrackFromObject(iObject);
 			lTrack.CreateClip(iClip);
-			UI.AddClipToTrack(iObject.GetInstanceID().ToString(), "New Clip"); // Temporary
+
+			TimelineEvent.Data lEventData = new TimelineEvent.Data(iObject.GetInstanceID());
+			lEventData.ClipStart = -1D;
+			lEventData.ClipLength = iClip.length;
+			TimelineEvent.OnAddClip(lEventData);
 		}
 	}
 
@@ -75,19 +82,10 @@ public class TimelineManager : MonoBehaviour {
 				lTrack = (AnimationTrack)mTimeline.CreateTrack(typeof(AnimationTrack), null, lID.ToString());
 				mBindings.Add(lID, lTrack);
 				mDirector.SetGenericBinding(lTrack, iObject);
-				UI.NewTrack(lID.ToString());
+				TimelineEvent.OnAddTrack(new TimelineEvent.Data(lID));
 			}
 		}
 		return lTrack;
-	}
-
-	private TrackAsset GetTrackWithName(string iTrackName) {
-		foreach (TrackAsset lTrack in mTimeline.GetRootTracks()) {
-			if (lTrack.name == iTrackName) {
-				return lTrack;
-			}
-		}
-		return null;
 	}
 
 	private void ClearTimeline()

@@ -17,6 +17,8 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 	[SerializeField]
 	private Text nameText;
 
+	public int ID { get; set; }
+
 	public string Name
 	{
 		get { return nameText.text; }
@@ -35,12 +37,28 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "UIClip");
 	}
 
-	public void AddClip()
+	private float GetClipRealSize(double iClipLength)
 	{
-		AddClip(GetLimits().x);
+		double lTotalDuration = TimelineManager.Instance.Duration;
+		float lTotalSize = mRectTransform.rect.size.x;
+		float lWantedSize = ((float)iClipLength * lTotalSize) / (float)lTotalDuration;
+		return lWantedSize;
 	}
 
-	public void AddClip(float iClipX)
+	private float GetClipRealStartPosition(double iClipStart)
+	{
+		Vector2 lLimits = GetLimits();
+		double lTotalDuration = TimelineManager.Instance.Duration;
+		float lClipStartPosition = (float)iClipStart * (lLimits.y - lLimits.x) / ((float)lTotalDuration) + lLimits.x;
+		return lClipStartPosition;
+	}
+
+	public void AddClip()
+	{
+		AddClip(0D, 1D);
+	}
+
+	public void AddClip(double iStart, double iLength)
 	{
 		UIClip lClip = Instantiate(UIClipPrefab, mRectTransform);
 
@@ -49,9 +67,11 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		lClip.Name = lClipName;
 		mCounter++;
 
-		lClip.transform.localPosition = new Vector3(iClipX, 0F, 0F);
+		float lClipSize = GetClipRealSize(iLength);
+		float lClipX = GetClipRealStartPosition(iStart) + lClipSize / 2F;
+		lClip.transform.localPosition = new Vector3(lClipX, 0F, 0F);
 
-		int lPrevIndex = GetPreviousAtPosition(iClipX);
+		int lPrevIndex = GetPreviousAtPosition(lClipX);
 
 		// Insert clip at the end of the list
 		if (lPrevIndex == mClips.Count - 1) {
@@ -119,7 +139,7 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		Vector2 lLocalPointerPosition;
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(mRectTransform, iData.position, iData.pressEventCamera, out lLocalPointerPosition);
 		if (iData.button == PointerEventData.InputButton.Left) {
-			AddClip(lLocalPointerPosition.x);
+			//AddClip(lLocalPointerPosition.x);
 		}
 	}
 }

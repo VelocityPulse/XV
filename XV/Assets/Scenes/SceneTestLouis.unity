@@ -663,7 +663,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 964423976}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 10
+  m_MaxValue: 25
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
@@ -5017,6 +5017,24 @@ PlayableDirector:
     value: {fileID: 0}
   - key: {fileID: 114402493830341478, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
     value: {fileID: 0}
+  - key: {fileID: 114871375548965228, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114175707370372670, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114850500556411352, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114697811967291442, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114067151900219776, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114400647921152062, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114315184060731770, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114992477056799270, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114154418369548684, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
 --- !u!4 &1387001253
@@ -5043,7 +5061,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10164fb5803c04318b66ca385152d9b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UI: {fileID: 924584147}
 --- !u!1 &1398858567
 GameObject:
   m_ObjectHideFlags: 0

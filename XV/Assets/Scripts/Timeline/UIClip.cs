@@ -11,6 +11,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	private RectTransform mRectTransform;
 	private UITrack mTrack;
 	private float mOffset;
+	public static float sMinSize = 25F;
 
 	[SerializeField]
 	private Text nameText;
