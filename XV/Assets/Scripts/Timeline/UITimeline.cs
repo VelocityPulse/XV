@@ -59,7 +59,7 @@ public class UITimeline : MonoBehaviour {
 	{
 		foreach (UITrack lTrack in mTracks) {
 			if (lTrack.ID == iData.TrackID) {
-				lTrack.AddClip();
+				lTrack.AddClip(iData.ClipStart, iData.ClipLength);
 			}
 		}
 	}

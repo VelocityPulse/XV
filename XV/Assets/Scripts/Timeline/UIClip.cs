@@ -11,7 +11,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	private RectTransform mRectTransform;
 	private UITrack mTrack;
 	private float mOffset;
-	public static float sMinSize = 25F;
+	public static float sSizeMin = 25F;
 
 	[SerializeField]
 	private Text nameText;
@@ -61,6 +61,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 			lLocalPointerPosition.x = Mathf.Clamp(lLocalPointerPosition.x, lXMin, lXMax);
 			lLocalPointerPosition.y = 0F;
             mRectTransform.localPosition = lLocalPointerPosition + new Vector2(mOffset, 0F);
+			ResizedFromUI();
         }
     }
 
@@ -77,6 +78,15 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	{
 		mRectTransform.localPosition = new Vector3(iPosition, 0F, 0F);
 		Size = iSize;
+	}
+
+	public void ResizedFromUI()
+	{
+		TimelineEvent.Data lEventData = new TimelineEvent.Data(mTrack.ID, TimelineEvent.Source.FROM_UI);
+		lEventData.ClipIndex = mTrack.GetIndex(this);
+		lEventData.ClipStart = TimelineUtility.ClipPositionToStart(mRectTransform.anchoredPosition.x, mTrack.GetLimits());
+		lEventData.ClipLength = TimelineUtility.ClipSizeToDuration(mRectTransform.rect.size.x, mTrack.Size);
+		TimelineEvent.OnResizeClip(lEventData);
 	}
 
 	private void FitInPlace()

@@ -27,6 +27,16 @@ public sealed class TimelineManager : MonoBehaviour
 	private TimelineAsset mTimeline;
 	private Dictionary<int, AnimationTrack> mBindings;
 
+	private void OnEnable()
+	{
+		TimelineEvent.ResizeClipEvent += ResizeAnimation;
+	}
+
+	private void OnDisable()
+	{
+		TimelineEvent.ResizeClipEvent -= ResizeAnimation;
+	}
+
 	private void Start()
 	{
 		if (Instance == null) {
@@ -43,10 +53,10 @@ public sealed class TimelineManager : MonoBehaviour
 		if (iObject != null) {
 			
 			AnimationTrack lTrack = GetTrackFromObject(iObject);
-			lTrack.CreateClip(iClip);
+			TimelineClip lTimelineClip = lTrack.CreateClip(iClip);
 
-			TimelineEvent.Data lEventData = new TimelineEvent.Data(iObject.GetInstanceID());
-			lEventData.ClipStart = -1D;
+			TimelineEvent.Data lEventData = new TimelineEvent.Data(iObject.GetInstanceID(), TimelineEvent.Source.FROM_WORLD);
+			lEventData.ClipStart = lTimelineClip.start;
 			lEventData.ClipLength = iClip.length;
 			TimelineEvent.OnAddClip(lEventData);
 		}
@@ -69,6 +79,26 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 	}
 
+	public void ResizeAnimation(TimelineEvent.Data iData)
+	{
+		foreach (KeyValuePair<int, AnimationTrack> lBinding in mBindings) {
+			int lObjectID = lBinding.Key;
+			AnimationTrack lTrack = lBinding.Value;
+
+			if (lObjectID == iData.TrackID) {
+				List<TimelineClip> lClips = lTrack.GetClips().ToList();
+
+				for (int lIndex = 0; lIndex < lClips.Count; lIndex++) {
+					if (lIndex == iData.ClipIndex) {
+						TimelineClip lClip = lClips[lIndex];
+						lClip.start = iData.ClipStart;
+						lClip.duration = iData.ClipLength;
+					}
+				}
+			}
+		}
+	}
+
 	public void Rebuild()
 	{
 		foreach (KeyValuePair<int, AnimationTrack> lBinding in mBindings) {
@@ -77,7 +107,7 @@ public sealed class TimelineManager : MonoBehaviour
 			List<TimelineClip> lClips = lTrack.GetClips().ToList();
 
 			for (int lIndex = 0; lIndex < lClips.Count; lIndex++) {
-				TimelineEvent.Data lEventData = new TimelineEvent.Data(lObjectID);
+				TimelineEvent.Data lEventData = new TimelineEvent.Data(lObjectID, TimelineEvent.Source.FROM_WORLD);
 				lEventData.ClipIndex = lIndex;
 				lEventData.ClipStart = lClips[lIndex].start;
 				lEventData.ClipLength = lClips[lIndex].duration;
@@ -101,10 +131,20 @@ public sealed class TimelineManager : MonoBehaviour
 				lTrack = (AnimationTrack)mTimeline.CreateTrack(typeof(AnimationTrack), null, lID.ToString());
 				mBindings.Add(lID, lTrack);
 				mDirector.SetGenericBinding(lTrack, iObject);
-				TimelineEvent.OnAddTrack(new TimelineEvent.Data(lID));
+				TimelineEvent.OnAddTrack(new TimelineEvent.Data(lID, TimelineEvent.Source.FROM_WORLD));
 			}
 		}
 		return lTrack;
+	}
+
+	public GameObject GetObjectFromID(int iID)
+	{
+		foreach (KeyValuePair<int, AnimationTrack> lBinding in mBindings) {
+			if (lBinding.Key == iID) {
+				return (GameObject)mDirector.GetGenericBinding(lBinding.Value);
+			}
+		}
+		return null;
 	}
 
 	private void ClearTimeline()

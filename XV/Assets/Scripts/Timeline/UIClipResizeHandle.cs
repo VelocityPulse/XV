@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
-public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandler {
+public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandler, IEndDragHandler {
 
 	private RectTransform mRectTransform;
 
@@ -13,7 +13,6 @@ public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandl
 	[SerializeField]
 	private HandleSide side;
 
-	private float mSizeMin;
 	private Vector2 mCurrentPointerPos;
 	private Vector2 mPreviousPointerPos;
 	private UIClip mClip;
@@ -21,7 +20,6 @@ public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandl
 	private void Start()
 	{
 		mRectTransform = transform.parent.GetComponent<RectTransform>();
-		mSizeMin = 25.0F;
 		mClip = transform.parent.GetComponent<UIClip>();
 	}
 
@@ -52,6 +50,11 @@ public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandl
 		mPreviousPointerPos = mCurrentPointerPos;
 	}
 
+	public void OnEndDrag(PointerEventData iData)
+	{
+		mClip.ResizedFromUI();
+	}
+
 	private float GetRawResizeValue()
 	{
 		if (side == HandleSide.HANDLE_LEFT) {
@@ -71,7 +74,7 @@ public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandl
 		else {
 			lSizeMax = (mClip.GetRightLimit() - mRectTransform.localPosition.x) * 2F;
 		}
-		return Mathf.Clamp(iSizeDelta, mSizeMin, lSizeMax);
+		return Mathf.Clamp(iSizeDelta, UIClip.sSizeMin, lSizeMax);
 	}
 
 	private void Resize(float iSizeDelta, float iResizeValue)

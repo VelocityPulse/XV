@@ -30,6 +30,11 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		}
 	}
 
+	public float Size
+	{
+		get { return mRectTransform.rect.size.x; }
+	}
+
 	private void Awake()
 	{
 		mRectTransform = transform.Find("Track") as RectTransform;
@@ -37,6 +42,7 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "UIClip");
 	}
 
+/*
 	private float GetClipRealSize(double iClipLength)
 	{
 		double lTotalDuration = TimelineManager.Instance.Duration;
@@ -52,11 +58,7 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		float lClipStartPosition = (float)iClipStart * (lLimits.y - lLimits.x) / ((float)lTotalDuration) + lLimits.x;
 		return lClipStartPosition;
 	}
-
-	public void AddClip()
-	{
-		AddClip(0D, 1D);
-	}
+ */
 
 	public void AddClip(double iStart, double iLength)
 	{
@@ -98,8 +100,8 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 
 	private float BuildClip(UIClip iClip, double iClipStart, double iClipLength)
 	{
-		float lClipSize = GetClipRealSize(iClipLength);
-		float lClipX = GetClipRealStartPosition(iClipStart) + lClipSize / 2F;
+		float lClipSize = TimelineUtility.ClipDurationToSize(iClipLength, mRectTransform.rect.size.x);
+		float lClipX = TimelineUtility.ClipStartToPosition(iClipStart, GetLimits()) + lClipSize / 2F;
 		iClip.Build(lClipSize, lClipX);
 		return lClipX;
 	}
@@ -142,6 +144,16 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		return null;
 	}
 
+	public int GetIndex(UIClip iClip)
+	{
+		for (int lIndex = 0; lIndex < mClips.Count; lIndex++) {
+			if (mClips[lIndex] == iClip) {
+				return lIndex;
+			}
+		}
+		return -1;
+	}
+
 	public Vector2 GetLimits()
 	{
 		float lHalfSize = mRectTransform.rect.size.x / 2F;
@@ -153,7 +165,8 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		Vector2 lLocalPointerPosition;
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(mRectTransform, iData.position, iData.pressEventCamera, out lLocalPointerPosition);
 		if (iData.button == PointerEventData.InputButton.Left) {
-			//AddClip(lLocalPointerPosition.x);
+			GameObject lObject = TimelineManager.Instance.GetObjectFromID(ID);
+			TimelineManager.Instance.AddAnimation(lObject, new AnimationClip());
 		}
 	}
 }

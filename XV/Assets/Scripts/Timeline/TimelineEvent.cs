@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class TimelineEvent
 {
+	public enum Source { FROM_WORLD, FROM_UI }
 	public class Data
 	{
-		public int TrackID { get; set; }
+		public int TrackID { get; private set; }
+		public Source Source { get; private set; }
 		public int ClipIndex { get; set; }
 		public double ClipStart { get; set; }
 		public double ClipLength { get; set; }
 
-		public Data(int iTrackID)
+		public Data(int iTrackID, Source iSource)
 		{
 			TrackID = iTrackID;
+			Source = iSource;
 		}
 	}
 
