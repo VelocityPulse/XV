@@ -29,13 +29,17 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	public float Size
 	{
 		get { return mRectTransform.sizeDelta.x; }
+		set
+		{
+			mRectTransform.sizeDelta = new Vector2(value, mRectTransform.sizeDelta.y);
+			FitInPlace();
+		}
 	}
 
-    private void Start() {
+    private void Awake() {
         mTrackRectTransform = transform.parent as RectTransform;
 		mRectTransform = transform as RectTransform;
 		mTrack = transform.GetComponentInParent<UITrack>();
-		FitInPlace();
     }
 
     public void OnPointerDown(PointerEventData iData) {
@@ -67,6 +71,12 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 				mTrack.DeleteClip(this);
 			}
 		}
+	}
+
+	public void Build(float iSize, float iPosition)
+	{
+		mRectTransform.localPosition = new Vector3(iPosition, 0F, 0F);
+		Size = iSize;
 	}
 
 	private void FitInPlace()

@@ -16,12 +16,14 @@ public class UITimeline : MonoBehaviour {
 	{
 		TimelineEvent.AddTrackEvent += NewTrack;
 		TimelineEvent.AddClipEvent += AddClipToTrack;
+		TimelineEvent.ResizeClipEvent += ResizeClipFromTrack;
 	}
 
 	private void OnDisable()
 	{
 		TimelineEvent.AddTrackEvent -= NewTrack;
 		TimelineEvent.AddClipEvent -= AddClipToTrack;
+		TimelineEvent.ResizeClipEvent -= ResizeClipFromTrack;
 	}
 
 	private void Start()
@@ -58,6 +60,15 @@ public class UITimeline : MonoBehaviour {
 		foreach (UITrack lTrack in mTracks) {
 			if (lTrack.ID == iData.TrackID) {
 				lTrack.AddClip();
+			}
+		}
+	}
+
+	private void ResizeClipFromTrack(TimelineEvent.Data iData)
+	{
+		foreach (UITrack lTrack in mTracks) {
+			if (lTrack.ID == iData.TrackID) {
+				lTrack.ResizeClip(iData.ClipIndex, iData.ClipStart, iData.ClipLength);
 			}
 		}
 	}

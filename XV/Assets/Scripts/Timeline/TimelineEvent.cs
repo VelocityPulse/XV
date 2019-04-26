@@ -37,4 +37,11 @@ public class TimelineEvent
 			AddClipEvent(iData);
 		}
 	}
+
+	public static void OnResizeClip(Data iData)
+	{
+		if (ResizeClipEvent != null) {
+			ResizeClipEvent(iData);
+		}
+	}
 }

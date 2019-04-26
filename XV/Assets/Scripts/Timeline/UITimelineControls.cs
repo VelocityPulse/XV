@@ -22,7 +22,6 @@ public class UITimelineControls : MonoBehaviour
 		mLooping = false;
 		slider.value = slider.minValue;
 		mTimeScaleLinePrefab = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "UITimeScaleLine");
-		SetTimeScale(TimelineManager.Instance.Duration.ToString());
 	}
 
 	private void Update()
@@ -33,6 +32,9 @@ public class UITimelineControls : MonoBehaviour
 		if (slider.value == slider.maxValue && mLooping) {
 			slider.value = slider.minValue;
 		}
+		double lDuration = TimelineManager.Instance.Duration;
+		int lIntDuration = (int)Mathf.Ceil((float)lDuration);
+		SetTimeScale(lIntDuration.ToString());
 	}
 
 	public void SetIsPlaying(bool iIsPlaying)
@@ -63,5 +65,6 @@ public class UITimelineControls : MonoBehaviour
 			}
 			slider.maxValue = lIntValue;
 		}
+		TimelineManager.Instance.Rebuild();
 	}
 }

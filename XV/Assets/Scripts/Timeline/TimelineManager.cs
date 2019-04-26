@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
@@ -65,6 +66,24 @@ public sealed class TimelineManager : MonoBehaviour
 				mTimeline.DeleteTrack(lTrackToDelete);
 			}
 			*/
+		}
+	}
+
+	public void Rebuild()
+	{
+		foreach (KeyValuePair<int, AnimationTrack> lBinding in mBindings) {
+			int lObjectID = lBinding.Key;
+			AnimationTrack lTrack = lBinding.Value;
+			List<TimelineClip> lClips = lTrack.GetClips().ToList();
+
+			for (int lIndex = 0; lIndex < lClips.Count; lIndex++) {
+				TimelineEvent.Data lEventData = new TimelineEvent.Data(lObjectID);
+				lEventData.ClipIndex = lIndex;
+				lEventData.ClipStart = lClips[lIndex].start;
+				lEventData.ClipLength = lClips[lIndex].duration;
+
+				TimelineEvent.OnResizeClip(lEventData);
+			}
 		}
 	}
 

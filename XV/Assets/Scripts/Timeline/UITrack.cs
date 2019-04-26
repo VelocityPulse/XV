@@ -67,10 +67,7 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		lClip.Name = lClipName;
 		mCounter++;
 
-		float lClipSize = GetClipRealSize(iLength);
-		float lClipX = GetClipRealStartPosition(iStart) + lClipSize / 2F;
-		lClip.transform.localPosition = new Vector3(lClipX, 0F, 0F);
-
+		float lClipX = BuildClip(lClip, iStart, iLength);
 		int lPrevIndex = GetPreviousAtPosition(lClipX);
 
 		// Insert clip at the end of the list
@@ -88,6 +85,23 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		if (mClips.Remove(iClip)) {
 			Destroy(iClip.gameObject);
 		}
+	}
+
+	public void ResizeClip(int iClipIndex, double iClipStart, double iClipLength)
+	{
+		for (int lIndex = 0; lIndex < mClips.Count; lIndex++) {
+			if (lIndex == iClipIndex) {
+				BuildClip(mClips[lIndex], iClipStart, iClipLength);
+			}
+		}
+	}
+
+	private float BuildClip(UIClip iClip, double iClipStart, double iClipLength)
+	{
+		float lClipSize = GetClipRealSize(iClipLength);
+		float lClipX = GetClipRealStartPosition(iClipStart) + lClipSize / 2F;
+		iClip.Build(lClipSize, lClipX);
+		return lClipX;
 	}
 
 	public int GetPreviousAtPosition(float iClipX)
