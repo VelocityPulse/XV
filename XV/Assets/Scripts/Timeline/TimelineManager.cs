@@ -19,12 +19,23 @@ public sealed class TimelineManager : MonoBehaviour
 		get { return mTimeline.duration; }
 	}
 
+	public bool Looping
+	{
+		set { mDirector.extrapolationMode = value ? DirectorWrapMode.Loop : DirectorWrapMode.None; }
+	}
+
+	public double Time
+	{
+		get { return mDirector.time; }
+	}
+
 #if UNITY_EDITOR
 	private EditorWindow mTimelineWindow;
 #endif
 
 	private PlayableDirector mDirector;
 	private TimelineAsset mTimeline;
+	private DirectorWrapMode mWrapMode;
 	private Dictionary<int, AnimationTrack> mBindings;
 
 	private void OnEnable()
@@ -173,6 +184,21 @@ public sealed class TimelineManager : MonoBehaviour
 		foreach (TrackAsset lRootTrack in lToDelete) {
 			mTimeline.DeleteTrack(lRootTrack);
 		}
+	}
+
+	public void Play()
+	{
+		mDirector.Play();
+	}
+
+	public void Pause()
+	{
+		mDirector.Pause();
+	}
+
+	public void Stop()
+	{
+		mDirector.Stop();
 	}
 
 #if UNITY_EDITOR
