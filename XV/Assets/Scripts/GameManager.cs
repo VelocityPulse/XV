@@ -148,6 +148,27 @@ public class GameManager : MonoBehaviour
 			// The set position is make in ObjectEntity after the hierachy rework Start();
 		}
 
+
+        // --------------------- CENTERING OBJECT ENTITY
+        // Creating a new empty GameObject
+        GameObject mCenteredParent;
+        mCenteredParent = new GameObject();
+
+        // Setting the future parent position to the center bound of the ObjectEntity
+        mCenteredParent.transform.position = oGameObject.transform.position + lBounds.center;
+
+        // Put the ObjectEntity as a child of the new parent GameObject
+        oGameObject.transform.parent = mCenteredParent.transform;
+
+        // Setting the offset placement of the ObjectEntity regarding the new parent.
+        oGameObject.transform.position = Vector3.zero;
+        oGameObject.transform.localPosition = -lBounds.center;
+
+        // Setting new names
+        mCenteredParent.name = oGameObject.name;
+        oGameObject.name = oGameObject.name + "_mesh";
+        // ---------------------- CENTERING OBJECT ENTITY
+
 		// Setting positions
 		oGameObject.name = iODS.Name;
 		oGameObject.transform.position = iODS.Position;
@@ -163,6 +184,28 @@ public class GameManager : MonoBehaviour
 				   .SaveEntity()
 				   .SetSize(lBounds.size)
 				   .SetCenter(lBounds.center);
+
+        MovableEntity lMovable;
+        if ((lMovable = oGameObject.GetComponent<MovableEntity>()) != null) {
+            // Object need to be oriented to have consistency in displacement
+            // We need to add a parent to setting up the orientation offset
+            GameObject lOffsetRotation = new GameObject();
+            lOffsetRotation.name = "OffsetRotation";
+            // Put the new parent GameObject as a child of the parent of MovableEntity.
+            lOffsetRotation.transform.parent = oGameObject.transform.parent;
+            // Put this MovableEntity as a child of the new parent GameObject
+            oGameObject.transform.parent = mCenteredParent.transform;
+
+            // Restore the offset placement of the MovableEntity regarding the new parent.
+            oGameObject.transform.position = Vector3.zero;
+            oGameObject.transform.localPosition = -lBounds.center;
+
+            // Setting the offset placement of the new parent
+            oGameObject.transform.parent.transform.position = Vector3.zero;
+            oGameObject.transform.parent.transform.localPosition = Vector3.zero;
+            oGameObject.transform.parent.transform.rotation = Quaternion.Euler(lMovable.OrientationOffset);
+            // -------------------------------
+        }
 
 		return oGameObject;
 	}
