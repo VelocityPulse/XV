@@ -5,11 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
-public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IDragHandler {
+public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IDragHandler, IEndDragHandler {
 
     private RectTransform mTrackRectTransform;
 	private RectTransform mRectTransform;
-	private UITrack mTrack;
 	private float mOffset;
 	public static float sSizeMin = 25F;
 
@@ -28,18 +27,15 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 
 	public float Size
 	{
-		get { return mRectTransform.sizeDelta.x; }
-		set
-		{
-			mRectTransform.sizeDelta = new Vector2(value, mRectTransform.sizeDelta.y);
-			FitInPlace();
-		}
+		get { return mRectTransform.rect.size.x; }
 	}
+
+	public UITrack Track { get; private set; }
 
     private void Awake() {
         mTrackRectTransform = transform.parent as RectTransform;
 		mRectTransform = transform as RectTransform;
-		mTrack = transform.GetComponentInParent<UITrack>();
+		Track = transform.GetComponentInParent<UITrack>();
     }
 
     public void OnPointerDown(PointerEventData iData) {
@@ -61,15 +57,19 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 			lLocalPointerPosition.x = Mathf.Clamp(lLocalPointerPosition.x, lXMin, lXMax);
 			lLocalPointerPosition.y = 0F;
             mRectTransform.localPosition = lLocalPointerPosition + new Vector2(mOffset, 0F);
-			ResizedFromUI();
         }
     }
+
+	public void OnEndDrag(PointerEventData iData)
+	{
+		FitInPlace();
+	}
 
 	public void OnPointerClick(PointerEventData iData)
 	{
 		if (iData.button == PointerEventData.InputButton.Middle) {
-			if (mTrack != null) {
-				mTrack.DeleteClip(this);
+			if (Track != null) {
+				Track.DeleteClip(this);
 			}
 		}
 	}
@@ -77,45 +77,49 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	public void Build(float iSize, float iPosition)
 	{
 		mRectTransform.localPosition = new Vector3(iPosition, 0F, 0F);
-		Size = iSize;
-	}
-
-	public void ResizedFromUI()
-	{
-		TimelineEvent.Data lEventData = new TimelineEvent.Data(mTrack.ID, TimelineEvent.Source.FROM_UI);
-		lEventData.ClipIndex = mTrack.GetIndex(this);
-		lEventData.ClipStart = TimelineUtility.ClipPositionToStart(mRectTransform.anchoredPosition.x, mTrack.GetLimits());
-		lEventData.ClipLength = TimelineUtility.ClipSizeToDuration(mRectTransform.rect.size.x, mTrack.Size);
-		TimelineEvent.OnResizeClip(lEventData);
+		mRectTransform.sizeDelta = new Vector2(iSize, mRectTransform.sizeDelta.y);
 	}
 
 	private void FitInPlace()
 	{
-		float lPotentialSize = GetRightLimit() - GetLeftLimit();
+		float lRightLimit = GetRightLimit();
+		float lLeftLimit = GetLeftLimit();
+		float lPotentialSize = lRightLimit - lLeftLimit;
+		float lOffset;
 		if (lPotentialSize < Size) {
 			mRectTransform.sizeDelta = new Vector2(lPotentialSize, mRectTransform.sizeDelta.y);
 		}
-		if (mRectTransform.localPosition.x - Size / 2F < GetLeftLimit()) {
-			float lOffset = GetLeftLimit() - (mRectTransform.localPosition.x - Size / 2F);
-			mRectTransform.anchoredPosition += new Vector2(lOffset, 0F);
+		if (mRectTransform.localPosition.x - Size / 2F < lLeftLimit) {
+			lOffset = lLeftLimit - (mRectTransform.localPosition.x - Size / 2F);
+			mRectTransform.localPosition += new Vector3(lOffset, 0F, 0F);
 		}
-		if (mRectTransform.localPosition.x + Size / 2F > GetRightLimit()) {
-			float lOffset = (mRectTransform.localPosition.x + Size / 2F) - GetRightLimit();
-			mRectTransform.anchoredPosition -= new Vector2(lOffset, 0F);
+		if (mRectTransform.localPosition.x + Size / 2F > lRightLimit) {
+			lOffset = (mRectTransform.localPosition.x + Size / 2F) - lRightLimit;
+			mRectTransform.localPosition -= new Vector3(lOffset, 0F, 0F);
 		}
+		ResizeEvent();
+	}
+
+	public void ResizeEvent()
+	{
+		TimelineEvent.Data lEventData = new TimelineEvent.Data(Track.ID);
+		lEventData.ClipIndex = Track.GetIndex(this);
+		lEventData.ClipLength = TimelineUtility.ClipSizeToDuration(mRectTransform.rect.size.x, Track.Size);
+		lEventData.ClipStart = TimelineUtility.ClipPositionToStart(mRectTransform.localPosition.x, Track.GetLimits()) - lEventData.ClipLength / 2F;
+		TimelineEvent.OnUIResizeClip(lEventData);
 	}
 
 	public float GetLeftLimit()
 	{
 		float lLeftLimit = 0F;
-		if (mTrack != null) {
-			int lClipIndex = mTrack.GetPreviousAtPosition(transform.localPosition.x);
-			UIClip lPreviousClip = mTrack.GetClip(lClipIndex);
+		if (Track != null) {
+			int lClipIndex = Track.GetPreviousAtPosition(transform.localPosition.x);
+			UIClip lPreviousClip = Track.GetClip(lClipIndex);
 			if (lPreviousClip != null) {
 				lLeftLimit = lPreviousClip.transform.localPosition.x + lPreviousClip.Size / 2.0F;
 			}
 			else {
-				lLeftLimit = mTrack.GetLimits().x;
+				lLeftLimit = Track.GetLimits().x;
 			}
 		}
 		return lLeftLimit;
@@ -124,14 +128,14 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	public float GetRightLimit()
 	{
 		float lRightLimit = 0F;
-		if (mTrack != null) {
-			int lClipIndex = mTrack.GetNextAtPosition(transform.localPosition.x);
-			UIClip lNextClip = mTrack.GetClip(lClipIndex);
+		if (Track != null) {
+			int lClipIndex = Track.GetNextAtPosition(transform.localPosition.x);
+			UIClip lNextClip = Track.GetClip(lClipIndex);
 			if (lNextClip != null) {
 				lRightLimit = lNextClip.transform.localPosition.x - lNextClip.Size / 2.0F;
 			}
 			else {
-				lRightLimit = mTrack.GetLimits().y;
+				lRightLimit = Track.GetLimits().y;
 			}
 		}
 		return lRightLimit;

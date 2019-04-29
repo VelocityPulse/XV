@@ -14,16 +14,18 @@ public class UITimeline : MonoBehaviour {
 
 	private void OnEnable()
 	{
-		TimelineEvent.AddTrackEvent += NewTrack;
-		TimelineEvent.AddClipEvent += AddClipToTrack;
-		TimelineEvent.ResizeClipEvent += ResizeClipFromTrack;
+		TimelineEvent.AddTrackEvent += AddTrack;
+		TimelineEvent.DeleteTrackEvent += DeleteTrack;
+		TimelineEvent.AddClipEvent += AddClip;
+		TimelineEvent.ResizeClipEvent += ResizeClip;
 	}
 
 	private void OnDisable()
 	{
-		TimelineEvent.AddTrackEvent -= NewTrack;
-		TimelineEvent.AddClipEvent -= AddClipToTrack;
-		TimelineEvent.ResizeClipEvent -= ResizeClipFromTrack;
+		TimelineEvent.AddTrackEvent -= AddTrack;
+		TimelineEvent.DeleteTrackEvent -= DeleteTrack;
+		TimelineEvent.AddClipEvent -= AddClip;
+		TimelineEvent.ResizeClipEvent -= ResizeClip;
 	}
 
 	private void Start()
@@ -33,43 +35,41 @@ public class UITimeline : MonoBehaviour {
 		mAnimator = GetComponent<Animator>();
 	}
 
-	private void NewTrack(TimelineEvent.Data iData)
+	private void AddTrack(TimelineEvent.Data iData)
 	{
 		if (!mAnimator.GetBool("IsVisible")) {
 			ToggleVisibility();
 		}
 		UITrack lNewTrack = Instantiate(mUITrackPrefab, contentPanel);
 		lNewTrack.ID = iData.TrackID;
-		lNewTrack.Name = iData.TrackID.ToString();
+		lNewTrack.Name = TimelineManager.Instance.GetObjectFromID(iData.TrackID).name;
 		mTracks.Add(lNewTrack);
 	}
 
-	private void DeleteTrack()
+	private void DeleteTrack(TimelineEvent.Data iData)
 	{
 		if (!mAnimator.GetBool("IsVisible")) {
 			ToggleVisibility();
 		}
-		GameObject lTrack = mTracks[0].gameObject;
+		UITrack lTrack = mTracks.Find(iTrack => iTrack.ID == iData.TrackID);
 		if (lTrack != null) {
-			Destroy(lTrack);
+			Destroy(lTrack.gameObject);
 		}
 	}
 	
-	private void AddClipToTrack(TimelineEvent.Data iData)
+	private void AddClip(TimelineEvent.Data iData)
 	{
-		foreach (UITrack lTrack in mTracks) {
-			if (lTrack.ID == iData.TrackID) {
-				lTrack.AddClip(iData.ClipStart, iData.ClipLength);
-			}
+		UITrack lTrack = mTracks.Find(iTrack => iTrack.ID == iData.TrackID);
+		if (lTrack != null) {
+			lTrack.AddClip(iData.ClipStart, iData.ClipLength);
 		}
 	}
 
-	private void ResizeClipFromTrack(TimelineEvent.Data iData)
+	private void ResizeClip(TimelineEvent.Data iData)
 	{
-		foreach (UITrack lTrack in mTracks) {
-			if (lTrack.ID == iData.TrackID) {
-				lTrack.ResizeClip(iData.ClipIndex, iData.ClipStart, iData.ClipLength);
-			}
+		UITrack lTrack = mTracks.Find(iTrack => iTrack.ID == iData.TrackID);
+		if (lTrack != null) {
+			lTrack.ResizeClip(iData.ClipIndex, iData.ClipStart, iData.ClipLength);
 		}
 	}
 
@@ -83,7 +83,7 @@ public class UITimeline : MonoBehaviour {
 	{
 		GameObject lObject = new GameObject("TimelineBoundObject");
 		lObject.AddComponent<Animator>();
-		TimelineManager.Instance.AddAnimation(lObject, new AnimationClip());
+		TimelineManager.Instance.AddClip(lObject, new AnimationClip());
 	}
 
 }

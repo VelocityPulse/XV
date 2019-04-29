@@ -52,7 +52,7 @@ public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandl
 
 	public void OnEndDrag(PointerEventData iData)
 	{
-		mClip.ResizedFromUI();
+		mClip.ResizeEvent();
 	}
 
 	private float GetRawResizeValue()

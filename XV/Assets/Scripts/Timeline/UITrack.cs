@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
 
-public class UITrack : MonoBehaviour, IPointerClickHandler {
-
+public class UITrack : MonoBehaviour /*, IPointerClickHandler*/
+{
 	private List<UIClip> mClips;
 
 	private AnimationTrack mTrack;
@@ -42,24 +42,6 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "UIClip");
 	}
 
-/*
-	private float GetClipRealSize(double iClipLength)
-	{
-		double lTotalDuration = TimelineManager.Instance.Duration;
-		float lTotalSize = mRectTransform.rect.size.x;
-		float lWantedSize = ((float)iClipLength * lTotalSize) / (float)lTotalDuration;
-		return lWantedSize;
-	}
-
-	private float GetClipRealStartPosition(double iClipStart)
-	{
-		Vector2 lLimits = GetLimits();
-		double lTotalDuration = TimelineManager.Instance.Duration;
-		float lClipStartPosition = (float)iClipStart * (lLimits.y - lLimits.x) / ((float)lTotalDuration) + lLimits.x;
-		return lClipStartPosition;
-	}
- */
-
 	public void AddClip(double iStart, double iLength)
 	{
 		UIClip lClip = Instantiate(UIClipPrefab, mRectTransform);
@@ -84,17 +66,18 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 
 	public void DeleteClip(UIClip iClip)
 	{
+		TimelineEvent.Data lEventData = new TimelineEvent.Data(ID);
+		lEventData.ClipIndex = GetIndex(iClip);
 		if (mClips.Remove(iClip)) {
+			TimelineEvent.OnUIDeleteClip(lEventData);
 			Destroy(iClip.gameObject);
 		}
 	}
 
 	public void ResizeClip(int iClipIndex, double iClipStart, double iClipLength)
 	{
-		for (int lIndex = 0; lIndex < mClips.Count; lIndex++) {
-			if (lIndex == iClipIndex) {
-				BuildClip(mClips[lIndex], iClipStart, iClipLength);
-			}
+		if (mClips.Count > iClipIndex) {
+			BuildClip(mClips[iClipIndex], iClipStart, iClipLength);
 		}
 	}
 
@@ -146,12 +129,7 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 
 	public int GetIndex(UIClip iClip)
 	{
-		for (int lIndex = 0; lIndex < mClips.Count; lIndex++) {
-			if (mClips[lIndex] == iClip) {
-				return lIndex;
-			}
-		}
-		return -1;
+		return mClips.IndexOf(iClip);
 	}
 
 	public Vector2 GetLimits()
@@ -160,13 +138,16 @@ public class UITrack : MonoBehaviour, IPointerClickHandler {
 		return new Vector2(-lHalfSize, lHalfSize);
 	}
 
+// Removed possibility to add a clip by clicking on the track
+/*
 	public void OnPointerClick(PointerEventData iData)
 	{
 		Vector2 lLocalPointerPosition;
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(mRectTransform, iData.position, iData.pressEventCamera, out lLocalPointerPosition);
 		if (iData.button == PointerEventData.InputButton.Left) {
 			GameObject lObject = TimelineManager.Instance.GetObjectFromID(ID);
-			TimelineManager.Instance.AddAnimation(lObject, new AnimationClip());
+			TimelineManager.Instance.AddClip(lObject, new AnimationClip());
 		}
 	}
+ */
 }
