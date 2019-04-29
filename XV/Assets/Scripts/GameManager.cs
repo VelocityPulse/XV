@@ -148,64 +148,64 @@ public class GameManager : MonoBehaviour
 			// The set position is make in ObjectEntity after the hierachy rework Start();
 		}
 
+        // Retrieve parameters for this item
+        EntityParameters lParameters;
+        lParameters = oGameObject.GetComponent<EntityParameters>();
 
-        // --------------------- CENTERING OBJECT ENTITY
-        // Creating a new empty GameObject
-        GameObject mCenteredParent;
-        mCenteredParent = new GameObject();
+        // ---- Parent Creation ----
 
-        // Setting the future parent position to the center bound of the ObjectEntity
-        mCenteredParent.transform.position = oGameObject.transform.position + lBounds.center;
+        // Creating a new empty GameObject  - OffsetRotation Parent
+        GameObject lOffsetRotation = new GameObject();
+        lOffsetRotation.name = "ItemOffsetRotation";
+        lOffsetRotation.layer = oGameObject.layer;
 
-        // Put the ObjectEntity as a child of the new parent GameObject
-        oGameObject.transform.parent = mCenteredParent.transform;
-
-        // Setting the offset placement of the ObjectEntity regarding the new parent.
-        oGameObject.transform.position = Vector3.zero;
-        oGameObject.transform.localPosition = -lBounds.center;
-
-        // Setting new names
-        mCenteredParent.name = oGameObject.name;
-        oGameObject.name = oGameObject.name + "_mesh";
-        // ---------------------- CENTERING OBJECT ENTITY
+        // Creating a new empty GameObject - Highest Parent
+        GameObject lTopParent = new GameObject();
+        lTopParent.name = iODS.Name;
+        lTopParent.layer = oGameObject.layer;
 
 		// Setting positions
-		oGameObject.name = iODS.Name;
-		oGameObject.transform.position = iODS.Position;
-		oGameObject.transform.eulerAngles = iODS.Rotation;
-		oGameObject.transform.localScale = iODS.Scale;
+        lTopParent.transform.position = iODS.Position + lBounds.center;
 
-		// Setting GameEntity
-		oGameObject.AddComponent<ObjectEntity>()
-				   .InitDataScene(mDataScene)
-				   .StartAnimation(iAnimatedPopping)
-				   .SetObjectDataScene(iODS)
-				   .SetUIBubbleInfo(lUIBubbleInfo.GetComponent<UIBubbleInfo>())
-				   .SaveEntity()
-				   .SetSize(lBounds.size)
-				   .SetCenter(lBounds.center);
+        // Put the OffsetRotation as a child of the TopParent GameObject
+        lOffsetRotation.transform.parent = lTopParent.transform;
 
-        MovableEntity lMovable;
-        if ((lMovable = oGameObject.GetComponent<MovableEntity>()) != null) {
-            // Object need to be oriented to have consistency in displacement
-            // We need to add a parent to setting up the orientation offset
-            GameObject lOffsetRotation = new GameObject();
-            lOffsetRotation.name = "OffsetRotation";
-            // Put the new parent GameObject as a child of the parent of MovableEntity.
-            lOffsetRotation.transform.parent = oGameObject.transform.parent;
-            // Put this MovableEntity as a child of the new parent GameObject
-            oGameObject.transform.parent = mCenteredParent.transform;
+        // Setting positions
+        lOffsetRotation.transform.position = Vector3.zero;
+        lOffsetRotation.transform.localPosition = Vector3.zero;
+        if (lParameters != null)
+            lOffsetRotation.transform.rotation = Quaternion.Euler(lParameters.Orientation);
+        else
+            lOffsetRotation.transform.rotation = Quaternion.Euler(Vector3.zero);
 
-            // Restore the offset placement of the MovableEntity regarding the new parent.
-            oGameObject.transform.position = Vector3.zero;
-            oGameObject.transform.localPosition = -lBounds.center;
+        // Put the ObjectEntity as a child of the OffsetRotation GameObject
+        oGameObject.transform.parent = lOffsetRotation.transform;
 
-            // Setting the offset placement of the new parent
-            oGameObject.transform.parent.transform.position = Vector3.zero;
-            oGameObject.transform.parent.transform.localPosition = Vector3.zero;
-            oGameObject.transform.parent.transform.rotation = Quaternion.Euler(lMovable.OrientationOffset);
-            // -------------------------------
+        // Setting the offset placement of the ObjectEntity regarding the new parent.
+        //oGameObject.transform.position = iODS.Position;
+        oGameObject.transform.localEulerAngles = Vector3.zero;
+        oGameObject.transform.localPosition = -lBounds.center;
+        oGameObject.name = iODS.Name + "_mesh";
+        oGameObject.transform.localScale = iODS.Scale;
+
+        // Setting GameEntity
+        oGameObject.AddComponent<ObjectEntity>()
+                   .InitDataScene(mDataScene)
+                   .StartAnimation(iAnimatedPopping)
+                   .SetObjectDataScene(iODS)
+                   .SetUIBubbleInfo(lUIBubbleInfo.GetComponent<UIBubbleInfo>())
+                   .SaveEntity()
+                   .SetSize(lBounds.size)
+                   .SetCenter(lBounds.center)
+                   .SetParent(lTopParent, lOffsetRotation);
+
+        // If this item can move - Add MovableEntity script
+        if (lParameters != null && lParameters.Movable) {
+            oGameObject.AddComponent<MovableEntity>()
+                       .SetParent(lTopParent, lOffsetRotation);
         }
+
+        Utils.SetLayerRecursively(lTopParent, LayerMask.NameToLayer("dropable"));
 
 		return oGameObject;
 	}

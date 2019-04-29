@@ -1090,6 +1090,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4944388848161974}
+  - component: {fileID: 114620619684105338}
   m_Layer: 9
   m_Name: ConvPCStyle2
   m_TagString: Untagged
@@ -3748,3 +3749,17 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300034, guid: 4087998bb7dad458c83309965b6f7290, type: 3}
+--- !u!114 &114620619684105338
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1932529794955854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1602f39823932499b9ed7d1e04d0f1b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TypeOf: 3
+  CanMove: 0
+  RotationOffset: {x: 0, y: 0, z: 0}

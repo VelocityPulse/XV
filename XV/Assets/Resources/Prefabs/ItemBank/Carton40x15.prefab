@@ -247,6 +247,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4796403991301536}
+  - component: {fileID: 114207419034028180}
   m_Layer: 9
   m_Name: Carton40x15
   m_TagString: Untagged
@@ -1059,3 +1060,16 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300010, guid: e3f3126b1029146d6b54ccb8822f2d32, type: 3}
+--- !u!114 &114207419034028180
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1845456175158096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1602f39823932499b9ed7d1e04d0f1b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CanMove: 0
+  RotationOffset: {x: 0, y: 0, z: 0}

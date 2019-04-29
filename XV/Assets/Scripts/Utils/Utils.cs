@@ -40,29 +40,30 @@ public static class Utils {
         return true;
     }
 
-    public static Vector3 FindCentroid (List<Vector3> iPoints)
+    public static bool BrowseChildRecursively(GameObject obj, Action<GameObject> iDo)
     {
-        Vector3 centroid;
-        Vector3 minPoint = iPoints[0];
-        Vector3 maxPoint = iPoints[0];
- 
-        for ( int i = 1; i < iPoints.Count; i ++ ) {
-             if( iPoints[i].x < minPoint.x )
-                 minPoint.x = iPoints[i].x;
-             if( iPoints[i].x > maxPoint.x )
-                 maxPoint.x = iPoints[i].x;
-             if( iPoints[i].y < minPoint.y )
-                 minPoint.y = iPoints[i].y;
-             if( iPoints[i].y > maxPoint.y )
-                 maxPoint.y = iPoints[i].y;
-             if( iPoints[i].z < minPoint.z )
-                 minPoint.z = iPoints[i].z;
-             if( iPoints[i].z > maxPoint.z )
-                 maxPoint.z = iPoints[i].z;
-         }
-         centroid = minPoint + 0.5f * ( maxPoint - minPoint );
-         return centroid;
-     }
+        if (obj == null)
+            return false;
+        iDo(obj);
+        foreach (Transform child in obj.transform) {
+            if (child == null)
+                continue;
+            BrowseChildRecursively(child.gameObject, iDo);
+        }
+        return true;
+    }
+
+    public static Bounds ComputeBoundingBox(GameObject iGameObject)
+    {
+        // Getting size and center
+        MeshFilter[] lElementMeshs = iGameObject.GetComponentsInChildren<MeshFilter>();
+        Bounds oBounds = new Bounds(Vector3.zero, Vector3.zero);
+        foreach (MeshFilter lMesh in lElementMeshs) {
+            // Bound mesh
+            oBounds.Encapsulate(lMesh.sharedMesh.bounds);
+        }
+        return oBounds;
+    }
 
     // Try to load all AssetBundle present in iPath
     // If iPath is not a directory, the iPath is used as an AssetBundle path

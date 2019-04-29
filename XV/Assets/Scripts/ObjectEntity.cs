@@ -41,6 +41,7 @@ public class ObjectEntity : MonoBehaviour
     private Vector3 mCenter;
     private Vector3 mSize;
     private GameObject mCenteredParent;
+    private GameObject mOffsetRotationParent;
 
     public Vector3 Size
     {
@@ -92,28 +93,11 @@ public class ObjectEntity : MonoBehaviour
 		// Set tag
 		gameObject.tag = TAG;
 
-		// --------------------- CENTERING OBJECT ENTITY
-		// Creating a new empty GameObject
-		mCenteredParent = new GameObject();
+        mCenteredParent = transform.parent.gameObject.transform.parent.gameObject;
 
-		// Setting the future parent position to the center bound of the ObjectEntity
-		mCenteredParent.transform.position = transform.position + mCenter;
-		// Put the ObjectEntity as a child of the new parent GameObject
-		transform.parent = mCenteredParent.transform;
+        mUIBubbleInfo.GetComponent<RectTransform>().localPosition = new Vector3(mCenter.x, mSize.y + 1, mCenter.z);
 
-		// Setting the offset placement of the ObjectEntity regarding the new parent.
-		transform.position = Vector3.zero;
-		transform.localPosition = -mCenter;
-
-		// Setting new names
-		mCenteredParent.name = name;
-		name = name + "_mesh";
-		// ---------------------- CENTERING OBJECT ENTITY
-
-
-		mUIBubbleInfo.GetComponent<RectTransform>().localPosition = new Vector3(mCenter.x, mSize.y + 1, mCenter.z);
-
-		StartCoroutine(PostPoppingAsync());
+        StartCoroutine(PostPoppingAsync());
 	}
 
 	void Update()
@@ -156,8 +140,7 @@ public class ObjectEntity : MonoBehaviour
 
 			RaycastHit lHit;
 			Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-			if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
+            if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
 				Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
 
 				lHit.point = new Vector3(lHit.point.x, mCenter.y, lHit.point.z);
@@ -324,6 +307,16 @@ public class ObjectEntity : MonoBehaviour
 		mSize = iVector;
 		return this;
 	}
+
+    public ObjectEntity SetParent(GameObject iTopParent, GameObject iOffsetRotationParent)
+    {
+        mCenteredParent = iTopParent;
+        mCenteredParent.tag = TAG;
+
+        mOffsetRotationParent = iOffsetRotationParent;
+        mOffsetRotationParent.tag = TAG;
+        return this;
+    }
 
 	public ObjectEntity SaveEntity()
 	{

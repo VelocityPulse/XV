@@ -58,11 +58,11 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
                 mSelectedElement.transform.position = lHit.point;
                 mSelectedElement.transform.position += 
-					(mSelectedElement.transform.position - mSelectedElement.transform.TransformPoint(mCentroid));
+                    (mSelectedElement.transform.position - mSelectedElement.transform.TransformPoint(mCentroid));
                 // new at each drag ... find a way to update position.y without new
 
                 mSelectedElement.transform.position = new Vector3(
-					mSelectedElement.transform.position.x, lHit.point.y, mSelectedElement.transform.position.z);
+                    mSelectedElement.transform.position.x, lHit.point.y, mSelectedElement.transform.position.z);
             }
         }
     }
@@ -74,12 +74,11 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             Name = mElementText.text,
             Type = Model.Type,
             Position = mSelectedElement.transform.position,
-            Rotation = mSelectedElement.transform.rotation.eulerAngles,
+            Rotation = Model.GameObject.transform.rotation.eulerAngles,
             Scale = mSelectedElement.transform.localScale,
         };
 
-        GameObject lRet = GameManager.Instance.BuildObject(lODS);
-        Utils.SetLayerRecursively(lRet, LayerMask.NameToLayer("dropable"));
+        GameManager.Instance.BuildObject(lODS);
 		Destroy(mSelectedElement);
     }
 
@@ -88,14 +87,27 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (mSelectedElement != null)
             return;
-        mSelectedElement = Instantiate(Model.GameObject);
+
+        // Instantiate temporary object during drag & drop, it will follow mouse
+        if ((mSelectedElement = Instantiate(Model.GameObject)) == null)
+            return;
+
+        // Retrieve parameters for this item
+        EntityParameters lParameters;
+        if ((lParameters = mSelectedElement.GetComponent<EntityParameters>()) != null) {
+            // Update orientation
+            mSelectedElement.transform.eulerAngles = lParameters.Orientation;
+        }
+
         mSelectedElement.SetActive(false);
         Utils.SetLayerRecursively(mSelectedElement, LayerMask.NameToLayer("Ignore Raycast"));
 
         List<Vector3> lPoints = new List<Vector3>();
-        MeshFilter[] lElementMeshs = mSelectedElement.GetComponentsInChildren<MeshFilter>();
-        foreach (MeshFilter lMesh in lElementMeshs)
-            lPoints.Add(lMesh.mesh.bounds.center);
-        mCentroid = Utils.FindCentroid(lPoints);
+        if (lPoints == null) {
+            Debug.LogError("[UI_MODEL] Allocation Error.");
+            return;
+        }
+
+        mCentroid = Utils.ComputeBoundingBox(mSelectedElement).center;
     }
 }

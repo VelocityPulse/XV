@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ObjectEntity
   - BubbleInfo
+  - scene
   layers:
   - Default
   - TransparentFX
