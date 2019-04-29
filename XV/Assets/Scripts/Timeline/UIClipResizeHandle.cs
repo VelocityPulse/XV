@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
-public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandler, IEndDragHandler {
-
+public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandler
+{
 	private RectTransform mRectTransform;
 
 	public enum HandleSide { HANDLE_LEFT, HANDLE_RIGHT }
@@ -48,11 +48,7 @@ public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandl
 			Resize(lSizeDelta, lResizeValue);
 		}
 		mPreviousPointerPos = mCurrentPointerPos;
-	}
-
-	public void OnEndDrag(PointerEventData iData)
-	{
-		mClip.ResizeEvent();
+		mClip.ResizeEvent(0F);
 	}
 
 	private float GetRawResizeValue()

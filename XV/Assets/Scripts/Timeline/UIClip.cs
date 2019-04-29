@@ -5,8 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
-public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IDragHandler, IEndDragHandler {
-
+public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IDragHandler
+{
     private RectTransform mTrackRectTransform;
 	private RectTransform mRectTransform;
 	private float mOffset;
@@ -57,13 +57,9 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 			lLocalPointerPosition.x = Mathf.Clamp(lLocalPointerPosition.x, lXMin, lXMax);
 			lLocalPointerPosition.y = 0F;
             mRectTransform.localPosition = lLocalPointerPosition + new Vector2(mOffset, 0F);
+			ResizeEvent(Time.deltaTime);
         }
     }
-
-	public void OnEndDrag(PointerEventData iData)
-	{
-		FitInPlace();
-	}
 
 	public void OnPointerClick(PointerEventData iData)
 	{
@@ -97,15 +93,16 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 			lOffset = (mRectTransform.localPosition.x + Size / 2F) - lRightLimit;
 			mRectTransform.localPosition -= new Vector3(lOffset, 0F, 0F);
 		}
-		ResizeEvent();
+		ResizeEvent(0F);
 	}
 
-	public void ResizeEvent()
+	public void ResizeEvent(float iStartGrow)
 	{
 		TimelineEvent.Data lEventData = new TimelineEvent.Data(Track.ID);
 		lEventData.ClipIndex = Track.GetIndex(this);
 		lEventData.ClipLength = TimelineUtility.ClipSizeToDuration(mRectTransform.rect.size.x, Track.Size);
 		lEventData.ClipStart = TimelineUtility.ClipPositionToStart(mRectTransform.localPosition.x, Track.GetLimits()) - lEventData.ClipLength / 2F;
+		lEventData.ClipStart += iStartGrow;
 		TimelineEvent.OnUIResizeClip(lEventData);
 	}
 

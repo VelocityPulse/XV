@@ -863,7 +863,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.8936035}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0000076293945}
+  m_AnchoredPosition: {x: 0, y: 0.00000800259}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &205034734
@@ -1782,7 +1782,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000014052922}
+  m_AnchoredPosition: {x: 0, y: -0.00000013446933}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &542604965
@@ -5266,6 +5266,98 @@ PlayableDirector:
     value: {fileID: 0}
   - key: {fileID: 114523234094979774, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
     value: {fileID: 0}
+  - key: {fileID: 114921691211403384, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114277038623517690, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114118575408091762, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114230925371208716, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114659423119912826, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114103193845272816, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114789346089526460, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114134581130267222, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114451974005869562, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114461224312225998, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114823268138017884, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114031548716314524, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114438245251176976, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114608385410691738, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114119996494170428, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114532567586894446, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114539180918075514, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114282736022697676, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114647564375931994, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114859373444815300, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114953823475691976, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114381902490444052, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114310295835251812, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114962116876420234, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114005774982365460, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114295040911050166, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114568813645596092, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114117700776753672, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114264472811181772, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114072228286641064, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114966217618351694, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114444325187096700, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114988739681932104, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114500713172906396, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114024845021178016, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114271923525790324, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114885807574972752, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114863686759558982, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114642323814448496, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114272256334779392, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114797789747036024, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114046118246073166, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114747808437417136, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114902520133884838, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114740221706798662, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114371719683093180, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
 --- !u!1 &1457109222
@@ -6186,8 +6278,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 515308751}
   m_HandleRect: {fileID: 515308750}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
