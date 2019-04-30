@@ -213,9 +213,18 @@ public class ObjectEntity : MonoBehaviour
 
         oGhostObject = Instantiate(lGameObject, transform.position, transform.rotation, transform.parent);
 
-        Renderer[] renderers = oGhostObject.GetComponentsInChildren<Renderer>();
-        foreach (var r in renderers)
-            r.material = lGhostMaterial;
+        Utils.BrowseChildRecursively(oGhostObject, (iObject) => {
+
+            // Perform this action on each child of iObject, which is oGhostObject
+            Renderer r = iObject.GetComponent<Renderer>();
+            if (r != null) {
+                Material[] o = new Material[r.materials.Length];
+                for (int i = 0; i < o.Length; i++) {
+                    o.SetValue(lGhostMaterial, i);
+                }
+                r.materials = o;
+            }
+        });
 
         return oGhostObject;
     }
