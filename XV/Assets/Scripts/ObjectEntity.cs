@@ -184,12 +184,48 @@ public class ObjectEntity : MonoBehaviour
 		mUIBubbleInfo.SetInteractable(false);
 	}
 
-	public Button CreateBubleInfoButton(UIBubbleInfoButton iButtonInfo)
-	{
-		if (iButtonInfo == null)
-			return null;
-		return mUIBubbleInfo.CreateButton(iButtonInfo);
-	}
+    // This function Instantiate associated Model & make it child of OffsetRotation
+    // Then all material are replace by GhostMaterial
+    public GameObject CreateGhostObject()
+    {
+        GameObject lGameObject = null;
+        GameObject oGhostObject = null;
+        Material lGhostMaterial = null;
+
+        if ((lGhostMaterial = Resources.Load<Material>(GameManager.UI_MATERIAL + "Ghost")) == null) {
+            Debug.LogError("Load material : 'Ghost' failed.");
+            return null;
+        }
+
+        if (mODS.Type == ObjectDataSceneType.BUILT_IN) {
+            lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.Name);
+            if (lGameObject == null) {
+                Debug.LogError("Load prefab " + mODS.Name + " failed.");
+                return null;
+            }
+        } else {
+            lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.Name);
+            if (lGameObject == null) {
+                Debug.LogError("Load model " + mODS.Name + " failed.");
+                return null;
+            }
+        }
+
+        oGhostObject = Instantiate(lGameObject, transform.position, transform.rotation, transform.parent);
+
+        Renderer[] renderers = oGhostObject.GetComponentsInChildren<Renderer>();
+        foreach (var r in renderers)
+            r.material = lGhostMaterial;
+
+        return oGhostObject;
+    }
+
+    public Button CreateBubleInfoButton(UIBubbleInfoButton iButtonInfo) 
+    {
+        if (iButtonInfo == null)
+            return null;
+        return mUIBubbleInfo.CreateButton(iButtonInfo);
+    }
 
 	// Called by unity only !
 	public void OnDestroy()

@@ -73,13 +73,12 @@ using UnityEngine;
 */
 
 
-// Code generique permettant de feed la Timeline
-// (Ajout / Suppression d'animation/interaction, etc ...)
+// Classe comportant le code d'Interfacage avec le TimeLineManager
 
 public abstract class AInteraction : MonoBehaviour
 {
-    // Wait for TimelineManager
-    List<Predicate<bool>> mTimeline = new List<Predicate<bool>>();
+    // Pseudo timeline - List of action that represent the TimeLine of this object
+    List<Predicate<float>> mTimeline = new List<Predicate<float>>();
 
     private bool mIsBusy;
 
@@ -90,33 +89,36 @@ public abstract class AInteraction : MonoBehaviour
         mIsBusy = false;
 	}
 
-    protected void AddToTimeline(Predicate<bool> iAction, float iDuration)
+    // The action will be execute until the return value is not equal to true.
+    protected void AddToTimeline(Predicate<float> iAction, float iActionDuration)
     {
+        // Add to the pseudo timeline
         if (mTimeline != null)
             mTimeline.Add(iAction);
-        // Code Interface with TimelineManager
+
+        // Code the Interface with TimelineManager here
+        // ...
     }
 
-    // --------- Debug - Tmp func ----------------
-    // Wait for TimelineManager
+    // This function play all Action in the object Pseudo timeline
     protected void PlayTimeline()
     {
-        if (mTimeline == null)
-            return;
         mIsBusy = true;
- 
         StartCoroutine(ActionPlayerAsync(mTimeline));
     }
 
-    // This function browse and execute all of ActionClip
-    // When an ActionClip if finished, it return true, then the coroutine launch the next ActionClip
-    private IEnumerator ActionPlayerAsync(List<Predicate<bool>> iTimeline)
+    // This function browse and execute all Action in the pseudo timeline
+    // When an Action is finished, it return true, then the coroutine launch the next ActionClip
+    private IEnumerator ActionPlayerAsync(List<Predicate<float>> iTimeline)
     {
         if (iTimeline == null)
             yield break;
 
-        foreach (Predicate<bool> lActionClip in iTimeline) {
-            yield return new WaitUntil(() => { return lActionClip(true); });
+        yield return new WaitForSeconds(0.2F);
+
+        foreach (Predicate<float> lActionClip in iTimeline) {
+            yield return new WaitUntil(() => { return lActionClip(1F); });
+            yield return new WaitForSeconds(0.2F);
         }
         mIsBusy = false;
         mTimeline.Clear();

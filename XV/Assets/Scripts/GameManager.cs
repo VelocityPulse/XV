@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public const string UI_MATERIAL = "Materials/UI/";
+    public const string MODELS_MATERIAL = "Materials/Models/";
 	public const string ITEM_BANK_PATH = "Prefabs/ItemBank/";
 	public const string EXTERN_ITEM_BANK_PATH = "SavedData/Models/";
 	public const string UI_TEMPLATE_PATH = "Prefabs/UI/";
