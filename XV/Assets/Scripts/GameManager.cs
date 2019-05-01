@@ -10,9 +10,9 @@ public class GameManager : MonoBehaviour
 {
 	public const string ITEM_BANK_PATH = "Prefabs/ItemBank/";
 	public const string EXTERN_ITEM_BANK_PATH = "SavedData/Models/";
-    public const string UI_TEMPLATE_PATH = "Prefabs/UI/";
-    public const string UI_ICON_PATH = "Sprites/UI/Icons/";
-    public const string UI_MODEL_SPRITE_PATH = "Sprites/UI/ModelsSprites/";
+	public const string UI_TEMPLATE_PATH = "Prefabs/UI/";
+	public const string UI_ICON_PATH = "Sprites/UI/Icons/";
+	public const string UI_MODEL_SPRITE_PATH = "Sprites/UI/ModelsSprites/";
 
 	private static GameManager sInstance;
 	private static bool sLockInstance;
@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
 
 	public Texture2D RotationTexturCursor { get; private set; }
 
-    public bool KeyboardDeplacementActive { get; set; }
+	public bool KeyboardDeplacementActive { get; set; }
 
 	static public GameManager Instance
 	{
@@ -107,13 +107,13 @@ public class GameManager : MonoBehaviour
 		GameObject oGameObject = null;
 
 		if (iODS.Type == ObjectDataSceneType.BUILT_IN) {
-            oGameObject = ModelLoader.Instance.GetModelGameObject(iODS.Name);
+			oGameObject = ModelLoader.Instance.GetModelGameObject(iODS.Name);
 			if (oGameObject == null) {
 				Debug.LogError("Load prefab " + iODS.Name + " failed.");
 				return oGameObject;
 			}
 		} else {
-            oGameObject = ModelLoader.Instance.GetModelGameObject(iODS.Name);
+			oGameObject = ModelLoader.Instance.GetModelGameObject(iODS.Name);
 			if (oGameObject == null) {
 				Debug.LogError("Load model " + iODS.Name + " failed.");
 				return oGameObject;
@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour
 		GameObject lUIBubbleInfo;
 		if ((lUIBubbleInfo = Resources.Load<GameObject>("Prefabs/UI/UIBubbleInfo")) != null) {
 			lUIBubbleInfo = Instantiate(lUIBubbleInfo, oGameObject.transform);
-            // The set position is make in ObjectEntity after the hierachy rework Start();
+			// The set position is make in ObjectEntity after the hierachy rework Start();
 		}
 
 		// Setting positions
@@ -194,19 +194,23 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	public void SetCursorHandOver() {
+	public void SetCursorHandOver()
+	{
 		Cursor.SetCursor(OverTexturCursor, Vector2.zero, CursorMode.Auto);
 	}
 
-	public void SetCursorStandard() {
+	public void SetCursorStandard()
+	{
 		Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
 	}
 
-	public void SetCursorCatchedHand() {
+	public void SetCursorCatchedHand()
+	{
 		Cursor.SetCursor(CatchedTexturCursor, Vector2.zero, CursorMode.Auto);
 	}
 
-	public void SetCursorRotation() {
+	public void SetCursorRotation()
+	{
 		Cursor.SetCursor(RotationTexturCursor, Vector2.zero, CursorMode.Auto);
 	}
 }

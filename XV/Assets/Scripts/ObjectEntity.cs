@@ -189,17 +189,18 @@ public class ObjectEntity : MonoBehaviour
 		});
 	}
 
-    public Button CreateBubleInfoButton(UIBubbleInfoButton iButtonInfo) 
-    {
-        if (iButtonInfo == null)
-            return null;
-        return mUIBubbleInfo.CreateButton(iButtonInfo);
-    }
+	public Button CreateBubleInfoButton(UIBubbleInfoButton iButtonInfo)
+	{
+		if (iButtonInfo == null)
+			return null;
+		return mUIBubbleInfo.CreateButton(iButtonInfo);
+	}
 
 	// Called by unity only !
 	public void OnDestroy()
 	{
 		sAllEntites.Remove(this);
+		Destroy(mCenteredParent);
 	}
 
 	// Called by XV
