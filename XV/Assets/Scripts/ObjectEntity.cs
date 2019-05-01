@@ -132,7 +132,6 @@ public class ObjectEntity : MonoBehaviour
 				GameManager.Instance.SetCursorStandard();
 			mUIBubbleInfo.SetInteractable(true);
 			mControlPushed = false;
-
 		}
 
 		// Rotation section
@@ -192,6 +191,8 @@ public class ObjectEntity : MonoBehaviour
 				RemoveEntity();
 			}
 		});
+
+		mUIBubbleInfo.SetInteractable(false);
 	}
 
 	public Button CreateBubleInfoButton(UIBubbleInfoButton iButtonInfo)
@@ -369,9 +370,8 @@ public class ObjectEntity : MonoBehaviour
 			mMouseDragObjectEntity = false;
 			if (mMouseOverObjectEntity)
 				GameManager.Instance.SetCursorHandOver();
-			else {
+			else
 				GameManager.Instance.SetCursorStandard();
-			}
 			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("dropable"));
 		}
 

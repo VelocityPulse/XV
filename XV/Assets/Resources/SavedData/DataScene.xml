@@ -3,12 +3,32 @@
   <DataObjects>
     <ObjectDataScene>
       <Name>Palette</Name>
-      <GUID>0a71890e-9874-4190-96b1-a7f31341a7c0</GUID>
+      <GUID>818f13e4-bcdf-460d-b829-132208183594</GUID>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>1.370011</x>
+        <x>2.25735712</x>
         <y>0</y>
-        <z>-0.716008842</z>
+        <z>-0.0077791214</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>Palette</Name>
+      <GUID>d6659b2e-579d-4332-b30a-79ff01572ef4</GUID>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>1.19233</x>
+        <y>0</y>
+        <z>-0.313046515</z>
       </Position>
       <Rotation>
         <x>0</x>

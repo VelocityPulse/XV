@@ -29,6 +29,7 @@ public class UIBubbleInfo : MonoBehaviour
 		mButtons = new List<Button>();
 		mCanvasGroup = GetComponent<CanvasGroup>();
 		mCanvasGroup.alpha = 0F;
+		mCanvasGroup.blocksRaycasts = false;
 	}
 
 	// Update is called once per frame
@@ -93,12 +94,16 @@ public class UIBubbleInfo : MonoBehaviour
 	public void Display()
 	{
 		mDisplayed = true;
+		SetInteractable(true);
+		mCanvasGroup.blocksRaycasts = true;
 		StartCoroutine(FadeToAsync(1F, 0.4F));
 	}
 
 	public void Hide()
 	{
 		mDisplayed = false;
+		SetInteractable(false);
+		mCanvasGroup.blocksRaycasts = false;
 		StartCoroutine(FadeToAsync(0F, 0.4F));
 	}
 
