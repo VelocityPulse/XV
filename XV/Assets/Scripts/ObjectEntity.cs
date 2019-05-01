@@ -43,6 +43,11 @@ public class ObjectEntity : MonoBehaviour
     private GameObject mCenteredParent;
     private GameObject mOffsetRotationParent;
 
+    public bool IsBusy
+    {
+        get { return mBusy; }
+    }
+
     public Vector3 Size
     {
         get { return mSize; }
@@ -83,8 +88,12 @@ public class ObjectEntity : MonoBehaviour
 		}
 	}
 
+    private List<Action> mPostPoppingAction = new List<Action>();
+
+    public List<Action> PostPoppingAction { get { return mPostPoppingAction; } }
+
 	void Start()
-	{
+    {
 		// Adding this to all ObjectEntities
 		if (sAllEntites == null)
 			sAllEntites = new List<ObjectEntity>();
@@ -181,7 +190,25 @@ public class ObjectEntity : MonoBehaviour
 			}
 		});
 
+        // Add a Nav Mesh obstacle on each object
+        NavMeshObstacle lObstacle;
+        if ((lObstacle = transform.gameObject.AddComponent<NavMeshObstacle>()) != null) {
+            lObstacle.center = mCenter;
+            lObstacle.size = mSize;
+            lObstacle.carving = true;
+            float limit = 0F;
+            if (lObstacle.size.y < 0.2F) {
+                lObstacle.size = new Vector3(lObstacle.size.x, lObstacle.size.y + limit, lObstacle.size.z);
+                lObstacle.center = new Vector3(lObstacle.center.x, lObstacle.center.y + (limit / 2), lObstacle.center.z);
+            }
+        }
+
 		mUIBubbleInfo.SetInteractable(false);
+
+        foreach (Action lAction in PostPoppingAction) {
+            if (lAction != null)
+                lAction();
+        }
 	}
 
     // This function Instantiate associated Model & make it child of OffsetRotation

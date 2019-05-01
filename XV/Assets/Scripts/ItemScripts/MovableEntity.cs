@@ -25,7 +25,7 @@ public sealed class MovableEntity : AInteraction
 
     private const float ROT_SPEED = 500F;
 
-    private ObjectEntity mEntity;
+    private ObjectEntity mObjectEntity;
 
     private Image mMoveButtonColor;
 
@@ -60,80 +60,78 @@ public sealed class MovableEntity : AInteraction
         return this;
     }
 
+    public MovableEntity SetObjectEntity(ObjectEntity iObjectEntity)
+    {
+        mObjectEntity = iObjectEntity;
+        Debug.Log(mObjectEntity == null);
+
+        // Add all this code to the PostPopping callback of ObjectEntity
+        mObjectEntity.PostPoppingAction.Add(() => {
+
+            // Execute this at the next frame
+            StartCoroutine(Utils.WaitNextFrameAsync<ObjectEntity>((iObj) => {
+
+                // Add Move button & Keep track of the button image to edit color
+                Button lButton;
+                Debug.Log(iObj == null);
+                lButton = iObj.CreateBubleInfoButton(new UIBubbleInfoButton {
+                    Text = "Move",
+                    ClickAction = (iObject) => {
+                        Debug.LogWarning("Deplacer: " + iObject.name + " has been clicked");
+                        OnMoveClick();
+                    }
+                });
+                mMoveButtonColor = lButton.GetComponent<Image>();
+
+                // Add Rotate Button & Keep track of the button image to edit color
+                lButton = iObj.CreateBubleInfoButton(new UIBubbleInfoButton {
+                    Text = "Rotate",
+                    ClickAction = (iObject) => {
+                        Debug.LogWarning("Orienter: " + iObject.name + " has been clicked");
+                        OnRotateClick();
+                    }
+                });
+                mRotateButtonColor = lButton.GetComponent<Image>();
+
+
+                // Add NavMeshAgent to move the object
+                if ((mAgent = mCenteredParent.AddComponent<NavMeshAgent>()) != null) {
+                    // Agent radius is the biggest size of the bounding box
+                    mAgent.radius = (iObj.Size.x > iObj.Size.z) ? (iObj.Size.x / 2) : (iObj.Size.z / 2);
+                    // Increase a little the radius to avoid limit of a mesh
+                    mAgent.radius += 0.1F;
+                    // Adjust the cylinder with the height position
+                    mAgent.baseOffset = -transform.position.y;
+                    // Add a limit to the target destination
+                    mAgent.stoppingDistance = LIMIT;
+                    // Disable it until is not use
+                    mAgent.enabled = false;
+                }
+
+                // Get the NavMeshObstacle to perform mutual exclusion with NavMeshAgent
+                mEntityObstacle = GetComponent<NavMeshObstacle>();
+
+                // ------ TMP CODE PLAY BUTTON TO PLAY ANIMATION CLICKED -----
+                // Debug buttton to execute each actions
+                iObj.CreateBubleInfoButton(new UIBubbleInfoButton {
+                    Text = "Play",
+                    ClickAction = (iObject) => {
+                        if (!TimeLineIsBusy) {
+                            Debug.LogWarning("Play clicked");
+                            PlayTimeline();
+                        }
+                    }
+                });
+                // ------ END TMP CODE ---
+            }, mObjectEntity));
+        });
+        return this;
+    }
+
     private void Start()
     {
         mEditionMode = EditionMode.NONE;
-        mEntity = null;
-        mMoveButtonColor = null;
-        mRotateButtonColor = null;
         mUITargetTemplate = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "UITarget");
-        StartCoroutine(PostPoppingAsync());
-    }
-
-    private IEnumerator PostPoppingAsync()
-    {
-        // Waiting the end of the GameManager initialization of this class
-        yield return new WaitForEndOfFrame();
-
-        // Get the ObjectEntity script
-        if ((mEntity = GetComponentInChildren<ObjectEntity>()) == null) {
-            yield break;
-        }
-
-        // Waiting the end of the ObjectEntity initialization
-        yield return new WaitWhile(() => { return mEntity.IsPopping; });
-
-        // Add Move button & Keep track of the button image to edit color
-        Button lButton;
-        lButton = mEntity.CreateBubleInfoButton(new UIBubbleInfoButton {
-            Text = "Move",
-            ClickAction = (iObjectEntity) => {
-                Debug.LogWarning("Deplacer: " + iObjectEntity.name + " has been clicked");
-                OnMoveClick();
-            }
-        });
-        mMoveButtonColor = lButton.GetComponent<Image>();
-
-        // Add Rotate Button & Keep track of the button image to edit color
-        lButton = mEntity.CreateBubleInfoButton(new UIBubbleInfoButton {
-            Text = "Rotate",
-            ClickAction = (iObjectEntity) => {
-                Debug.LogWarning("Orienter: " + iObjectEntity.name + " has been clicked");
-                OnRotateClick();
-            }
-        });
-        mRotateButtonColor = lButton.GetComponent<Image>();
-
-
-        // Add NavMeshAgent to move the object
-        if ((mAgent = mCenteredParent.AddComponent<NavMeshAgent>()) != null) {
-            // Agent radius is the biggest size of the bounding box
-            mAgent.radius = (mEntity.Size.x > mEntity.Size.z) ? (mEntity.Size.x / 2) : (mEntity.Size.z / 2);
-            // Increase a little the radius to avoid limit of a mesh
-            mAgent.radius += 0.1F;
-            // Adjust the cylinder with the height position
-            mAgent.baseOffset = -transform.position.y;
-            // Add a limit to the target destination
-            mAgent.stoppingDistance = LIMIT;
-            // Disable it until is not use
-            mAgent.enabled = false;
-        }
-
-        // Get the NavMeshObstacle to perform mutual exclusion with NavMeshAgent
-        mEntityObstacle = GetComponent<NavMeshObstacle>();
-
-        // ------ TMP CODE PLAY BUTTON TO PLAY ANIMATION CLICKED -----
-        // Debug buttton to execute each actions
-        mEntity.CreateBubleInfoButton(new UIBubbleInfoButton {
-            Text = "Play",
-            ClickAction = (iObjectEntity) => {
-                if (!TimeLineIsBusy) {
-                    Debug.LogWarning("Play clicked");
-                    PlayTimeline();
-                }
-            }
-        });
-        // ------ END TMP CODE ---
     }
 
     private void Update()
@@ -172,7 +170,14 @@ public sealed class MovableEntity : AInteraction
                 Move();
 
         } else if (mEditionMode == EditionMode.ROTATE) {
-            
+
+            /*  Explication temporaire: comment ajouter une animation de rotation. (Un peu tire par les cheveux je vous l'accorde mais les click souris etait deja pris pour translation / rotation dans ObjectEntity)
+            **  Click on rotate button, the button change to red 
+            **  Hold left alt key, and just move your mouse (WITHOUT CLICK) to rotate object, release left alt key when your done, (the ghost object rotation will be the final rotation of the object)
+            **  press 'r' key to validate the rotation, your rotation has been saved into the timeline - you can click on 'Play'
+            **  If you press escape, or if you mouse click during this process, the rotation process is stopped and nothing is add to timeline
+            */
+
             // Cancel Rotation on press escape
             if (Input.GetKeyDown(KeyCode.Escape)) {
                 ResetMode();
@@ -319,7 +324,7 @@ public sealed class MovableEntity : AInteraction
             mRotateButtonColor.color = Color.red;
 
             // Create a Ghost clone to preview rotation
-            mGhostEntity = mEntity.CreateGhostObject();
+            mGhostEntity = mObjectEntity.CreateGhostObject();
 
             // Cancel rotation if error
             if (mGhostEntity == null) {

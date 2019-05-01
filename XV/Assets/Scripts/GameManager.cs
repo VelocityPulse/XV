@@ -191,7 +191,7 @@ public class GameManager : MonoBehaviour
         oGameObject.transform.localScale = iODS.Scale;
 
         // Setting GameEntity
-        oGameObject.AddComponent<ObjectEntity>()
+        ObjectEntity lObjectEntity = oGameObject.AddComponent<ObjectEntity>()
                    .InitDataScene(mDataScene)
                    .StartAnimation(iAnimatedPopping)
                    .SetObjectDataScene(iODS)
@@ -204,7 +204,8 @@ public class GameManager : MonoBehaviour
         // If this item can move - Add MovableEntity script
         if (lParameters != null && lParameters.Movable) {
             oGameObject.AddComponent<MovableEntity>()
-                       .SetParent(lTopParent, lOffsetRotation);
+                       .SetParent(lTopParent, lOffsetRotation)
+                       .SetObjectEntity(lObjectEntity);
         }
 
         Utils.SetLayerRecursively(lTopParent, LayerMask.NameToLayer("dropable"));

@@ -164,4 +164,10 @@ public static class Utils {
         if (iOnEndFade != null)
             iOnEndFade();
     }
+
+    public static IEnumerator WaitNextFrameAsync<T>(Action<T> iAction, T iObj) {
+        yield return new WaitForEndOfFrame();
+        if (iAction != null)
+            iAction(iObj);
+    }
 }
