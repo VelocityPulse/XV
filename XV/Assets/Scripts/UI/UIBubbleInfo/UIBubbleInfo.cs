@@ -11,7 +11,6 @@ public class UIBubbleInfo : MonoBehaviour
 	private CanvasGroup mCanvasGroup;
 
 	private List<Button> mButtons;
-	
 
 	[SerializeField]
 	private GameObject GridContainer;
@@ -19,18 +18,18 @@ public class UIBubbleInfo : MonoBehaviour
 	[SerializeField]
 	private GameObject SampleButton;
 
-    [SerializeField]
-    private InputField ModelName;
+	[SerializeField]
+	private InputField ModelName;
 
-    public ObjectEntity Parent { get; set; }
+	public ObjectEntity Parent { get; set; }
 
-    // Use this for initialization
-    private void Start()
-    {
-        mButtons = new List<Button>();
-        mCanvasGroup = GetComponent<CanvasGroup>();
-        mCanvasGroup.alpha = 0F;
-    }
+	// Use this for initialization
+	private void Start()
+	{
+		mButtons = new List<Button>();
+		mCanvasGroup = GetComponent<CanvasGroup>();
+		mCanvasGroup.alpha = 0F;
+	}
 
 	// Update is called once per frame
 	private void Update()
@@ -42,18 +41,18 @@ public class UIBubbleInfo : MonoBehaviour
 			transform.rotation = Quaternion.Slerp(
 				transform.rotation, lLookAt, Time.deltaTime * 2);
 
-            if (ModelName.isFocused)
-                GameManager.Instance.KeyboardDeplacementActive = false;
-            else
-                GameManager.Instance.KeyboardDeplacementActive = true;
+			if (ModelName.isFocused)
+				GameManager.Instance.KeyboardDeplacementActive = false;
+			else
+				GameManager.Instance.KeyboardDeplacementActive = true;
 		}
 	}
 
-    public Button CreateButton(UIBubbleInfoButton iInfoButton)
+	public Button CreateButton(UIBubbleInfoButton iInfoButton)
 	{
 		if (iInfoButton == null)
 			return null;
-		
+
 		GameObject lNewButton = Instantiate(SampleButton, GridContainer.transform);
 
 		Button lButtonComponant = lNewButton.GetComponent<Button>();
@@ -61,29 +60,35 @@ public class UIBubbleInfo : MonoBehaviour
 			if (iInfoButton.ClickAction != null)
 				iInfoButton.ClickAction(Parent);
 		});
-        mButtons.Add(lButtonComponant);
+		mButtons.Add(lButtonComponant);
 
 		lNewButton.GetComponentInChildren<Text>().text = iInfoButton.Text;
 		lNewButton.name = iInfoButton.Text;
 		lNewButton.SetActive(true);
 		Canvas.ForceUpdateCanvases();
-        return lButtonComponant;
+		return lButtonComponant;
 	}
 
-	public void SetInteractable(bool iInteractable) {
+	public void SetUIName(string iName)
+	{
+		ModelName.text = iName;
+	}
+
+	public void SetInteractable(bool iInteractable)
+	{
 		foreach (Button lButton in mButtons) {
 			lButton.interactable = iInteractable;
 		}
 		ModelName.interactable = iInteractable;
 	}
 
-    public void OnEndEdit()
-    {
-        if (string.IsNullOrEmpty(ModelName.text))
-            ModelName.text = Parent.Name;
-        else
-            Parent.Name = ModelName.text;
-    }
+	public void OnEndEdit()
+	{
+		if (string.IsNullOrEmpty(ModelName.text))
+			ModelName.text = Parent.Name;
+		else if (Parent != null)
+			Parent.Name = ModelName.text;
+	}
 
 	public void Display()
 	{

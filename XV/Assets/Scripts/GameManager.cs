@@ -21,8 +21,6 @@ public class GameManager : MonoBehaviour
 
 	private ObjectEntity mSelectedEntity;
 
-	private bool mDestroyingObject;
-
 	public ObjectEntity SelectedEntity
 	{
 		get { return mSelectedEntity; }

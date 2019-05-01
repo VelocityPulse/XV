@@ -289,6 +289,7 @@ public class ObjectEntity : MonoBehaviour
 	{
 		mUIBubbleInfo = iBubbleInfo;
 		mUIBubbleInfo.Parent = this;
+		mUIBubbleInfo.SetUIName(mODS.Name);
 		return this;
 	}
 
@@ -310,7 +311,6 @@ public class ObjectEntity : MonoBehaviour
 			mODS.Position = transform.position;
 			mODS.Rotation = transform.rotation.eulerAngles;
 			mODS.Scale = transform.localScale;
-
 			mDataScene.Serialize();
 		}
 		return this;

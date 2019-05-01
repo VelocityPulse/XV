@@ -2,13 +2,93 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
-      <Name>ChariotPlateForme</Name>
-      <GUID>d5b4a76e-7c17-4942-af9c-8a52cba67e3b</GUID>
+      <Name>Kardex</Name>
+      <GUID>1bee14c2-5963-40d0-9caf-848427c0c254</GUID>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>-1.63393223</x>
+        <x>1.71530724</x>
         <y>0</y>
-        <z>0.5972175</z>
+        <z>1.25886488</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>Palette</Name>
+      <GUID>ee188f60-bb9d-4da7-815e-96946ae22bbf</GUID>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>1.04801452</x>
+        <y>5.51225153E-17</y>
+        <z>-1.88252735</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>PaletteRemplie</Name>
+      <GUID>21c6216c-7fa0-4372-98b4-92d6c052fef6</GUID>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>-1.12169862</x>
+        <y>6.811328E-17</y>
+        <z>-2.44540739</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>Palette</Name>
+      <GUID>e8471888-9b89-4e3d-be98-5b5c4750822a</GUID>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>0.49070394</x>
+        <y>0.142745018</y>
+        <z>-2.171485</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>PaletteRemplie</Name>
+      <GUID>6c2633e5-32f3-4e72-8ca7-e947c68a2ed8</GUID>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>3.12125921</x>
+        <y>0</y>
+        <z>-1.01323748</z>
       </Position>
       <Rotation>
         <x>0</x>
