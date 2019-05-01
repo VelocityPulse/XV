@@ -71,11 +71,6 @@ public class ObjectEntity : MonoBehaviour
 		}
 	}
 
-	// TODO : 
-	// Save bug -> Canvas group update
-	// Rotation bug on mouse icon
-
-
 	void Start()
 	{
 		// Adding this to all ObjectEntities
@@ -381,7 +376,7 @@ public class ObjectEntity : MonoBehaviour
 	private void OnMouseDown()
 	{
 		// If the click is on a GUI : 
-		if (EventSystem.current.IsPointerOverGameObject())
+		if (EventSystem.current.IsPointerOverGameObject() || mControlPushed)
 			return;
 
 		if (!mSelected || mBusy) {
