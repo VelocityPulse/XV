@@ -21,7 +21,7 @@ public class ObjectEntity : MonoBehaviour
 		}
 	}
 
-	public static int InstantiatedEntity { get { return sAllEntites.Count; } }
+	public static int InstantiatedEntity { get { return AllEntities.Length; } }
 
 	private DataScene mDataScene;
 	private ObjectDataScene mODS;
@@ -70,6 +70,11 @@ public class ObjectEntity : MonoBehaviour
 			SaveEntity();
 		}
 	}
+
+	// TODO : 
+	// Save bug -> Canvas group update
+	// Rotation bug on mouse icon
+
 
 	void Start()
 	{
@@ -199,7 +204,8 @@ public class ObjectEntity : MonoBehaviour
 	// Called by unity only !
 	public void OnDestroy()
 	{
-		sAllEntites.Remove(this);
+		if (sAllEntites != null)
+			sAllEntites.Remove(this);
 		Destroy(mCenteredParent);
 	}
 
@@ -324,7 +330,7 @@ public class ObjectEntity : MonoBehaviour
 				Debug.Log("Removing ODS : " + mDataScene.RemoveODS(mODS));
 				mDataScene.Serialize();
 			} else {
-				Debug.Log("ODS not contained in DO");
+				Debug.LogWarning("ODS not contained in DO");
 			}
 		}
 		return this;

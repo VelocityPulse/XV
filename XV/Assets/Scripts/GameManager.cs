@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
 	private static GameManager sInstance;
 	private static bool sLockInstance;
 
-	private readonly DataScene mDataScene = new DataScene();
+	private DataScene mDataScene = new DataScene();
 
 	private ObjectEntity mSelectedEntity;
 
@@ -169,7 +169,8 @@ public class GameManager : MonoBehaviour
 
 	public void LoadSceneDebug()
 	{
-		LoadScene(DataScene.Unserialize());
+		mDataScene = DataScene.Unserialize();
+		LoadScene(mDataScene);
 	}
 
 	public void LoadScene(DataScene iDataScene)

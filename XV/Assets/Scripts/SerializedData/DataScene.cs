@@ -49,6 +49,7 @@ public sealed class DataScene
 				lItem.Rotation = iODS.Rotation;
 				lItem.Scale = iODS.Scale;
 				lItem.Type = iODS.Type;
+				return;
 			}
 		}
 		DataObjects.Add(iODS);
@@ -84,7 +85,6 @@ public sealed class DataScene
 
 	static public DataScene Unserialize()
 	{
-
 		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
 		Utils.CreateFolder(lFolderPath);
 
