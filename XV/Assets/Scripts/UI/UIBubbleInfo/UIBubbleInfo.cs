@@ -9,6 +9,7 @@ public class UIBubbleInfo : MonoBehaviour
 
 	private bool mDisplayed;
 	private CanvasGroup mCanvasGroup;
+	private ContentSizeFitter mContentSizeFitter;
 
 	private List<Button> mButtons;
 
@@ -28,8 +29,14 @@ public class UIBubbleInfo : MonoBehaviour
 	{
 		mButtons = new List<Button>();
 		mCanvasGroup = GetComponent<CanvasGroup>();
+		mContentSizeFitter = GetComponentInChildren<ContentSizeFitter>();
 		mCanvasGroup.alpha = 0F;
 		mCanvasGroup.blocksRaycasts = false;
+	}
+
+	private void Awake()
+	{
+		RefreshCanvas();
 	}
 
 	// Update is called once per frame
@@ -105,6 +112,21 @@ public class UIBubbleInfo : MonoBehaviour
 		SetInteractable(false);
 		mCanvasGroup.blocksRaycasts = false;
 		StartCoroutine(FadeToAsync(0F, 0.4F));
+	}
+
+	public void RefreshCanvas()
+	{
+		if (mContentSizeFitter == null)
+			return;
+
+		StartCoroutine(Utils.WaitNextFrameAsync(() => {
+			
+			StartCoroutine(Utils.WaitNextFrameAsync(() => {
+				mContentSizeFitter.enabled = true;
+			}));
+
+			mContentSizeFitter.enabled = false;
+		}));
 	}
 
 	IEnumerator FadeToAsync(float iValue, float iTime)

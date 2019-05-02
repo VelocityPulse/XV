@@ -225,15 +225,15 @@ public class ObjectEntity : MonoBehaviour
         }
 
         if (mODS.Type == ObjectDataSceneType.BUILT_IN) {
-            lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.Name);
+            lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.PrefabName);
             if (lGameObject == null) {
-                Debug.LogError("Load prefab " + mODS.Name + " failed.");
+				Debug.LogError("Load prefab " + mODS.PrefabName + " failed.");
                 return null;
             }
         } else {
-            lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.Name);
+            lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.PrefabName);
             if (lGameObject == null) {
-                Debug.LogError("Load model " + mODS.Name + " failed.");
+                Debug.LogError("Load model " + mODS.PrefabName + " failed.");
                 return null;
             }
         }
@@ -347,6 +347,8 @@ public class ObjectEntity : MonoBehaviour
 				}
 			}
 		}
+		if (mUIBubbleInfo != null)
+			mUIBubbleInfo.RefreshCanvas();
 		mBusy = false;
 	}
 
@@ -365,6 +367,7 @@ public class ObjectEntity : MonoBehaviour
 		mUIBubbleInfo = iBubbleInfo;
 		mUIBubbleInfo.Parent = this;
 		mUIBubbleInfo.SetUIName(mODS.Name);
+		mUIBubbleInfo.RefreshCanvas();
 		return this;
 	}
 

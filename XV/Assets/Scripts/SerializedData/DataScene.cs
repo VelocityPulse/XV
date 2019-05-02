@@ -45,6 +45,7 @@ public sealed class DataScene
 
 			if (lItem.GUID == iODS.GUID) {
 				lItem.Name = iODS.Name;
+				lItem.PrefabName = iODS.PrefabName;
 				lItem.Position = iODS.Position;
 				lItem.Rotation = iODS.Rotation;
 				lItem.Scale = iODS.Scale;

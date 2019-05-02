@@ -18,6 +18,8 @@ public sealed class ObjectDataScene
 {
 	public string Name { get; set; }
 
+	public string PrefabName { get; set; }
+
 	// This variable shouldn't be edited manually!
 	public string GUID { get; set; }
 

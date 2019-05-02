@@ -72,6 +72,7 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         ObjectDataScene lODS = new ObjectDataScene {
             Name = mElementText.text,
+			PrefabName = mElementText.text,
             Type = Model.Type,
             Position = mSelectedElement.transform.position,
             Rotation = Model.GameObject.transform.rotation.eulerAngles,

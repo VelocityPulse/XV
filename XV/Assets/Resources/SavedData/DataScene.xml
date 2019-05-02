@@ -3,16 +3,17 @@
   <DataObjects>
     <ObjectDataScene>
       <Name>Palette</Name>
-      <GUID>df3e6278-a444-4918-9da6-17b015c5c71f</GUID>
+      <PrefabName>Palette</PrefabName>
+      <GUID>421cfc4b-1d0a-4fc8-9c97-652e9f1e56ba</GUID>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>0.5331229</x>
+        <x>1.05212414</x>
         <y>0</y>
-        <z>-1.746939</z>
+        <z>-0.761967957</z>
       </Position>
       <Rotation>
         <x>0</x>
-        <y>141.20697</y>
+        <y>0</y>
         <z>0</z>
       </Rotation>
       <Scale>

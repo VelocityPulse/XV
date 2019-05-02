@@ -69,7 +69,7 @@ public sealed class MovableEntity : AInteraction
         mObjectEntity.PostPoppingAction.Add(() => {
 
             // Execute this at the next frame
-            StartCoroutine(Utils.WaitNextFrameAsync<ObjectEntity>((iObj) => {
+            StartCoroutine(Utils.WaitNextFrameAsync((iObj) => {
 
                 // Add Move button & Keep track of the button image to edit color
                 Button lButton;
@@ -92,7 +92,6 @@ public sealed class MovableEntity : AInteraction
                     }
                 });
                 mRotateButtonColor = lButton.GetComponent<Image>();
-
 
                 // Add NavMeshAgent to move the object
                 if ((mAgent = mCenteredParent.AddComponent<NavMeshAgent>()) != null) {

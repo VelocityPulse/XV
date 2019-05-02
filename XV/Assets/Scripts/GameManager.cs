@@ -109,15 +109,15 @@ public class GameManager : MonoBehaviour
 		GameObject oGameObject = null;
 
 		if (iODS.Type == ObjectDataSceneType.BUILT_IN) {
-			oGameObject = ModelLoader.Instance.GetModelGameObject(iODS.Name);
+			oGameObject = ModelLoader.Instance.GetModelGameObject(iODS.PrefabName);
 			if (oGameObject == null) {
-				Debug.LogError("Load prefab " + iODS.Name + " failed.");
+				Debug.LogError("Load prefab " + iODS.PrefabName + " failed.");
 				return oGameObject;
 			}
 		} else {
-			oGameObject = ModelLoader.Instance.GetModelGameObject(iODS.Name);
+			oGameObject = ModelLoader.Instance.GetModelGameObject(iODS.PrefabName);
 			if (oGameObject == null) {
-				Debug.LogError("Load model " + iODS.Name + " failed.");
+				Debug.LogError("Load model " + iODS.PrefabName + " failed.");
 				return oGameObject;
 			}
 		}
@@ -187,7 +187,7 @@ public class GameManager : MonoBehaviour
         //oGameObject.transform.position = iODS.Position;
         oGameObject.transform.localEulerAngles = Vector3.zero;
         oGameObject.transform.localPosition = -lBounds.center;
-        oGameObject.name = iODS.Name + "_mesh";
+        oGameObject.name = iODS.PrefabName + "_mesh";
         oGameObject.transform.localScale = iODS.Scale;
 
         // Setting GameEntity
