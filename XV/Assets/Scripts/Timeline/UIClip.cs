@@ -19,7 +19,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 		get { return nameText.text; }
 		set
 		{
-			if (value != string.Empty) {
+			if (!string.IsNullOrEmpty(value)) {
 				nameText.text = value;
 			}
 		}

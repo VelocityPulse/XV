@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
 
-public class UITrack : MonoBehaviour /*, IPointerClickHandler*/
+public class UITrack : MonoBehaviour
 {
 	private List<UIClip> mClips;
 
@@ -24,16 +24,13 @@ public class UITrack : MonoBehaviour /*, IPointerClickHandler*/
 		get { return nameText.text; }
 		set
 		{
-			if (value != string.Empty) {
+			if (!string.IsNullOrEmpty(value)) {
 				nameText.text = value;
 			}
 		}
 	}
 
-	public float Size
-	{
-		get { return mRectTransform.rect.size.x; }
-	}
+	public float Size { get { return mRectTransform.rect.size.x; } }
 
 	private void Awake()
 	{
