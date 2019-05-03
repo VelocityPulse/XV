@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 	private static GameManager sInstance;
 	private static bool sLockInstance;
 
+	[Obsolete("mDataScene will be removed")]
 	private DataScene mDataScene = new DataScene();
 
 	private ObjectEntity mSelectedEntity;
@@ -74,6 +75,7 @@ public class GameManager : MonoBehaviour
 			throw new Exception("An instance of this singleton already exists.");
 		}
 		sLockInstance = false;
+		KeyboardDeplacementActive = true;
 
 		OverTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_hand");
 		CatchedTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_catch");
@@ -212,6 +214,8 @@ public class GameManager : MonoBehaviour
 
 		return oGameObject;
 	}
+
+	public 
 
 	public void LoadSceneDebug()
 	{

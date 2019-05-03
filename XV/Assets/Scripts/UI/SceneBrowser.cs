@@ -9,11 +9,7 @@ public sealed class SceneBrowser : MonoBehaviour
 {
 	private const float NOTIFIER_DURATION = 1F;
 
-	private const string SELECTION_FIELD = "Please select a model file to open";
-
-	private readonly string STARTING_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-	private string mSavedDataPath;
+	private string mSavedScenePath;
 
 	private bool mDisplayed;
 
@@ -50,7 +46,7 @@ public sealed class SceneBrowser : MonoBehaviour
 	// Use this for initialization
 	private void Start()
 	{
-		mSavedDataPath = Application.dataPath + "/Resources/SavedData/Models/";
+		mSavedScenePath = Application.dataPath + DataScene.RES_PATH;
 		// Init some variables
 		if ((mCanvasGroup = GetComponent<CanvasGroup>()) != null)
 			mCanvasGroup.alpha = 0F;

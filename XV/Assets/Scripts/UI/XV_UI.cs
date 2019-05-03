@@ -43,4 +43,12 @@ public sealed class XV_UI : MonoBehaviour {
         if (Notifier != null)
             Notifier.Notify(iDuration, iMessage);
     }
+
+	public void LockGUI() {
+		
+	}
+
+	public void UnlockGUI() {
+		
+	}
 }

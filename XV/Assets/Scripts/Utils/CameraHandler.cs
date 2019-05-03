@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class CameraHandler : MonoBehaviour {
+public sealed class CameraHandler : MonoBehaviour
+{
 
 	public enum Mode { FREE, SUBJECTIVE, LOCKED }
 
@@ -13,7 +14,7 @@ public sealed class CameraHandler : MonoBehaviour {
 	[SerializeField]
 	private float fastSpeedMultiplier;
 
-    [SerializeField]
+	[SerializeField]
 	private float mouseSensitivity;
 
 	[SerializeField]
@@ -22,47 +23,45 @@ public sealed class CameraHandler : MonoBehaviour {
 	private bool mIsRepositioning;
 
 	private Mode mViewMode;
+
+	private Mode mCurrentMode;
+
 	public Mode ViewMode
 	{
-		get
-		{
-			return mViewMode;
-		}
+		get { return mViewMode; }
+
 		set
 		{
 			if (value == Mode.FREE) {
 				mViewMode = Mode.FREE;
-				mViewModeText.text = "View mode: FREE";
-			}
-			else if (value == Mode.SUBJECTIVE) {
+				if (mViewModeText != null)
+					mViewModeText.text = "View mode: FREE";
+			} else if (value == Mode.SUBJECTIVE) {
 				mViewMode = Mode.SUBJECTIVE;
-				mViewModeText.text = "View mode: SUBJECTIVE";
+				if (mViewModeText != null)
+					mViewModeText.text = "View mode: SUBJECTIVE";
 				StartCoroutine(SetSubjectivePositionAsync(new Vector3(transform.position.x, 1F, transform.position.z)));
 			}
 		}
 	}
 
-	private Mode mCurrentMode;
 	public Mode CurrentMode
 	{
-		get
-		{
-			return mCurrentMode;
-		}
+		get { return mCurrentMode; }
+
 		set
 		{
 			if (value != mCurrentMode) {
-				switch (value)
-				{
-					case Mode.LOCKED:
-						SetLockedMode();
-						break;
-					case Mode.FREE:
-						SetFreeMode();
-						break;
-					case Mode.SUBJECTIVE:
-						SetSubjectiveMode();
-						break;
+				switch (value) {
+				case Mode.LOCKED:
+					SetLockedMode();
+					break;
+				case Mode.FREE:
+					SetFreeMode();
+					break;
+				case Mode.SUBJECTIVE:
+					SetSubjectiveMode();
+					break;
 				}
 			}
 		}
@@ -75,13 +74,12 @@ public sealed class CameraHandler : MonoBehaviour {
 		mIsRepositioning = false;
 	}
 
-    void Update()
-    {
+	void Update()
+	{
 		// Hold right click to go in 'view mode' (free or subjective), otherwise stay in locked mode
 		if (Input.GetMouseButtonDown(1)) {
 			CurrentMode = ViewMode;
-		}
-		else if (Input.GetMouseButtonUp(1)) {
+		} else if (Input.GetMouseButtonUp(1)) {
 			CurrentMode = Mode.LOCKED;
 		}
 		// Use tab to switch between 'view modes': free or subjective
@@ -89,16 +87,16 @@ public sealed class CameraHandler : MonoBehaviour {
 			ViewMode = (ViewMode == Mode.FREE) ? Mode.SUBJECTIVE : Mode.FREE;
 		}
 
-        if (!GameManager.Instance.KeyboardDeplacementActive)
-            return;
+		if (!GameManager.Instance.KeyboardDeplacementActive)
+			return;
 
-        if (!mIsRepositioning) {
+		if (!mIsRepositioning) {
 			ApplyMovement();
 		}
 		if (CurrentMode != Mode.LOCKED) {
 			ApplyRotation();
 		}
-    }
+	}
 
 	private void ApplyMovement()
 	{
@@ -132,15 +130,14 @@ public sealed class CameraHandler : MonoBehaviour {
 		if (lNewRotationY > 90F && lNewRotationY < 270F) {
 			if (lNewRotationY < 180F) {
 				lNewRotationY = 90F;
-			}
-			else {
+			} else {
 				lNewRotationY = 270F;
 			}
 		}
 		transform.eulerAngles = new Vector3(lNewRotationY, lNewRotationX, 0F);
 	}
 
-    private void SetLockedMode()
+	private void SetLockedMode()
 	{
 		mCurrentMode = Mode.LOCKED;
 		Cursor.visible = true;
@@ -165,8 +162,7 @@ public sealed class CameraHandler : MonoBehaviour {
 	{
 		Vector3 lVelocity = Vector3.zero;
 		mIsRepositioning = true;
-		while (Vector3.Distance(transform.position, iTarget) > 0.1F)
-		{
+		while (Vector3.Distance(transform.position, iTarget) > 0.1F) {
 			transform.position = Vector3.SmoothDamp(transform.position, iTarget, ref lVelocity, 0.3F);
 			yield return new WaitForEndOfFrame();
 		}

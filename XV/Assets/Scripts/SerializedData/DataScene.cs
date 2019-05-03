@@ -12,6 +12,8 @@ public sealed class DataScene
 {
 	private const string FILE_NAME = "DataScene.xml";
 
+	public const string RES_PATH = "/Resources/SavedData/";
+
 	public string SceneName { get; set; }
 
 	public List<ObjectDataScene> DataObjects { get; set; }

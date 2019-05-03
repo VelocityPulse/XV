@@ -2,14 +2,56 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
-      <Name>Kardex</Name>
-      <PrefabName>Kardex</PrefabName>
-      <GUID>54609cb9-fdcf-438f-ab07-931f8ec50200</GUID>
+      <Name>ChariotRetractableElectrique</Name>
+      <PrefabName>ChariotRetractableElectrique</PrefabName>
+      <GUID>e7d9f7dd-0dae-4ba8-9409-40c587b9966d</GUID>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>2.33274031</x>
+        <x>0.266623318</x>
         <y>0</y>
-        <z>3.09737968</z>
+        <z>-9.323519</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>90</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>Etageres</Name>
+      <PrefabName>Etageres</PrefabName>
+      <GUID>3e17bc9a-7941-4a14-861f-2ce0c28a1ba1</GUID>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>4.148787</x>
+        <y>0</y>
+        <z>-5.28315258</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>156.9997</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>ClosedCardboardBox</Name>
+      <PrefabName>ClosedCardboardBox</PrefabName>
+      <GUID>25a6df1d-b92c-4085-bd36-ae50f0de24ae</GUID>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>-4.14441347</x>
+        <y>0</y>
+        <z>-7.051508</z>
       </Position>
       <Rotation>
         <x>0</x>
@@ -23,39 +65,18 @@
       </Scale>
     </ObjectDataScene>
     <ObjectDataScene>
-      <Name>safdsafsadf</Name>
-      <PrefabName>Palette</PrefabName>
-      <GUID>705e7946-a69f-403e-a4ea-c1e4c26a7164</GUID>
+      <Name>ChariotRetractableElectrique</Name>
+      <PrefabName>ChariotRetractableElectrique</PrefabName>
+      <GUID>f8a4ede6-7c0f-459c-89ee-3b75f5b87241</GUID>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>1.20928836</x>
+        <x>-1.79495668</x>
         <y>0</y>
-        <z>-0.585100353</z>
+        <z>-8.326764</z>
       </Position>
       <Rotation>
         <x>0</x>
-        <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
-      <Name>fdsfafdsa</Name>
-      <PrefabName>Imp_ArmoireOutilsMobile</PrefabName>
-      <GUID>cf139ca2-aec9-4fca-a6f6-82196feddbf1</GUID>
-      <Type>EXTERN</Type>
-      <Position>
-        <x>2.94206142</x>
-        <y>0</y>
-        <z>-0.791977167</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
-        <y>0</y>
+        <y>90</y>
         <z>0</z>
       </Rotation>
       <Scale>
