@@ -43,10 +43,7 @@ public class ObjectEntity : MonoBehaviour
     private GameObject mCenteredParent;
     private GameObject mOffsetRotationParent;
 
-    public bool IsBusy
-    {
-        get { return mBusy; }
-    }
+    public bool IsBusy { get { return mBusy; } }
 
     public Vector3 Size
     {

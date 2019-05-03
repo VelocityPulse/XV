@@ -2,14 +2,56 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
-      <Name>Palette</Name>
-      <PrefabName>Palette</PrefabName>
-      <GUID>421cfc4b-1d0a-4fc8-9c97-652e9f1e56ba</GUID>
+      <Name>Kardex</Name>
+      <PrefabName>Kardex</PrefabName>
+      <GUID>54609cb9-fdcf-438f-ab07-931f8ec50200</GUID>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>1.05212414</x>
+        <x>2.33274031</x>
         <y>0</y>
-        <z>-0.761967957</z>
+        <z>3.09737968</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>safdsafsadf</Name>
+      <PrefabName>Palette</PrefabName>
+      <GUID>705e7946-a69f-403e-a4ea-c1e4c26a7164</GUID>
+      <Type>BUILT_IN</Type>
+      <Position>
+        <x>1.20928836</x>
+        <y>0</y>
+        <z>-0.585100353</z>
+      </Position>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+    </ObjectDataScene>
+    <ObjectDataScene>
+      <Name>fdsfafdsa</Name>
+      <PrefabName>Imp_ArmoireOutilsMobile</PrefabName>
+      <GUID>cf139ca2-aec9-4fca-a6f6-82196feddbf1</GUID>
+      <Type>EXTERN</Type>
+      <Position>
+        <x>2.94206142</x>
+        <y>0</y>
+        <z>-0.791977167</z>
       </Position>
       <Rotation>
         <x>0</x>
