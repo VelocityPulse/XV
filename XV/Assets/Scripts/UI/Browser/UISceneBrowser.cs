@@ -5,11 +5,18 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class SceneBrowser : MonoBehaviour
+public sealed class UISceneBrowser : MonoBehaviour
 {
+	[SerializeField]
+	private UINewSceneTitle newSceneTitle;
+
 	private const float NOTIFIER_DURATION = 1F;
 
 	private string mSavedScenePath;
+
+	private List<string> mFullPathFiles;
+
+	private List<string> mFileNames;
 
 	private bool mDisplayed;
 
@@ -23,18 +30,16 @@ public sealed class SceneBrowser : MonoBehaviour
 
 	private Sprite mSpriteFile;
 
-	private Sprite mSpriteFolder;
-
 	[Header("Intern Reference")]
-	[Header("Please attach: SceneBrowser/Middle/FileContainer/GridWithElements")]
+	[Header("SceneBrowser/Middle/FileContainer/GridWithElements")]
 	[SerializeField]
 	private GameObject UIGridElement;
 
-	[Header("Please attach: SceneBrowser/Bottom/ButtonContainer/Cancel")]
+	[Header("SceneBrowser/Bottom/ButtonContainer/NewScene")]
 	[SerializeField]
-	private Button CancelButton;
+	private Button NewSceneButton;
 
-	[Header("Please attach: SceneBrowser/Bottom/ButtonContainer/OpenFile")]
+	[Header("SceneBrowser/Bottom/ButtonContainer/OpenFile")]
 	[SerializeField]
 	private Button OpenButton;
 
@@ -42,6 +47,7 @@ public sealed class SceneBrowser : MonoBehaviour
 	private void Start()
 	{
 		mSavedScenePath = Application.dataPath + DataScene.RES_PATH;
+
 		// Init some variables
 		if ((mCanvasGroup = GetComponent<CanvasGroup>()) != null)
 			mCanvasGroup.alpha = 0F;
@@ -56,11 +62,10 @@ public sealed class SceneBrowser : MonoBehaviour
 
 		// Load Assets
 		mSpriteFile = Resources.Load<Sprite>(GameManager.UI_ICON_PATH + "FileBrowser/File");
-		mSpriteFolder = Resources.Load<Sprite>(GameManager.UI_ICON_PATH + "FileBrowser/Folder");
 
 		// Button setting
 		OpenButton.onClick.AddListener(OnClickOpen);
-		CancelButton.onClick.AddListener(OnClickCancel);
+		NewSceneButton.onClick.AddListener(OnClickNewScene);
 
 		DisplayBrowser();
 	}
@@ -68,9 +73,30 @@ public sealed class SceneBrowser : MonoBehaviour
 	// Update the list of element
 	private void UpdateFiles()
 	{
+		mFileNames = new List<string>();
+		mFullPathFiles = new List<string>(Directory.GetFileSystemEntries(mSavedScenePath));
 
-		GameObject lElement = Instantiate(mFileUITemplate, UIGridElement.transform);
-		lElement.GetComponent<Button>().onClick.AddListener(() => { ElementSelection(lElement); });
+		foreach (string lFile in mFullPathFiles) {
+			FileAttributes lAttr = File.GetAttributes(lFile);
+			if ((lAttr & FileAttributes.Hidden) == FileAttributes.Hidden)
+				continue;
+			else if (!lFile.EndsWith(".xml"))
+				continue;
+
+			if ((lAttr & FileAttributes.Normal) == FileAttributes.Normal) {
+				if (mFileUIParam != null) {
+					mFileUIParam.Text.color = Utils.ROYAL_BLUE;
+					mFileUIParam.Icon.sprite = mSpriteFile;
+				}
+			}
+			if (mFileUIParam != null) {
+				string lFileName = lFile.Replace(mSavedScenePath, "");
+				mFileNames.Add(lFileName);
+				mFileUIParam.Text.text = lFileName;
+			}
+			GameObject lElement = Instantiate(mFileUITemplate, UIGridElement.transform);
+			lElement.GetComponent<Button>().onClick.AddListener(() => { ElementSelection(lElement); });
+		}
 	}
 
 	private void ClearFiles()
@@ -90,12 +116,14 @@ public sealed class SceneBrowser : MonoBehaviour
 
 	}
 
-	private void OnClickCancel()
+	private void OnClickNewScene()
 	{
 		HideBrowser();
+		newSceneTitle.StartForResult((iTypeResult, iValue) => {
+			Debug.Log(iTypeResult + iValue);
+		}, mFileNames.ToArray());
 	}
 
-	// This function toogle the display of the UI
 	public void DisplayBrowser()
 	{
 		// Display
@@ -105,26 +133,23 @@ public sealed class SceneBrowser : MonoBehaviour
 			mDisplayed = true;
 			gameObject.SetActive(true);
 			if (mCanvasGroup != null) {
-				StartCoroutine(Utils.WaitForAsync(1F, () => {
+				StartCoroutine(Utils.WaitForAsync(0.4F, () => {
 					StartCoroutine(Utils.FadeToAsync(1F, .5F, mCanvasGroup));
 				}));
 			}
 		}
-		// Hide
-		else
-			HideBrowser();
 	}
 
 	public void HideBrowser()
 	{
-		//if (mDisplayed) {
-		//	mDisplayed = false;
-		//	if (mCanvasGroup != null) {
-		//		StartCoroutine(Utils.FadeToAsync(0F, 0.4F, mCanvasGroup, () => {
-		//			ClearFiles();
-		//			gameObject.SetActive(false);
-		//		}));
-		//	}
-		//}
+		if (mDisplayed) {
+			mDisplayed = false;
+			if (mCanvasGroup != null) {
+				StartCoroutine(Utils.FadeToAsync(0F, 0.4F, mCanvasGroup, () => {
+					ClearFiles();
+					gameObject.SetActive(false);
+				}));
+			}
+		}
 	}
 }

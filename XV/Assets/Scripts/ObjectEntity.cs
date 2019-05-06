@@ -31,29 +31,28 @@ public class ObjectEntity : MonoBehaviour
 	private bool mControlPushed;
 	private bool mMouseDown;
 
-    private bool mMouseOverObjectEntity;
-    private bool mMouseDownOnObjectEntity;
-    private bool mMouseDragObjectEntity;
+	private bool mMouseOverObjectEntity;
+	private bool mMouseDragObjectEntity;
 
-    private Vector3 mMouseOriginClick;
+	private Vector3 mMouseOriginClick;
 
-    private UIBubbleInfo mUIBubbleInfo;
-    private Vector3 mCenter;
-    private Vector3 mSize;
-    private GameObject mCenteredParent;
-    private GameObject mOffsetRotationParent;
+	private UIBubbleInfo mUIBubbleInfo;
+	private Vector3 mCenter;
+	private Vector3 mSize;
+	private GameObject mCenteredParent;
+	private GameObject mOffsetRotationParent;
 
-    public bool IsBusy { get { return mBusy; } }
+	public bool IsBusy { get { return mBusy; } }
 
-    public Vector3 Size
-    {
-        get { return mSize; }
-    }
+	public Vector3 Size
+	{
+		get { return mSize; }
+	}
 
-    public Vector3 Center
-    {
-        get { return mCenter; }
-    }
+	public Vector3 Center
+	{
+		get { return mCenter; }
+	}
 
 	public bool Selected
 	{
@@ -85,12 +84,12 @@ public class ObjectEntity : MonoBehaviour
 		}
 	}
 
-    private List<Action> mPostPoppingAction = new List<Action>();
+	private List<Action> mPostPoppingAction = new List<Action>();
 
-    public List<Action> PostPoppingAction { get { return mPostPoppingAction; } }
+	public List<Action> PostPoppingAction { get { return mPostPoppingAction; } }
 
 	void Start()
-    {
+	{
 		// Adding this to all ObjectEntities
 		if (sAllEntites == null)
 			sAllEntites = new List<ObjectEntity>();
@@ -99,11 +98,11 @@ public class ObjectEntity : MonoBehaviour
 		// Set tag
 		gameObject.tag = TAG;
 
-        mCenteredParent = transform.parent.gameObject.transform.parent.gameObject;
+		mCenteredParent = transform.parent.gameObject.transform.parent.gameObject;
 
-        mUIBubbleInfo.GetComponent<RectTransform>().localPosition = new Vector3(mCenter.x, mSize.y + 1, mCenter.z);
+		mUIBubbleInfo.GetComponent<RectTransform>().localPosition = new Vector3(mCenter.x, mSize.y + 1, mCenter.z);
 
-        StartCoroutine(PostPoppingAsync());
+		StartCoroutine(PostPoppingAsync());
 	}
 
 	void Update()
@@ -146,7 +145,7 @@ public class ObjectEntity : MonoBehaviour
 
 			RaycastHit lHit;
 			Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
+			if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
 				Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
 
 				lHit.point = new Vector3(lHit.point.x, mCenter.y, lHit.point.z);
@@ -187,78 +186,78 @@ public class ObjectEntity : MonoBehaviour
 			}
 		});
 
-        // Add a Nav Mesh obstacle on each object
-        NavMeshObstacle lObstacle;
-        if ((lObstacle = transform.gameObject.AddComponent<NavMeshObstacle>()) != null) {
-            lObstacle.center = mCenter;
-            lObstacle.size = mSize;
-            lObstacle.carving = true;
-            float limit = 0F;
-            if (lObstacle.size.y < 0.2F) {
-                lObstacle.size = new Vector3(lObstacle.size.x, lObstacle.size.y + limit, lObstacle.size.z);
-                lObstacle.center = new Vector3(lObstacle.center.x, lObstacle.center.y + (limit / 2), lObstacle.center.z);
-            }
-        }
+		// Add a Nav Mesh obstacle on each object
+		NavMeshObstacle lObstacle;
+		if ((lObstacle = transform.gameObject.AddComponent<NavMeshObstacle>()) != null) {
+			lObstacle.center = mCenter;
+			lObstacle.size = mSize;
+			lObstacle.carving = true;
+			float limit = 0F;
+			if (lObstacle.size.y < 0.2F) {
+				lObstacle.size = new Vector3(lObstacle.size.x, lObstacle.size.y + limit, lObstacle.size.z);
+				lObstacle.center = new Vector3(lObstacle.center.x, lObstacle.center.y + (limit / 2), lObstacle.center.z);
+			}
+		}
 
 		mUIBubbleInfo.SetInteractable(false);
 
-        foreach (Action lAction in PostPoppingAction) {
-            if (lAction != null)
-                lAction();
-        }
+		foreach (Action lAction in PostPoppingAction) {
+			if (lAction != null)
+				lAction();
+		}
 	}
 
-    // This function Instantiate associated Model & make it child of OffsetRotation
-    // Then all material are replace by GhostMaterial
-    public GameObject CreateGhostObject()
-    {
-        GameObject lGameObject = null;
-        GameObject oGhostObject = null;
-        Material lGhostMaterial = null;
+	// This function Instantiate associated Model & make it child of OffsetRotation
+	// Then all material are replace by GhostMaterial
+	public GameObject CreateGhostObject()
+	{
+		GameObject lGameObject = null;
+		GameObject oGhostObject = null;
+		Material lGhostMaterial = null;
 
-        if ((lGhostMaterial = Resources.Load<Material>(GameManager.UI_MATERIAL + "Ghost")) == null) {
-            Debug.LogError("Load material : 'Ghost' failed.");
-            return null;
-        }
+		if ((lGhostMaterial = Resources.Load<Material>(GameManager.UI_MATERIAL + "Ghost")) == null) {
+			Debug.LogError("Load material : 'Ghost' failed.");
+			return null;
+		}
 
-        if (mODS.Type == ObjectDataSceneType.BUILT_IN) {
-            lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.PrefabName);
-            if (lGameObject == null) {
+		if (mODS.Type == ObjectDataSceneType.BUILT_IN) {
+			lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.PrefabName);
+			if (lGameObject == null) {
 				Debug.LogError("Load prefab " + mODS.PrefabName + " failed.");
-                return null;
-            }
-        } else {
-            lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.PrefabName);
-            if (lGameObject == null) {
-                Debug.LogError("Load model " + mODS.PrefabName + " failed.");
-                return null;
-            }
-        }
+				return null;
+			}
+		} else {
+			lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.PrefabName);
+			if (lGameObject == null) {
+				Debug.LogError("Load model " + mODS.PrefabName + " failed.");
+				return null;
+			}
+		}
 
-        oGhostObject = Instantiate(lGameObject, transform.position, transform.rotation, transform.parent);
+		oGhostObject = Instantiate(lGameObject, transform.position, transform.rotation, transform.parent);
 
-        Utils.BrowseChildRecursively(oGhostObject, (iObject) => {
+		Utils.BrowseChildRecursively(oGhostObject, (iObject) => {
 
-            // Perform this action on each child of iObject, which is oGhostObject
-            Renderer r = iObject.GetComponent<Renderer>();
-            if (r != null) {
-                Material[] o = new Material[r.materials.Length];
-                for (int i = 0; i < o.Length; i++) {
-                    o.SetValue(lGhostMaterial, i);
-                }
-                r.materials = o;
-            }
-        });
+			// Perform this action on each child of iObject, which is oGhostObject
+			Renderer r = iObject.GetComponent<Renderer>();
+			if (r != null) {
+				Material[] o = new Material[r.materials.Length];
+				for (int i = 0; i < o.Length; i++) {
+					o.SetValue(lGhostMaterial, i);
+				}
+				r.materials = o;
+			}
+		});
 
-        return oGhostObject;
-    }
+		return oGhostObject;
+	}
 
-    public Button CreateBubleInfoButton(UIBubbleInfoButton iButtonInfo) 
-    {
-        if (iButtonInfo == null)
-            return null;
-        return mUIBubbleInfo.CreateButton(iButtonInfo);
-    }
+	public Button CreateBubleInfoButton(UIBubbleInfoButton iButtonInfo)
+	{
+		if (iButtonInfo == null)
+			return null;
+		return mUIBubbleInfo.CreateButton(iButtonInfo);
+	}
 
 	// Called by unity only !
 	public void OnDestroy()
@@ -279,11 +278,11 @@ public class ObjectEntity : MonoBehaviour
 	{
 		mBusy = true;
 
-        // Detach from parent & delete parent
-        //if (transform.parent != null) {
-        //    transform.parent = null;
-        //    Destroy(mCenteredParent);
-        //}
+		// Detach from parent & delete parent
+		//if (transform.parent != null) {
+		//    transform.parent = null;
+		//    Destroy(mCenteredParent);
+		//}
 
 		Transform[] lTransforms = gameObject.GetComponentsInChildren<Transform>();
 		Array.Reverse(lTransforms);
@@ -315,7 +314,6 @@ public class ObjectEntity : MonoBehaviour
 			Array.Reverse(lTransforms);
 
 			if (lTransforms.Length > 0) {
-				float lWaiting = 0.05F / lTransforms.Length;
 
 				foreach (Transform lTransform in lTransforms) {
 					if (lTransform.gameObject.tag == TAG) {
@@ -380,15 +378,15 @@ public class ObjectEntity : MonoBehaviour
 		return this;
 	}
 
-    public ObjectEntity SetParent(GameObject iTopParent, GameObject iOffsetRotationParent)
-    {
-        mCenteredParent = iTopParent;
-        mCenteredParent.tag = TAG;
+	public ObjectEntity SetParent(GameObject iTopParent, GameObject iOffsetRotationParent)
+	{
+		mCenteredParent = iTopParent;
+		mCenteredParent.tag = TAG;
 
-        mOffsetRotationParent = iOffsetRotationParent;
-        mOffsetRotationParent.tag = TAG;
-        return this;
-    }
+		mOffsetRotationParent = iOffsetRotationParent;
+		mOffsetRotationParent.tag = TAG;
+		return this;
+	}
 
 	public ObjectEntity SaveEntity()
 	{
@@ -441,8 +439,6 @@ public class ObjectEntity : MonoBehaviour
 
 	private void OnMouseUp()
 	{
-		mMouseDownOnObjectEntity = false;
-
 		if (mMouseDragObjectEntity) {
 			mMouseDragObjectEntity = false;
 			if (mMouseOverObjectEntity)
@@ -465,7 +461,6 @@ public class ObjectEntity : MonoBehaviour
 			GameManager.Instance.SelectedEntity = this;
 			mUIBubbleInfo.Display();
 		} else {
-			mMouseDownOnObjectEntity = true;
 			GameManager.Instance.SetCursorCatchedHand();
 		}
 	}

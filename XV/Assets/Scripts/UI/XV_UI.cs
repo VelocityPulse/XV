@@ -79,7 +79,6 @@ public sealed class XV_UI : MonoBehaviour
 											 () => { UIModelManagerLockerScreen.gameObject.SetActive(false); }));
 			StartCoroutine(Utils.FadeToAsync(0F, 0.5F, UIToolBarLockerScreen,
 											 () => { UIToolBarLockerScreen.gameObject.SetActive(false); }));
-		
 		}
 	}
 }
