@@ -21,6 +21,9 @@ public class UINewSceneTitle : MonoBehaviour
 	private Button createButton;
 
 	[SerializeField]
+	private Button cancelButton;
+
+	[SerializeField]
 	private InputField inputField;
 
 	[SerializeField]
@@ -40,9 +43,11 @@ public class UINewSceneTitle : MonoBehaviour
 		mCanvasGroup = GetComponent<CanvasGroup>();
 
 		createButton.onClick.AddListener(OnClickCreate);
+		cancelButton.onClick.AddListener(OnClickCancel);
 		inputField.onValueChanged.AddListener(OnValueChanged);
 		mNamesAlreadyUsed = new List<string>();
 		HideError();
+		mCanvasGroup.alpha = 0F;
 		Reset();
 	}
 
@@ -76,7 +81,7 @@ public class UINewSceneTitle : MonoBehaviour
 		mCanvasGroup.alpha = 0F;
 		mCanvasGroup.blocksRaycasts = true;
 		createButton.interactable = false;
-		StartCoroutine(Utils.FadeToAsync(1F, 0.8F, mCanvasGroup));
+		StartCoroutine(Utils.FadeToAsync(1F, 0.2F, mCanvasGroup));
 	}
 
 	private void Hide()
@@ -84,7 +89,7 @@ public class UINewSceneTitle : MonoBehaviour
 		GameManager.Instance.KeyboardDeplacementActive = true;
 		mCanvasGroup.alpha = 1F;
 		mCanvasGroup.blocksRaycasts = false;
-		StartCoroutine(Utils.FadeToAsync(0F, 0.8F, mCanvasGroup));
+		StartCoroutine(Utils.FadeToAsync(0F, 0.2F, mCanvasGroup));
 		Reset();
 	}
 
@@ -106,6 +111,9 @@ public class UINewSceneTitle : MonoBehaviour
 		else if (mNamesAlreadyUsed != null && mNamesAlreadyUsed.Contains(iValue.ToLower())) {
 			ShowError("Name already used");
 			createButton.interactable = false;
+		} else if (!Utils.IsAlnum(iValue.ToCharArray())) {
+			ShowError("A-Z and 0-9 only");
+			createButton.interactable = false;
 		} else {
 			HideError();
 			createButton.interactable = true;
@@ -119,12 +127,18 @@ public class UINewSceneTitle : MonoBehaviour
 		Hide();
 	}
 
+	private void OnClickCancel() {
+		mDisplayed = false;
+		mResultAction(UISceneTitleResult.CANCEL_RESULT, string.Empty);
+		Hide();
+	}
+
 	private void Reset()
 	{
-		mCanvasGroup.alpha = 0F;
 		mCanvasGroup.blocksRaycasts = false;
 		mNamesAlreadyUsed = new List<string>();
 		mResultAction = null;
+		inputField.text = "";
 	}
 
 }

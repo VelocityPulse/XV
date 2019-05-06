@@ -108,7 +108,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 
 	public void ElementSelection(GameObject iButtonClicked = null)
 	{
-
+		
 	}
 
 	private void OnClickOpen()
@@ -120,7 +120,16 @@ public sealed class UISceneBrowser : MonoBehaviour
 	{
 		HideBrowser();
 		newSceneTitle.StartForResult((iTypeResult, iValue) => {
-			Debug.Log(iTypeResult + iValue);
+			if (iTypeResult == UISceneTitleResult.OK_RESULT) {
+
+			} else if (iTypeResult == UISceneTitleResult.CANCEL_RESULT) {
+				DisplayBrowser();
+			} else {
+				Debug.LogError(iTypeResult + " : " + mFileNames.ToArray() + " " + iValue);
+				Utils.PrintStackTrace();
+			}
+
+
 		}, mFileNames.ToArray());
 	}
 
@@ -132,20 +141,18 @@ public sealed class UISceneBrowser : MonoBehaviour
 			UpdateFiles();
 			mDisplayed = true;
 			gameObject.SetActive(true);
-			if (mCanvasGroup != null) {
-				StartCoroutine(Utils.WaitForAsync(0.4F, () => {
-					StartCoroutine(Utils.FadeToAsync(1F, .5F, mCanvasGroup));
-				}));
-			}
+			if (mCanvasGroup != null)
+				StartCoroutine(Utils.FadeToAsync(1F, 0.2F, mCanvasGroup));
 		}
 	}
+
 
 	public void HideBrowser()
 	{
 		if (mDisplayed) {
 			mDisplayed = false;
 			if (mCanvasGroup != null) {
-				StartCoroutine(Utils.FadeToAsync(0F, 0.4F, mCanvasGroup, () => {
+				StartCoroutine(Utils.FadeToAsync(0F, 0.2F, mCanvasGroup, () => {
 					ClearFiles();
 					gameObject.SetActive(false);
 				}));

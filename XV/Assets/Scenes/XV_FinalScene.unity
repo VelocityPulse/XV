@@ -1167,6 +1167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   createButton: {fileID: 1352349993}
+  cancelButton: {fileID: 783923982}
   inputField: {fileID: 735499243}
   textError: {fileID: 887522072}
 --- !u!1 &441991035
@@ -3879,7 +3880,7 @@ Prefab:
     - target: {fileID: 224743213280422794, guid: 14c6fdfa6fd79439bb1c2f143799e751,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 40.47162
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224773752588155802, guid: 14c6fdfa6fd79439bb1c2f143799e751,
         type: 2}
@@ -3904,17 +3905,17 @@ Prefab:
     - target: {fileID: 224773752588155802, guid: 14c6fdfa6fd79439bb1c2f143799e751,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 40.47162
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224743213280422794, guid: 14c6fdfa6fd79439bb1c2f143799e751,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -20.23581
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224773752588155802, guid: 14c6fdfa6fd79439bb1c2f143799e751,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -20.23581
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114267882951078786, guid: 14c6fdfa6fd79439bb1c2f143799e751,
         type: 2}
@@ -4165,17 +4166,17 @@ Prefab:
     - target: {fileID: 224127095685946014, guid: 88fdc70287ba546eabe7efd4227d34df,
         type: 2}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224127095685946014, guid: 88fdc70287ba546eabe7efd4227d34df,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224127095685946014, guid: 88fdc70287ba546eabe7efd4227d34df,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -40
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224789083238179486, guid: 88fdc70287ba546eabe7efd4227d34df,
         type: 2}

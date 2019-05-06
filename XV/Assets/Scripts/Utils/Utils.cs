@@ -56,6 +56,17 @@ public static class Utils
 		return true;
 	}
 
+	public static bool IsAlnum(char[] iString) {
+		int lI = -1;
+		int lLen = iString.Length;
+
+		while (++lI < lLen) {
+			if (!char.IsLetterOrDigit(iString[lI]) && !(iString[lI] == ' '))
+				return false;
+		}
+		return true;
+	}
+
 	public static Bounds ComputeBoundingBox(GameObject iGameObject)
 	{
 		// Getting size and center
