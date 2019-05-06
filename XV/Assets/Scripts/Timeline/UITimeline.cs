@@ -42,7 +42,7 @@ public class UITimeline : MonoBehaviour {
 		}
 		UITrack lNewTrack = Instantiate(mUITrackPrefab, contentPanel);
 		lNewTrack.ID = iData.TrackID;
-		lNewTrack.Name = TimelineManager.Instance.GetObjectFromID(iData.TrackID).name;
+		lNewTrack.Name = iData.TrackID.ToString();
 		mTracks.Add(lNewTrack);
 	}
 

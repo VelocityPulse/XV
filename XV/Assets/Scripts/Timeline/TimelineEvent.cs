@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimelineEvent
+public static class TimelineEvent
 {
 	public class Data
 	{
