@@ -180,4 +180,18 @@ public static class Utils
 		if (iAction != null)
 			iAction();
 	}
+
+	public static IEnumerator WaitForAsync(float iTime, Action iAction)
+	{
+		yield return new WaitForSeconds(iTime);
+		if (iAction != null)
+			iAction();
+	}
+
+	public static IEnumerator WaitForAsync<T>(float iTime, Action<T> iAction, T iObj = null) where T : class
+	{
+		yield return new WaitForSeconds(iTime);
+		if (iAction != null)
+			iAction(iObj);
+	}
 }

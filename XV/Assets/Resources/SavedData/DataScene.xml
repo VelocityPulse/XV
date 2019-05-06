@@ -2,81 +2,18 @@
 <DataScene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataObjects>
     <ObjectDataScene>
-      <Name>ChariotRetractableElectrique</Name>
-      <PrefabName>ChariotRetractableElectrique</PrefabName>
-      <GUID>e7d9f7dd-0dae-4ba8-9409-40c587b9966d</GUID>
+      <Name>PaletteRemplie</Name>
+      <PrefabName>PaletteRemplie</PrefabName>
+      <GUID>c4471eee-b9ed-48d4-bb1c-0fac7391a928</GUID>
       <Type>BUILT_IN</Type>
       <Position>
-        <x>0.266623318</x>
+        <x>0.2655368</x>
         <y>0</y>
-        <z>-9.323519</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
-        <y>90</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
-      <Name>Etageres</Name>
-      <PrefabName>Etageres</PrefabName>
-      <GUID>3e17bc9a-7941-4a14-861f-2ce0c28a1ba1</GUID>
-      <Type>BUILT_IN</Type>
-      <Position>
-        <x>4.148787</x>
-        <y>0</y>
-        <z>-5.28315258</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
-        <y>156.9997</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
-      <Name>ClosedCardboardBox</Name>
-      <PrefabName>ClosedCardboardBox</PrefabName>
-      <GUID>25a6df1d-b92c-4085-bd36-ae50f0de24ae</GUID>
-      <Type>BUILT_IN</Type>
-      <Position>
-        <x>-4.14441347</x>
-        <y>0</y>
-        <z>-7.051508</z>
+        <z>-6.800338</z>
       </Position>
       <Rotation>
         <x>0</x>
         <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scale>
-    </ObjectDataScene>
-    <ObjectDataScene>
-      <Name>ChariotRetractableElectrique</Name>
-      <PrefabName>ChariotRetractableElectrique</PrefabName>
-      <GUID>f8a4ede6-7c0f-459c-89ee-3b75f5b87241</GUID>
-      <Type>BUILT_IN</Type>
-      <Position>
-        <x>-1.79495668</x>
-        <y>0</y>
-        <z>-8.326764</z>
-      </Position>
-      <Rotation>
-        <x>0</x>
-        <y>90</y>
         <z>0</z>
       </Rotation>
       <Scale>

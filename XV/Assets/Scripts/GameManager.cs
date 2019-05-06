@@ -80,6 +80,8 @@ public class GameManager : MonoBehaviour
 		OverTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_hand");
 		CatchedTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_catch");
 		RotationTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_rotate");
+
+		XV_UI.Instance.LockGUI();
 	}
 
 	void Update()
@@ -214,8 +216,6 @@ public class GameManager : MonoBehaviour
 
 		return oGameObject;
 	}
-
-	public 
 
 	public void LoadSceneDebug()
 	{
