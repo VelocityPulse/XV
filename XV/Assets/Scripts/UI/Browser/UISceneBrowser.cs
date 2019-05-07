@@ -26,6 +26,8 @@ public sealed class UISceneBrowser : MonoBehaviour
 
 	private UIElementGridParam mFileUIParam;
 
+	private UIElementGridParam mLastFileUIParamSelected;
+
 	// Assets
 
 	private Sprite mSpriteFile;
@@ -95,7 +97,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 				mFileUIParam.Text.text = lFileName;
 			}
 			GameObject lElement = Instantiate(mFileUITemplate, UIGridElement.transform);
-			lElement.GetComponent<Button>().onClick.AddListener(() => { ElementSelection(lElement); });
+			lElement.GetComponent<Button>().onClick.AddListener(() => { OnClickElement(lElement); });
 		}
 	}
 
@@ -106,14 +108,20 @@ public sealed class UISceneBrowser : MonoBehaviour
 		}
 	}
 
-	public void ElementSelection(GameObject iButtonClicked = null)
+	public void OnClickElement(GameObject iButtonClicked = null)
 	{
-		
+		mLastFileUIParamSelected = iButtonClicked.GetComponent<UIElementGridParam>();
 	}
 
 	private void OnClickOpen()
 	{
+		if (mLastFileUIParamSelected == null)
+			return;
 
+		DataScene lDataScene = DataScene.Unserialize(mLastFileUIParamSelected.Text.text);
+		GameManager.Instance.LoadScene(lDataScene);
+		XV_UI.Instance.UnlockGUI();
+		HideBrowser();
 	}
 
 	private void OnClickNewScene()
@@ -121,6 +129,11 @@ public sealed class UISceneBrowser : MonoBehaviour
 		HideBrowser();
 		newSceneTitle.StartForResult((iTypeResult, iValue) => {
 			if (iTypeResult == UISceneTitleResult.OK_RESULT) {
+
+				DataScene lDataScene = new DataScene();
+				lDataScene.SceneName = iValue;
+				lDataScene.Serialize();
+				DisplayBrowser();
 
 			} else if (iTypeResult == UISceneTitleResult.CANCEL_RESULT) {
 				DisplayBrowser();

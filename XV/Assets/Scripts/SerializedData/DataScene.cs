@@ -10,7 +10,7 @@ using UnityEngine;
 [Serializable]
 public sealed class DataScene
 {
-	private const string FILE_NAME = "DataScene.xml";
+	public const string DEFAULT_FILE_NAME = "DataScene.xml";
 
 	public const string RES_PATH = "/Resources/SavedData/";
 
@@ -21,6 +21,13 @@ public sealed class DataScene
 	public DataScene()
 	{
 		DataObjects = new List<ObjectDataScene>();
+		SceneName = DEFAULT_FILE_NAME;
+	}
+
+	public DataScene(string iSceneName)
+	{
+		DataObjects = new List<ObjectDataScene>();
+		SceneName = iSceneName;
 	}
 
 	public bool IsDataObjectsContains(ObjectDataScene iODS)
@@ -63,13 +70,13 @@ public sealed class DataScene
 		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
 		Utils.CreateFolder(lFolderPath);
 
-		using (StreamWriter writer = new StreamWriter(lFolderPath + FILE_NAME)) {
+		using (StreamWriter writer = new StreamWriter(lFolderPath + iDataScene.SceneName)) {
 			XmlSerializer serializer = new XmlSerializer(typeof(DataScene));
 			serializer.Serialize(writer, iDataScene);
 			writer.Flush();
 		}
 
-		return lFolderPath + FILE_NAME;
+		return lFolderPath + DEFAULT_FILE_NAME;
 	}
 
 	public string Serialize()
@@ -77,23 +84,29 @@ public sealed class DataScene
 		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
 		Utils.CreateFolder(lFolderPath);
 
-		using (StreamWriter writer = new StreamWriter(lFolderPath + FILE_NAME)) {
+		if (!SceneName.EndsWith(".xml"))
+			SceneName += ".xml";
+
+		using (StreamWriter writer = new StreamWriter(lFolderPath + SceneName)) {
 			XmlSerializer serializer = new XmlSerializer(typeof(DataScene));
 			serializer.Serialize(writer, this);
 			writer.Flush();
 		}
 
-		return lFolderPath + FILE_NAME;
+		return lFolderPath + DEFAULT_FILE_NAME;
 	}
 
-	static public DataScene Unserialize()
+	static public DataScene Unserialize(string iSceneName)
 	{
 		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
 		Utils.CreateFolder(lFolderPath);
 
+		if (!iSceneName.EndsWith(".xml"))
+			iSceneName += ".xml";
+
 		XmlSerializer lSerializer = new XmlSerializer(typeof(DataScene));
 
-		using (StreamReader lStreamReader = new StreamReader(lFolderPath + FILE_NAME, Encoding.UTF8, true)) {
+		using (StreamReader lStreamReader = new StreamReader(lFolderPath + iSceneName, Encoding.UTF8, true)) {
 
 			//System.Xml.XmlReader lReader = System.Xml.XmlReader.Create(lStreamReader);
 

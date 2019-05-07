@@ -19,8 +19,7 @@ public class GameManager : MonoBehaviour
 	private static GameManager sInstance;
 	private static bool sLockInstance;
 
-	[Obsolete("mDataScene will be removed")]
-	private DataScene mDataScene = new DataScene();
+	private DataScene mCurrentDataScene;
 
 	private ObjectEntity mSelectedEntity;
 
@@ -196,7 +195,7 @@ public class GameManager : MonoBehaviour
 
         // Setting GameEntity
         ObjectEntity lObjectEntity = oGameObject.AddComponent<ObjectEntity>()
-                   .InitDataScene(mDataScene)
+                   .InitDataScene(mCurrentDataScene)
                    .StartAnimation(iAnimatedPopping)
                    .SetObjectDataScene(iODS)
                    .SetUIBubbleInfo(lUIBubbleInfo.GetComponent<UIBubbleInfo>())
@@ -217,12 +216,6 @@ public class GameManager : MonoBehaviour
 		return oGameObject;
 	}
 
-	public void LoadSceneDebug()
-	{
-		mDataScene = DataScene.Unserialize();
-		LoadScene(mDataScene);
-	}
-
 	public void LoadScene(DataScene iDataScene)
 	{
 		StartCoroutine(LoadSceneAsync(iDataScene));
@@ -230,6 +223,7 @@ public class GameManager : MonoBehaviour
 
 	private IEnumerator LoadSceneAsync(DataScene iDataScene)
 	{
+		mCurrentDataScene = iDataScene;
 		ObjectEntity[] lObjectEntities = ObjectEntity.AllEntities;
 
 		foreach (ObjectEntity lObjectEntity in lObjectEntities) {
