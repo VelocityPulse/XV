@@ -19,7 +19,7 @@ public class UITimelineControls : MonoBehaviour
 	private void Start()
 	{
 		slider.value = slider.minValue;
-		mTimeScaleLinePrefab = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "UITimeScaleLine");
+		mTimeScaleLinePrefab = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "Timeline/UITimeScaleLine");
 	}
 
 	private void Update()

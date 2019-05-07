@@ -62,7 +62,7 @@ public sealed class TimelineManager : MonoBehaviour
 		ClearTimeline();
 	}
 
-	public void AddClip(GameObject iObject, AnimationClip iClip)
+	public void AddAnimation(GameObject iObject, AnimationClip iClip)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
@@ -84,7 +84,18 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 	}
 
-	public void DeleteClip(GameObject iObject, AnimationClip iClip)
+	public void AddRotation(GameObject iObject, Action iAction)
+	{
+		if (iObject != null) {
+			int lID = iObject.GetInstanceID();
+			if (!mData.TrackExists(lID)) {
+				mData.CreateTrack(iObject);
+			}
+			mData.CreateRotationClip(lID, iAction);
+		}
+	}
+
+	public void DeleteTrack(GameObject iObject)
 	{
 #if UNITY_EDITOR
 		// Removing a track from the timeline at runtime causes errors in the timeline EditorWindow.
@@ -94,30 +105,9 @@ public sealed class TimelineManager : MonoBehaviour
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (mData.TrackExists(lID)) {
-				mData.DestroyAnimationClip(lID, iClip);
+				mData.DestroyTrack(lID);
 			}
 		}
-	}
-
-	private void UIResizeClip(TimelineEvent.Data iData)
-	{
-		TrackAsset lTrack = mData.GetTrack(iData.TrackID, iData.Type);
-		List<TimelineClip> lClips = lTrack.GetClips().ToList();
-		if (lClips.Count > iData.ClipIndex) {
-			TimelineClip lClip = lClips[iData.ClipIndex];
-			lClip.start = iData.ClipStart;
-			lClip.duration = iData.ClipLength;
-		}
-	}
-
-	private void UIDeleteClip(TimelineEvent.Data iData)
-	{
-		TrackAsset lTrack = mData.GetTrack(iData.TrackID, TimelineData.TrackType.ANIMATION);
-		List<TimelineClip> lClips = lTrack.GetClips().ToList();
-		if (lClips.Count > iData.ClipIndex) {
-			mTimeline.DeleteClip(lClips[iData.ClipIndex]);
-		}
-		mData.CheckEmptyTrack(iData.TrackID);
 	}
 
 	public void Rebuild()
@@ -135,15 +125,25 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 	}
 
-	private void ClearTimeline()
+	private void UIResizeClip(TimelineEvent.Data iData)
 	{
-		List<TrackAsset> lToDelete = new List<TrackAsset>();
-		foreach (TrackAsset lRootTrack in mTimeline.GetRootTracks()) {
-			lToDelete.Add(lRootTrack);
+		TrackAsset lTrack = mData.GetTrack(iData.TrackID, iData.Type);
+		List<TimelineClip> lClips = lTrack.GetClips().ToList();
+		if (lClips.Count > iData.ClipIndex) {
+			TimelineClip lClip = lClips[iData.ClipIndex];
+			lClip.start = iData.ClipStart;
+			lClip.duration = iData.ClipLength;
 		}
-		foreach (TrackAsset lRootTrack in lToDelete) {
-			mTimeline.DeleteTrack(lRootTrack);
+	}
+
+	private void UIDeleteClip(TimelineEvent.Data iData)
+	{
+		TrackAsset lTrack = mData.GetTrack(iData.TrackID, iData.Type);
+		List<TimelineClip> lClips = lTrack.GetClips().ToList();
+		if (lClips.Count > iData.ClipIndex) {
+			mTimeline.DeleteClip(lClips[iData.ClipIndex]);
 		}
+		mData.CheckEmptyTrack(iData.TrackID);
 	}
 
 	public void Play()
@@ -159,6 +159,17 @@ public sealed class TimelineManager : MonoBehaviour
 	public void Stop()
 	{
 		mDirector.Stop();
+	}
+
+	private void ClearTimeline()
+	{
+		List<TrackAsset> lToDelete = new List<TrackAsset>();
+		foreach (TrackAsset lRootTrack in mTimeline.GetRootTracks()) {
+			lToDelete.Add(lRootTrack);
+		}
+		foreach (TrackAsset lRootTrack in lToDelete) {
+			mTimeline.DeleteTrack(lRootTrack);
+		}
 	}
 
 #if UNITY_EDITOR

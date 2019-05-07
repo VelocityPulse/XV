@@ -31,7 +31,7 @@ public class UITimeline : MonoBehaviour {
 
 	private void Start()
 	{
-		mUITrackPrefab = Resources.Load<UITrack>(GameManager.UI_TEMPLATE_PATH + "UITrack");
+		mUITrackPrefab = Resources.Load<UITrack>(GameManager.UI_TEMPLATE_PATH + "Timeline/UITrack");
 		mTracks = new List<UITrack>();
 		mAnimator = GetComponent<Animator>();
 	}
@@ -70,7 +70,7 @@ public class UITimeline : MonoBehaviour {
 					lTrack.AddTranslationClip(iData.ClipStart);
 					break;
 				case TimelineData.TrackType.ROTATION:
-					//lTrack.AddTranslationClip(iData.ClipStart);
+					lTrack.AddRotationClip(iData.ClipStart);
 					break;
 			}
 		}
@@ -94,9 +94,12 @@ public class UITimeline : MonoBehaviour {
 	{
 		GameObject lObject = new GameObject("TimelineBoundObject");
 		lObject.AddComponent<Animator>();
-		TimelineManager.Instance.AddClip(lObject, new AnimationClip());
+		TimelineManager.Instance.AddAnimation(lObject, new AnimationClip());
 		TimelineManager.Instance.AddTranslation(lObject, new Action(() => {
-			Debug.Log("Action has been called");
+			Debug.Log("Action Translation has been called");
+		}));
+		TimelineManager.Instance.AddRotation(lObject, new Action(() => {
+			Debug.Log("Action Rotation has been called");
 		}));
 	}
 

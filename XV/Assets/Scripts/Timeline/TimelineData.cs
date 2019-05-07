@@ -46,6 +46,21 @@ public sealed class TimelineData
 		TimelineEvent.OnAddClip(lEventData);
 	}
 
+	public void CreateRotationClip(int iTrackID, Action iAction)
+	{
+		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, TimelineData.TrackType.ROTATION);
+		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
+		ActionAsset lActionAsset = lTimelineClip.asset as ActionAsset;
+		lActionAsset.AttachedAction = iAction;
+		lTimelineClip.duration = 1D;
+
+		TimelineEvent.Data lEventData = new TimelineEvent.Data(iTrackID);
+		lEventData.ClipStart = lTimelineClip.start;
+		lEventData.Type = TimelineData.TrackType.ROTATION;
+		TimelineEvent.OnAddClip(lEventData);
+	}
+
+/*
 	public void DestroyAnimationClip(int iTrackID, AnimationClip iClip)
 	{
 		TrackAsset lTrack = GetTrack(iTrackID, TimelineData.TrackType.ANIMATION);
@@ -60,6 +75,7 @@ public sealed class TimelineData
 		TimelineEvent.OnDeleteClip(lEventData);
 		CheckEmptyTrack(iTrackID);
 	}
+ */
 
 	public GroupTrack CreateTrack(GameObject iObject)
 	{
@@ -77,7 +93,7 @@ public sealed class TimelineData
 		return lGroup;
 	}
 
-	private void DestroyTrack(int iID)
+	public void DestroyTrack(int iID)
 	{
 		GroupTrack lGroup = GetGroupTrack(iID);
 		mTimeline.DeleteTrack(lGroup);

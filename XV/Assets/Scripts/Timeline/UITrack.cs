@@ -14,6 +14,7 @@ public class UITrack : MonoBehaviour
 	private RectTransform mRectTransform;
 	private UIClip UIClipPrefab;
 	private UIClip UITranslationClipPrefab;
+	private UIClip UIRotationClipPrefab;
 	private int mCounter;
 
 	[SerializeField]
@@ -40,8 +41,9 @@ public class UITrack : MonoBehaviour
 		mClips = new List<UIClip>();
 		mTranslations = new List<UIClip>();
 		mRotations = new List<UIClip>();
-		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "UIClip");
-		UITranslationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "UITranslationClip");
+		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIClip");
+		UITranslationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UITranslationClip");
+		UIRotationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIRotationClip");
 	}
 
 	public void AddAnimationClip(double iStart, double iLength)
@@ -76,11 +78,22 @@ public class UITrack : MonoBehaviour
 		lClip.Build(lClip.Size, lClipX);
 	}
 
+	public void AddRotationClip(double iStart)
+	{
+		UIClip lClip = Instantiate(UIRotationClipPrefab, mRectTransform);
+		lClip.Type = TimelineData.TrackType.ROTATION;
+		float lClipX = TimelineUtility.ClipStartToPosition(iStart, GetLimits()) + UIClip.sSizeMin / 2F;
+		mRotations.Add(lClip);
+		lClip.Build(lClip.Size, lClipX);
+	}
+
 	public void DeleteClip(UIClip iClip)
 	{
+		List<UIClip> lClips = GetClipList(iClip.Type);
 		TimelineEvent.Data lEventData = new TimelineEvent.Data(ID);
 		lEventData.ClipIndex = GetIndex(iClip);
-		if (mClips.Remove(iClip)) {
+		lEventData.Type = iClip.Type;
+		if (lClips.Remove(iClip)) {
 			TimelineEvent.OnUIDeleteClip(lEventData);
 			Destroy(iClip.gameObject);
 		}
