@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System; //
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,7 +62,17 @@ public class UITimeline : MonoBehaviour {
 	{
 		UITrack lTrack = mTracks.Find(iTrack => iTrack.ID == iData.TrackID);
 		if (lTrack != null) {
-			lTrack.AddClip(iData.ClipStart, iData.ClipLength);
+			switch (iData.Type) {
+				case TimelineData.TrackType.ANIMATION:
+					lTrack.AddAnimationClip(iData.ClipStart, iData.ClipLength);
+					break;
+				case TimelineData.TrackType.TRANSLATION:
+					lTrack.AddTranslationClip(iData.ClipStart);
+					break;
+				case TimelineData.TrackType.ROTATION:
+					//lTrack.AddTranslationClip(iData.ClipStart);
+					break;
+			}
 		}
 	}
 
@@ -84,6 +95,9 @@ public class UITimeline : MonoBehaviour {
 		GameObject lObject = new GameObject("TimelineBoundObject");
 		lObject.AddComponent<Animator>();
 		TimelineManager.Instance.AddClip(lObject, new AnimationClip());
+		TimelineManager.Instance.AddTranslation(lObject, new Action(() => {
+			Debug.Log("Action has been called");
+		}));
 	}
 
 }

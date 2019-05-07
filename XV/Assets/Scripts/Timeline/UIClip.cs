@@ -12,6 +12,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	private float mOffset;
 	public static float sSizeMin = 25F;
 
+
 	[SerializeField]
 	private Text nameText;
 	public string Name
@@ -31,6 +32,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	}
 
 	public UITrack Track { get; private set; }
+	public TimelineData.TrackType Type { get; set; }
 
     private void Awake() {
         mTrackRectTransform = transform.parent as RectTransform;
@@ -40,7 +42,9 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 
     public void OnPointerDown(PointerEventData iData) {
 		Vector2 lLocalPointerPosition;
-        mRectTransform.SetAsLastSibling ();
+		if (Type != TimelineData.TrackType.ANIMATION) {
+        	mRectTransform.SetAsLastSibling();
+		}
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(mTrackRectTransform, iData.position, iData.pressEventCamera, out lLocalPointerPosition);
 		mOffset = mRectTransform.localPosition.x - lLocalPointerPosition.x;
     }
@@ -96,6 +100,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 		ResizeEvent(0F);
 	}
 
+
 	public void ResizeEvent(float iStartGrow)
 	{
 		TimelineEvent.Data lEventData = new TimelineEvent.Data(Track.ID);
@@ -103,15 +108,17 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 		lEventData.ClipLength = TimelineUtility.ClipSizeToDuration(mRectTransform.rect.size.x, Track.Size);
 		lEventData.ClipStart = TimelineUtility.ClipPositionToStart(mRectTransform.localPosition.x, Track.GetLimits()) - lEventData.ClipLength / 2F;
 		lEventData.ClipStart += iStartGrow;
+		lEventData.Type = Type;
 		TimelineEvent.OnUIResizeClip(lEventData);
 	}
+ 
 
 	public float GetLeftLimit()
 	{
 		float lLeftLimit = 0F;
 		if (Track != null) {
-			int lClipIndex = Track.GetPreviousAtPosition(transform.localPosition.x);
-			UIClip lPreviousClip = Track.GetClip(lClipIndex);
+			int lClipIndex = Track.GetPreviousAtPosition(transform.localPosition.x, Type);
+			UIClip lPreviousClip = Track.GetClip(lClipIndex, Type);
 			if (lPreviousClip != null) {
 				lLeftLimit = lPreviousClip.transform.localPosition.x + lPreviousClip.Size / 2.0F;
 			}
@@ -126,8 +133,8 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	{
 		float lRightLimit = 0F;
 		if (Track != null) {
-			int lClipIndex = Track.GetNextAtPosition(transform.localPosition.x);
-			UIClip lNextClip = Track.GetClip(lClipIndex);
+			int lClipIndex = Track.GetNextAtPosition(transform.localPosition.x, Type);
+			UIClip lNextClip = Track.GetClip(lClipIndex, Type);
 			if (lNextClip != null) {
 				lRightLimit = lNextClip.transform.localPosition.x - lNextClip.Size / 2.0F;
 			}

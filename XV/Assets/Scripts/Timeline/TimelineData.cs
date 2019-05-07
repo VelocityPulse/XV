@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,7 +20,7 @@ public sealed class TimelineData
 		mBindings = new Dictionary<int, GroupTrack>();
 	}
 
-	public void CreateClip(int iTrackID, AnimationClip iClip)
+	public void CreateAnimationClip(int iTrackID, AnimationClip iClip)
 	{
 		AnimationTrack lTrack = (AnimationTrack)GetTrack(iTrackID, TimelineData.TrackType.ANIMATION);
 		TimelineClip lTimelineClip = lTrack.CreateClip(iClip);
@@ -27,19 +28,35 @@ public sealed class TimelineData
 		TimelineEvent.Data lEventData = new TimelineEvent.Data(iTrackID);
 		lEventData.ClipStart = lTimelineClip.start;
 		lEventData.ClipLength = iClip.length;
+		lEventData.Type = TimelineData.TrackType.ANIMATION;
 		TimelineEvent.OnAddClip(lEventData);
 	}
 
-	public void DestroyClip(int iTrackID, AnimationClip iClip)
+	public void CreateTranslationClip(int iTrackID, Action iAction)
+	{
+		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, TimelineData.TrackType.TRANSLATION);
+		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
+		ActionAsset lActionAsset = lTimelineClip.asset as ActionAsset;
+		lActionAsset.AttachedAction = iAction;
+		lTimelineClip.duration = 1D;
+
+		TimelineEvent.Data lEventData = new TimelineEvent.Data(iTrackID);
+		lEventData.ClipStart = lTimelineClip.start;
+		lEventData.Type = TimelineData.TrackType.TRANSLATION;
+		TimelineEvent.OnAddClip(lEventData);
+	}
+
+	public void DestroyAnimationClip(int iTrackID, AnimationClip iClip)
 	{
 		TrackAsset lTrack = GetTrack(iTrackID, TimelineData.TrackType.ANIMATION);
 		List<TimelineClip> lClips = lTrack.GetClips().ToList();
-		
+
 		int lIndexToDelete = lClips.FindIndex(lClip => lClip.animationClip == iClip);
 		mTimeline.DeleteClip(lClips[lIndexToDelete]);
 
 		TimelineEvent.Data lEventData = new TimelineEvent.Data(iTrackID);
 		lEventData.ClipIndex = lIndexToDelete;
+		lEventData.Type = TimelineData.TrackType.ANIMATION;
 		TimelineEvent.OnDeleteClip(lEventData);
 		CheckEmptyTrack(iTrackID);
 	}
@@ -48,11 +65,14 @@ public sealed class TimelineData
 	{
 		int lID = iObject.GetInstanceID();
 		GroupTrack lGroup = (GroupTrack)mTimeline.CreateTrack(typeof(GroupTrack), null, lID.ToString());
-		mTimeline.CreateTrack(typeof(AnimationTrack), lGroup, TrackType.ANIMATION.ToString());
-		mTimeline.CreateTrack(typeof(ActionTrack), lGroup, TrackType.TRANSLATION.ToString());
-		mTimeline.CreateTrack(typeof(ActionTrack), lGroup, TrackType.ROTATION.ToString());
+		TrackAsset lAnim = mTimeline.CreateTrack(typeof(AnimationTrack), lGroup, TrackType.ANIMATION.ToString());
+		TrackAsset lTrans = mTimeline.CreateTrack(typeof(ActionTrack), lGroup, TrackType.TRANSLATION.ToString());
+		TrackAsset lRot = mTimeline.CreateTrack(typeof(ActionTrack), lGroup, TrackType.ROTATION.ToString());
 		mBindings.Add(lID, lGroup);
 		mDirector.SetGenericBinding(lGroup, iObject);
+		mDirector.SetGenericBinding(lAnim, iObject);
+		mDirector.SetGenericBinding(lTrans, iObject);
+		mDirector.SetGenericBinding(lRot, iObject);
 		TimelineEvent.OnAddTrack(new TimelineEvent.Data(lID));
 		return lGroup;
 	}

@@ -8,10 +8,12 @@ using UnityEngine.UI;
 public class UITrack : MonoBehaviour
 {
 	private List<UIClip> mClips;
+	private List<UIClip> mTranslations;
+	private List<UIClip> mRotations;
 
-	private AnimationTrack mTrack;
 	private RectTransform mRectTransform;
 	private UIClip UIClipPrefab;
+	private UIClip UITranslationClipPrefab;
 	private int mCounter;
 
 	[SerializeField]
@@ -36,20 +38,24 @@ public class UITrack : MonoBehaviour
 	{
 		mRectTransform = transform.Find("Track") as RectTransform;
 		mClips = new List<UIClip>();
+		mTranslations = new List<UIClip>();
+		mRotations = new List<UIClip>();
 		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "UIClip");
+		UITranslationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "UITranslationClip");
 	}
 
-	public void AddClip(double iStart, double iLength)
+	public void AddAnimationClip(double iStart, double iLength)
 	{
 		UIClip lClip = Instantiate(UIClipPrefab, mRectTransform);
 
 		string lClipName = "Clip " + mCounter.ToString();
 		lClip.name = lClipName;
 		lClip.Name = lClipName;
+		lClip.Type = TimelineData.TrackType.ANIMATION;
 		mCounter++;
 
 		float lClipX = BuildClip(lClip, iStart, iLength);
-		int lPrevIndex = GetPreviousAtPosition(lClipX);
+		int lPrevIndex = GetPreviousAtPosition(lClipX, lClip.Type);
 
 		// Insert clip at the end of the list
 		if (lPrevIndex == mClips.Count - 1) {
@@ -59,6 +65,15 @@ public class UITrack : MonoBehaviour
 		else {
 			mClips.Insert(lPrevIndex + 1, lClip);
 		}
+	}
+
+	public void AddTranslationClip(double iStart)
+	{
+		UIClip lClip = Instantiate(UITranslationClipPrefab, mRectTransform);
+		lClip.Type = TimelineData.TrackType.TRANSLATION;
+		float lClipX = TimelineUtility.ClipStartToPosition(iStart, GetLimits()) + UIClip.sSizeMin / 2F;
+		mTranslations.Add(lClip);
+		lClip.Build(lClip.Size, lClipX);
 	}
 
 	public void DeleteClip(UIClip iClip)
@@ -86,53 +101,70 @@ public class UITrack : MonoBehaviour
 		return lClipX;
 	}
 
-	public int GetPreviousAtPosition(float iClipX)
+	public int GetPreviousAtPosition(float iClipX, TimelineData.TrackType iType)
 	{
-		if (mClips.Count == 0) {
+		List<UIClip> lClips = GetClipList(iType);
+		if (lClips.Count == 0) {
 			return -1;
 		}
 
 		int i;
-		for (i = 0; i < mClips.Count; i++) {
-			if (mClips[i].transform.localPosition.x >= iClipX) {
+		for (i = 0; i < lClips.Count; i++) {
+			if (lClips[i].transform.localPosition.x >= iClipX) {
 				return i - 1;
 			}
 		}
 		return i - 1;
 	}
 
-	public int GetNextAtPosition(float iClipX)
+	public int GetNextAtPosition(float iClipX, TimelineData.TrackType iType)
 	{
-		if (mClips.Count == 0) {
+		List<UIClip> lClips = GetClipList(iType);
+		if (lClips.Count == 0) {
 			return -1;
 		}
 
 		int i;
-		for (i = 0; i < mClips.Count; i++) {
-			if (mClips[i].transform.localPosition.x > iClipX) {
+		for (i = 0; i < lClips.Count; i++) {
+			if (lClips[i].transform.localPosition.x > iClipX) {
 				return i;
 			}
 		}
 		return -1;
 	}
 
-	public UIClip GetClip(int iIndex)
+	public UIClip GetClip(int iIndex, TimelineData.TrackType iType)
 	{
-		if (iIndex >= 0 && iIndex < mClips.Count) {
-			return mClips[iIndex];
+		List<UIClip> lClips = GetClipList(iType);
+		if (iIndex >= 0 && iIndex < lClips.Count) {
+			return lClips[iIndex];
 		}
 		return null;
 	}
 
 	public int GetIndex(UIClip iClip)
 	{
-		return mClips.IndexOf(iClip);
+		return GetClipList(iClip.Type).IndexOf(iClip);
 	}
 
 	public Vector2 GetLimits()
 	{
 		float lHalfSize = mRectTransform.rect.size.x / 2F;
 		return new Vector2(-lHalfSize, lHalfSize);
+	}
+
+	private List<UIClip> GetClipList(TimelineData.TrackType iType)
+	{
+		switch (iType) {
+			case TimelineData.TrackType.ANIMATION:
+				return mClips;
+			case TimelineData.TrackType.TRANSLATION:
+				return mTranslations;
+			case TimelineData.TrackType.ROTATION:
+				return mRotations;
+			default:
+				return null;
+		}
 	}
 
 // Removed possibility to add a clip by clicking on the track

@@ -1,12 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
 public class ActionBehaviour : PlayableBehaviour
 {
-   public override void ProcessFrame(Playable playable, FrameData info, object playerData)
-   {
-	   // do stuff
-   }
+	public Action AttachedAction { get; set; }
+
+	public override void OnBehaviourPlay(Playable playable, FrameData info)
+	{
+		AttachedAction();
+	}
 }

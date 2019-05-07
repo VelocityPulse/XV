@@ -7,6 +7,7 @@ public static class TimelineEvent
 	public class Data
 	{
 		public int TrackID { get; private set; }
+		public TimelineData.TrackType Type { get; set; }
 		public int ClipIndex { get; set; }
 		public double ClipStart { get; set; }
 		public double ClipLength { get; set; }

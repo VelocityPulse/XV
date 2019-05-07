@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -68,7 +69,18 @@ public sealed class TimelineManager : MonoBehaviour
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateClip(lID, iClip);
+			mData.CreateAnimationClip(lID, iClip);
+		}
+	}
+
+	public void AddTranslation(GameObject iObject, Action iAction)
+	{
+		if (iObject != null) {
+			int lID = iObject.GetInstanceID();
+			if (!mData.TrackExists(lID)) {
+				mData.CreateTrack(iObject);
+			}
+			mData.CreateTranslationClip(lID, iAction);
 		}
 	}
 
@@ -82,14 +94,14 @@ public sealed class TimelineManager : MonoBehaviour
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (mData.TrackExists(lID)) {
-				mData.DestroyClip(lID, iClip);
+				mData.DestroyAnimationClip(lID, iClip);
 			}
 		}
 	}
 
 	private void UIResizeClip(TimelineEvent.Data iData)
 	{
-		TrackAsset lTrack = mData.GetTrack(iData.TrackID, TimelineData.TrackType.ANIMATION);
+		TrackAsset lTrack = mData.GetTrack(iData.TrackID, iData.Type);
 		List<TimelineClip> lClips = lTrack.GetClips().ToList();
 		if (lClips.Count > iData.ClipIndex) {
 			TimelineClip lClip = lClips[iData.ClipIndex];
