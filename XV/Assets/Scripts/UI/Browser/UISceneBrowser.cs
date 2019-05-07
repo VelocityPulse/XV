@@ -126,7 +126,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 
 	private void OnClickNewScene()
 	{
-		HideBrowser();
+		HideBrowser(true);
 		newSceneTitle.StartForResult((iTypeResult, iValue) => {
 			if (iTypeResult == UISceneTitleResult.OK_RESULT) {
 
@@ -142,7 +142,6 @@ public sealed class UISceneBrowser : MonoBehaviour
 				Utils.PrintStackTrace();
 			}
 
-
 		}, mFileNames.ToArray());
 	}
 
@@ -153,14 +152,17 @@ public sealed class UISceneBrowser : MonoBehaviour
 			gameObject.SetActive(true);
 			UpdateFiles();
 			mDisplayed = true;
+
 			gameObject.SetActive(true);
 			if (mCanvasGroup != null)
-				StartCoroutine(Utils.FadeToAsync(1F, 0.2F, mCanvasGroup));
+				StartCoroutine(Utils.FadeToAsync(1F, 0.2F, mCanvasGroup, () => {
+					GameManager.Instance.KeyboardDeplacementActive = false;
+				}));
 		}
 	}
 
 
-	public void HideBrowser()
+	public void HideBrowser(bool iKeepKeyboardLocked = false)
 	{
 		if (mDisplayed) {
 			mDisplayed = false;
@@ -168,6 +170,8 @@ public sealed class UISceneBrowser : MonoBehaviour
 				StartCoroutine(Utils.FadeToAsync(0F, 0.2F, mCanvasGroup, () => {
 					ClearFiles();
 					gameObject.SetActive(false);
+					if (!iKeepKeyboardLocked)
+						GameManager.Instance.KeyboardDeplacementActive = true;
 				}));
 			}
 		}

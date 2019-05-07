@@ -4,111 +4,128 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler ,IDragHandler, IEndDragHandler
+public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    private Image mElementColor;
+	private Image mElementColor;
 
-    private Text mElementText;
+	private Text mElementText;
 
-    public ModelLoader.Model Model;
+	public ModelLoader.Model Model;
 
-    private GameObject mSelectedElement;
+	private GameObject mSelectedElement;
 
-    private Vector3 mCentroid;
+	private Vector3 mCentroid;
 
-    private void Start()
+	private bool mMouseOver;
+
+	private bool mLockSelection;
+
+	private void Start()
 	{
-        mSelectedElement = null;
+		mSelectedElement = null;
 
-        if ((mElementColor = GetComponentInChildren<Image>()) == null)
-            Debug.LogError("[ERROR] Ui Model element doesn't contain Image!");
-        
-        if ((mElementText = GetComponentInChildren<Text>()) == null)
-            Debug.LogError("[ERROR] Ui Model element doesn't contain Text!");
+		if ((mElementColor = GetComponentInChildren<Image>()) == null)
+			Debug.LogError("[ERROR] Ui Model element doesn't contain Image!");
+
+		if ((mElementText = GetComponentInChildren<Text>()) == null)
+			Debug.LogError("[ERROR] Ui Model element doesn't contain Text!");
+	}
+
+	private void Update()
+	{
+		if (mMouseOver) {
+			if (Input.GetKey(KeyCode.LeftControl))
+				mLockSelection = true;
+			else
+				mLockSelection = false;
+		}
 	}
 
 	public void OnPointerEnter(PointerEventData iEventData)
-    {
-        if (mElementColor)
-            mElementColor.color = Color.green;
-        if (mElementText)
-            mElementText.color = Color.green;
-    }
+	{
+		if (mElementColor)
+			mElementColor.color = Color.green;
+		if (mElementText)
+			mElementText.color = Color.green;
+		mMouseOver = true;
+	}
 
-    public void OnPointerExit(PointerEventData iEventData)
-    {
-        if (mElementColor)
-            mElementColor.color = Color.white;
-        if (mElementText)
-            mElementText.color = Color.white;
-    }
+	public void OnPointerExit(PointerEventData iEventData)
+	{
+		if (mElementColor)
+			mElementColor.color = Color.white;
+		if (mElementText)
+			mElementText.color = Color.white;
+		mMouseOver = false;
+	}
 
-    // If a selectedElement exist, cast a ray from the camera to the mouse,
-    // Just cast on dropable element
-    // On hit, update the selectedElement position
-    public void OnDrag(PointerEventData iEventData)
-    {
-        if (mSelectedElement != null) {
-            if (!mSelectedElement.activeSelf)
-                mSelectedElement.SetActive(true);
-            RaycastHit lHit;
-            Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
-                Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
+	// If a selectedElement exist, cast a ray from the camera to the mouse,
+	// Just cast on dropable element
+	// On hit, update the selectedElement position
+	public void OnDrag(PointerEventData iEventData)
+	{
+		if (mSelectedElement != null && !mLockSelection) {
 
-                mSelectedElement.transform.position = lHit.point;
-                mSelectedElement.transform.position += 
-                    (mSelectedElement.transform.position - mSelectedElement.transform.TransformPoint(mCentroid));
-                // new at each drag ... find a way to update position.y without new
+			if (!mSelectedElement.activeSelf)
+				mSelectedElement.SetActive(true);
+			RaycastHit lHit;
+			Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+			if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
+				Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
 
-                mSelectedElement.transform.position = new Vector3(
-                    mSelectedElement.transform.position.x, lHit.point.y, mSelectedElement.transform.position.z);
-            }
-        }
-    }
+				mSelectedElement.transform.position = lHit.point;
+				mSelectedElement.transform.position +=
+					(mSelectedElement.transform.position - mSelectedElement.transform.TransformPoint(mCentroid));
+				// new at each drag ... find a way to update position.y without new
 
-    // On End restore Layer to dropable, build the object using selectedElement, delete SelectedElement.
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        ObjectDataScene lODS = new ObjectDataScene {
-            Name = mElementText.text,
+				mSelectedElement.transform.position = new Vector3(
+					mSelectedElement.transform.position.x, lHit.point.y, mSelectedElement.transform.position.z);
+			}
+		}
+	}
+
+	// On End restore Layer to dropable, build the object using selectedElement, delete SelectedElement.
+	public void OnEndDrag(PointerEventData eventData)
+	{
+		ObjectDataScene lODS = new ObjectDataScene {
+			Name = mElementText.text,
 			PrefabName = mElementText.text,
-            Type = Model.Type,
-            Position = mSelectedElement.transform.position,
-            Rotation = Model.GameObject.transform.rotation.eulerAngles,
-            Scale = mSelectedElement.transform.localScale,
-        };
+			Type = Model.Type,
+			Position = mSelectedElement.transform.position,
+			Rotation = Model.GameObject.transform.rotation.eulerAngles,
+			Scale = mSelectedElement.transform.localScale,
+		};
 
-        GameManager.Instance.BuildObject(lODS);
+		GameManager.Instance.BuildObject(lODS);
 		Destroy(mSelectedElement);
-    }
+	}
 
-    // Instantiate the associated Model, disable it and ignore raycast for this object.
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        if (mSelectedElement != null)
-            return;
+	// Instantiate the associated Model, disable it and ignore raycast for this object.
+	public void OnBeginDrag(PointerEventData eventData)
+	{
+		if (mSelectedElement != null && mLockSelection)
+			return;
 
-        // Instantiate temporary object during drag & drop, it will follow mouse
-        if ((mSelectedElement = Instantiate(Model.GameObject)) == null)
-            return;
+		// Instantiate temporary object during drag & drop, it will follow mouse
+		if ((mSelectedElement = Instantiate(Model.GameObject)) == null)
+			return;
 
-        // Retrieve parameters for this item
-        EntityParameters lParameters;
-        if ((lParameters = mSelectedElement.GetComponent<EntityParameters>()) != null) {
-            // Update orientation
-            mSelectedElement.transform.eulerAngles = lParameters.Orientation;
-        }
+		// Retrieve parameters for this item
+		EntityParameters lParameters;
+		if ((lParameters = mSelectedElement.GetComponent<EntityParameters>()) != null) {
+			// Update orientation
+			mSelectedElement.transform.eulerAngles = lParameters.Orientation;
+		}
 
-        mSelectedElement.SetActive(false);
-        Utils.SetLayerRecursively(mSelectedElement, LayerMask.NameToLayer("Ignore Raycast"));
+		mSelectedElement.SetActive(false);
+		Utils.SetLayerRecursively(mSelectedElement, LayerMask.NameToLayer("Ignore Raycast"));
 
-        List<Vector3> lPoints = new List<Vector3>();
-        if (lPoints == null) {
-            Debug.LogError("[UI_MODEL] Allocation Error.");
-            return;
-        }
+		List<Vector3> lPoints = new List<Vector3>();
+		if (lPoints == null) {
+			Debug.LogError("[UI_MODEL] Allocation Error.");
+			return;
+		}
 
-        mCentroid = Utils.ComputeBoundingBox(mSelectedElement).center;
-    }
+		mCentroid = Utils.ComputeBoundingBox(mSelectedElement).center;
+	}
 }

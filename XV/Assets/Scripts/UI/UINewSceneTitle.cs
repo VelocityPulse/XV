@@ -77,7 +77,6 @@ public class UINewSceneTitle : MonoBehaviour
 
 	private void Display()
 	{
-		GameManager.Instance.KeyboardDeplacementActive = false;
 		mCanvasGroup.alpha = 0F;
 		mCanvasGroup.blocksRaycasts = true;
 		createButton.interactable = false;
@@ -86,7 +85,6 @@ public class UINewSceneTitle : MonoBehaviour
 
 	private void Hide()
 	{
-		GameManager.Instance.KeyboardDeplacementActive = true;
 		mCanvasGroup.alpha = 1F;
 		mCanvasGroup.blocksRaycasts = false;
 		StartCoroutine(Utils.FadeToAsync(0F, 0.2F, mCanvasGroup));
@@ -140,5 +138,4 @@ public class UINewSceneTitle : MonoBehaviour
 		mResultAction = null;
 		inputField.text = "";
 	}
-
 }

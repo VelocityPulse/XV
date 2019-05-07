@@ -390,9 +390,14 @@ public class ObjectEntity : MonoBehaviour
 
 	public ObjectEntity SaveEntity()
 	{
-		if (mODS != null) {
-			mODS.Position = transform.position;
-			mODS.Rotation = transform.rotation.eulerAngles;
+		if (mODS != null && mCenteredParent != null) {
+			Vector3 lPosition = new Vector3(
+				mCenteredParent.transform.position.x - mCenter.x,
+				transform.position.y,
+				mCenteredParent.transform.position.z - mCenter.z
+			);
+			mODS.Position = lPosition;
+			mODS.Rotation = mCenteredParent.transform.rotation.eulerAngles;
 			mODS.Scale = transform.localScale;
 			mDataScene.Serialize();
 		}
