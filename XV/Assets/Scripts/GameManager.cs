@@ -171,7 +171,7 @@ public class GameManager : MonoBehaviour
 
 		// Setting positions
         lTopParent.transform.position = iODS.Position + lBounds.center;
-
+		          
         // Put the OffsetRotation as a child of the TopParent GameObject
         lOffsetRotation.transform.parent = lTopParent.transform;
 
@@ -192,6 +192,7 @@ public class GameManager : MonoBehaviour
         oGameObject.transform.localPosition = -lBounds.center;
         oGameObject.name = iODS.PrefabName + "_mesh";
         oGameObject.transform.localScale = iODS.Scale;
+		oGameObject.transform.eulerAngles = iODS.Rotation;
 
         // Setting GameEntity
         ObjectEntity lObjectEntity = oGameObject.AddComponent<ObjectEntity>()
