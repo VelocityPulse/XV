@@ -17,6 +17,9 @@ public sealed class XV_UI : MonoBehaviour
 	[SerializeField]
 	private CanvasGroup UIToolBarLockerScreen;
 
+	[SerializeField]
+	private UIConfirmPopup uIConfirmPopup;
+
 	private UINotifier Notifier { get { return notifier; } }
 
 	private static XV_UI sInstance;
@@ -30,6 +33,12 @@ public sealed class XV_UI : MonoBehaviour
 		get
 		{
 			if (sInstance == null) {
+
+				GameObject lGameObject = null;
+				if ((lGameObject = GameObject.Find("XV_UI"))) {
+					if ((sInstance = lGameObject.GetComponent<XV_UI>()))
+						return sInstance;
+				}
 				sLockInstance = true;
 				sInstance = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "XV_UI").GetComponent<XV_UI>();
 			}
@@ -37,14 +46,16 @@ public sealed class XV_UI : MonoBehaviour
 		}
 	}
 
+	public UIConfirmPopup UIConfirmPopup { get { return uIConfirmPopup; } }
+
 	private void Start()
 	{
 		if (sInstance == null)
 			sInstance = this;
-		else if (!sLockInstance) {
-			Destroy(gameObject);
-			throw new Exception("An instance of this singleton already exists.");
-		}
+		//else if (!sLockInstance) {
+		//	Destroy(gameObject);
+		//	throw new Exception("An instance of this singleton already exists.");
+		//}
 		sLockInstance = false;
 		enabled = false;
 		mIsGUILocked = true;

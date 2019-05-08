@@ -37,13 +37,21 @@ public sealed class UISceneBrowser : MonoBehaviour
 	[SerializeField]
 	private GameObject UIGridElement;
 
-	[Header("SceneBrowser/Bottom/ButtonContainer/NewScene")]
+	[Header("SceneBrowser/Bottom/ButtonContainer1/NewScene")]
 	[SerializeField]
 	private Button NewSceneButton;
 
-	[Header("SceneBrowser/Bottom/ButtonContainer/OpenFile")]
+	[Header("SceneBrowser/Bottom/ButtonContainer1/OpenFile")]
 	[SerializeField]
 	private Button OpenButton;
+
+	[Header("SceneBrowser/Bottom/ButtonContainer2/Cancel")]
+	[SerializeField]
+	private Button CancelButton;
+
+	[Header("SceneBrowser/Bottom/ButtonContainer2/Remove")]
+	[SerializeField]
+	private Button RemoveButton;
 
 	// Use this for initialization
 	private void Start()
@@ -59,6 +67,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 
 		// Load Prefab
 		mFileUITemplate = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "UIFileElementGrid");
+
 		// Get the Script that give acces to settings
 		mFileUIParam = mFileUITemplate.GetComponent<UIElementGridParam>();
 
@@ -68,6 +77,9 @@ public sealed class UISceneBrowser : MonoBehaviour
 		// Button setting
 		OpenButton.onClick.AddListener(OnClickOpen);
 		NewSceneButton.onClick.AddListener(OnClickNewScene);
+		CancelButton.onClick.AddListener(OnClickCancel);
+		RemoveButton.onClick.AddListener(OnClickRemove);
+
 
 		DisplayBrowser();
 	}
@@ -99,12 +111,27 @@ public sealed class UISceneBrowser : MonoBehaviour
 			GameObject lElement = Instantiate(mFileUITemplate, UIGridElement.transform);
 			lElement.GetComponent<Button>().onClick.AddListener(() => { OnClickElement(lElement); });
 		}
+
+		if (GameManager.Instance.CurrentDataScene == null)
+			CancelButton.interactable = false;
+		else
+			CancelButton.interactable = true;
 	}
 
 	private void ClearFiles()
 	{
 		foreach (Transform lChild in UIGridElement.transform) {
 			Destroy(lChild.gameObject);
+		}
+	}
+
+	private void RemoveSelectedScene()
+	{
+		if (mLastFileUIParamSelected == null) {
+			File.Delete(mSavedScenePath + mLastFileUIParamSelected.Text.text);
+			GameManager.Instance.UnloadScene();
+			ClearFiles();
+			UpdateFiles();
 		}
 	}
 
@@ -145,14 +172,34 @@ public sealed class UISceneBrowser : MonoBehaviour
 		}, mFileNames.ToArray());
 	}
 
+	private void OnClickCancel()
+	{
+		HideBrowser();
+	}
+
+	private void OnClickRemove()
+	{
+		HideBrowser(true);
+		XV_UI.Instance.UIConfirmPopup.StartForResult((iResult) => {
+			if (iResult == UIConfirmPopupResult.LEFT_RESULT)
+				DisplayBrowser();
+			else if (iResult == UIConfirmPopupResult.RIGHT_RESULT) {
+				RemoveSelectedScene();
+				DisplayBrowser();
+			} else
+				Utils.PrintStackTrace();
+		}, "Confirm", "No", "Yes");
+	}
+
 	public void DisplayBrowser()
 	{
+		//Debug.Log("displaybrowser");
 		// Display
 		if (!mDisplayed) {
 			gameObject.SetActive(true);
 			UpdateFiles();
 			mDisplayed = true;
-
+			XV_UI.Instance.LockGUI();
 			gameObject.SetActive(true);
 			if (mCanvasGroup != null)
 				StartCoroutine(Utils.FadeToAsync(1F, 0.2F, mCanvasGroup, () => {
@@ -170,8 +217,10 @@ public sealed class UISceneBrowser : MonoBehaviour
 				StartCoroutine(Utils.FadeToAsync(0F, 0.2F, mCanvasGroup, () => {
 					ClearFiles();
 					gameObject.SetActive(false);
-					if (!iKeepKeyboardLocked)
+					if (!iKeepKeyboardLocked) {
+						XV_UI.Instance.UnlockGUI();
 						GameManager.Instance.KeyboardDeplacementActive = true;
+					}
 				}));
 			}
 		}

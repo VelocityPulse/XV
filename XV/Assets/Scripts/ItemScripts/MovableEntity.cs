@@ -73,7 +73,6 @@ public sealed class MovableEntity : AInteraction
 
                 // Add Move button & Keep track of the button image to edit color
                 Button lButton;
-                Debug.Log(iObj == null);
                 lButton = iObj.CreateBubleInfoButton(new UIBubbleInfoButton {
                     Text = "Move",
                     ClickAction = (iObject) => {

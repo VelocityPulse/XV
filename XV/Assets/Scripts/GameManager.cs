@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	public DataScene CurrentDataScene { get { return mCurrentDataScene; } }
+
 	public Texture2D OverTexturCursor { get; private set; }
 
 	public Texture2D CatchedTexturCursor { get; private set; }
@@ -58,6 +60,12 @@ public class GameManager : MonoBehaviour
 		get
 		{
 			if (sInstance == null) {
+
+				GameObject lGameObject = null;
+				if ((lGameObject = GameObject.Find("GameManager"))) {
+					if ((sInstance = lGameObject.GetComponent<GameManager>()))
+						return sInstance;
+				}
 				sLockInstance = true;
 				sInstance = new GameObject("GameManager").AddComponent<GameManager>();
 			}
@@ -69,10 +77,10 @@ public class GameManager : MonoBehaviour
 	{
 		if (sInstance == null)
 			sInstance = this;
-		else if (!sLockInstance) {
-			Destroy(this);
-			throw new Exception("An instance of this singleton already exists.");
-		}
+		//else if (!sLockInstance) {
+		//	Destroy(this);
+		//	throw new Exception("An instance of this singleton already exists.");
+		//}
 		sLockInstance = false;
 		KeyboardDeplacementActive = true;
 
@@ -192,7 +200,6 @@ public class GameManager : MonoBehaviour
 		oGameObject.transform.localPosition = -lBounds.center;
 		oGameObject.name = iODS.PrefabName + "_mesh";
 		oGameObject.transform.localScale = iODS.Scale;
-		//oGameObject.transform.eulerAngles = iODS.Rotation;
 		lTopParent.transform.eulerAngles = iODS.Rotation;
 
 		// Setting GameEntity
@@ -216,6 +223,16 @@ public class GameManager : MonoBehaviour
 		Utils.SetLayerRecursively(lTopParent, LayerMask.NameToLayer("dropable"));
 
 		return oGameObject;
+	}
+
+	public void UnloadScene()
+	{
+		ObjectEntity[] lObjectEntities = ObjectEntity.AllEntities;
+
+		foreach (ObjectEntity lObjectEntity in lObjectEntities) {
+			lObjectEntity.Dispose();
+		}
+		mCurrentDataScene = null;
 	}
 
 	public void LoadScene(DataScene iDataScene)

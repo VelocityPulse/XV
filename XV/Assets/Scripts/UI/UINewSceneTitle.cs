@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public enum UISceneTitleResult
 {
-	OK_RESULT,
-
 	CANCEL_RESULT,
+
+	OK_RESULT,
 
 	ALREADY_DISPLAYING,
 
@@ -64,10 +64,8 @@ public class UINewSceneTitle : MonoBehaviour
 			mResultAction = iAction;
 			Display();
 
-			foreach (string iFileWithExtension in iFileAlreadyPresent) {
+			foreach (string iFileWithExtension in iFileAlreadyPresent)
 				mNamesAlreadyUsed.Add(iFileWithExtension.Replace(".xml", "").ToLower());
-				Debug.Log(mNamesAlreadyUsed[0]);
-			}
 		} else {
 			iAction(UISceneTitleResult.ALREADY_DISPLAYING, string.Empty);
 			Reset();
@@ -125,7 +123,8 @@ public class UINewSceneTitle : MonoBehaviour
 		Hide();
 	}
 
-	private void OnClickCancel() {
+	private void OnClickCancel()
+	{
 		mDisplayed = false;
 		mResultAction(UISceneTitleResult.CANCEL_RESULT, string.Empty);
 		Hide();

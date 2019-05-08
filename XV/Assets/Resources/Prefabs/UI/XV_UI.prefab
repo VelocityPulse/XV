@@ -3740,6 +3740,8 @@ MonoBehaviour:
   UIGridElement: {fileID: 1610604831733782}
   NewSceneButton: {fileID: 114563118740793744}
   OpenButton: {fileID: 114252008438934228}
+  CancelButton: {fileID: 0}
+  RemoveButton: {fileID: 0}
 --- !u!114 &114653258905407770
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6844,7 +6846,7 @@ CanvasGroup:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1280520144954656}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -6899,7 +6901,7 @@ CanvasGroup:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1003046594529134}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
