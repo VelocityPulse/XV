@@ -84,9 +84,18 @@ public sealed class UISceneBrowser : MonoBehaviour
 		DisplayBrowser();
 	}
 
+	private void Update()
+	{
+		if (mLastFileUIParamSelected == null)
+			RemoveButton.interactable = false;
+		else
+			RemoveButton.interactable = true;
+	}
+
 	// Update the list of element
 	private void UpdateFiles()
 	{
+		ClearFiles();
 		mFileNames = new List<string>();
 		mFullPathFiles = new List<string>(Directory.GetFileSystemEntries(mSavedScenePath));
 
@@ -125,13 +134,20 @@ public sealed class UISceneBrowser : MonoBehaviour
 		}
 	}
 
-	private void RemoveSelectedScene()
+	private void RemoveScene()
 	{
 		if (mLastFileUIParamSelected == null) {
 			File.Delete(mSavedScenePath + mLastFileUIParamSelected.Text.text);
-			GameManager.Instance.UnloadScene();
-			ClearFiles();
+
+			if (GameManager.Instance.CurrentDataScene != null) {
+				string lSelectedDataSceneName = mLastFileUIParamSelected.Text.text;
+				string lCurrentDataSceneName = GameManager.Instance.CurrentDataScene.SceneName;
+				if (lSelectedDataSceneName == lCurrentDataSceneName)
+					GameManager.Instance.UnloadScene();
+			}
+
 			UpdateFiles();
+			mLastFileUIParamSelected = null;
 		}
 	}
 
@@ -184,7 +200,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 			if (iResult == UIConfirmPopupResult.LEFT_RESULT)
 				DisplayBrowser();
 			else if (iResult == UIConfirmPopupResult.RIGHT_RESULT) {
-				RemoveSelectedScene();
+				RemoveScene();
 				DisplayBrowser();
 			} else
 				Utils.PrintStackTrace();
@@ -193,8 +209,6 @@ public sealed class UISceneBrowser : MonoBehaviour
 
 	public void DisplayBrowser()
 	{
-		//Debug.Log("displaybrowser");
-		// Display
 		if (!mDisplayed) {
 			gameObject.SetActive(true);
 			UpdateFiles();
@@ -207,7 +221,6 @@ public sealed class UISceneBrowser : MonoBehaviour
 				}));
 		}
 	}
-
 
 	public void HideBrowser(bool iKeepKeyboardLocked = false)
 	{
