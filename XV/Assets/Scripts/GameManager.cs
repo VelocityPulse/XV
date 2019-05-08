@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
 	public const string UI_MODEL_SPRITE_PATH = "Sprites/UI/ModelsSprites/";
 
 	private static GameManager sInstance;
-	private static bool sLockInstance;
 
 	private DataScene mCurrentDataScene;
 
@@ -66,7 +65,6 @@ public class GameManager : MonoBehaviour
 					if ((sInstance = lGameObject.GetComponent<GameManager>()))
 						return sInstance;
 				}
-				sLockInstance = true;
 				sInstance = new GameObject("GameManager").AddComponent<GameManager>();
 			}
 			return sInstance;
@@ -77,11 +75,7 @@ public class GameManager : MonoBehaviour
 	{
 		if (sInstance == null)
 			sInstance = this;
-		//else if (!sLockInstance) {
-		//	Destroy(this);
-		//	throw new Exception("An instance of this singleton already exists.");
-		//}
-		sLockInstance = false;
+
 		KeyboardDeplacementActive = true;
 
 		OverTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_hand");
@@ -233,6 +227,7 @@ public class GameManager : MonoBehaviour
 			lObjectEntity.Dispose();
 		}
 		mCurrentDataScene = null;
+		XV_UI.Instance.SceneNameText.text = "-";
 	}
 
 	public void LoadScene(DataScene iDataScene)
@@ -242,12 +237,9 @@ public class GameManager : MonoBehaviour
 
 	private IEnumerator LoadSceneAsync(DataScene iDataScene)
 	{
+		UnloadScene();
 		mCurrentDataScene = iDataScene;
-		ObjectEntity[] lObjectEntities = ObjectEntity.AllEntities;
-
-		foreach (ObjectEntity lObjectEntity in lObjectEntities) {
-			lObjectEntity.Dispose();
-		}
+		XV_UI.Instance.SceneNameText.text = iDataScene.SceneName.Replace(".xml", "");
 
 		while (ObjectEntity.InstantiatedEntity != 0) {
 			yield return new WaitForSeconds(0.1F);

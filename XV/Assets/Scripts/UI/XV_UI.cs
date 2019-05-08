@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class XV_UI : MonoBehaviour
 {
@@ -20,11 +21,12 @@ public sealed class XV_UI : MonoBehaviour
 	[SerializeField]
 	private UIConfirmPopup uIConfirmPopup;
 
+	[SerializeField]
+	private Text sceneNameText;
+
 	private UINotifier Notifier { get { return notifier; } }
 
 	private static XV_UI sInstance;
-
-	private static bool sLockInstance;
 
 	private bool mIsGUILocked;
 
@@ -39,12 +41,13 @@ public sealed class XV_UI : MonoBehaviour
 					if ((sInstance = lGameObject.GetComponent<XV_UI>()))
 						return sInstance;
 				}
-				sLockInstance = true;
 				sInstance = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "XV_UI").GetComponent<XV_UI>();
 			}
 			return sInstance;
 		}
 	}
+
+	public Text SceneNameText { get { return sceneNameText; } }
 
 	public UIConfirmPopup UIConfirmPopup { get { return uIConfirmPopup; } }
 
@@ -52,11 +55,7 @@ public sealed class XV_UI : MonoBehaviour
 	{
 		if (sInstance == null)
 			sInstance = this;
-		//else if (!sLockInstance) {
-		//	Destroy(gameObject);
-		//	throw new Exception("An instance of this singleton already exists.");
-		//}
-		sLockInstance = false;
+
 		enabled = false;
 		mIsGUILocked = true;
 	}
