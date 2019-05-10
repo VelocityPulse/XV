@@ -73,7 +73,7 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 	}
 
-	public void AddTranslation(GameObject iObject, Action iAction)
+	public void AddTranslation(GameObject iObject, Predicate<float> iAction)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
@@ -84,7 +84,7 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 	}
 
-	public void AddRotation(GameObject iObject, Action iAction)
+	public void AddRotation(GameObject iObject, Predicate<float> iAction)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
@@ -123,6 +123,11 @@ public sealed class TimelineManager : MonoBehaviour
 				TimelineEvent.OnResizeClip(lEventData);
 			}
 		}
+	}
+
+	public GameObject GetObjectFromID(int iID)
+	{
+		return mData.GetBinding(iID);
 	}
 
 	private void UIResizeClip(TimelineEvent.Data iData)

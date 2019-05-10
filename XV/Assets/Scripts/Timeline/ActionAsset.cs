@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 
 public class ActionAsset : PlayableAsset
 {
-	public Action AttachedAction { get; set; }
+	public Predicate<float> AttachedAction { get; set; }
 
 	public override Playable CreatePlayable(PlayableGraph iGraph, GameObject iOwner)
 	{

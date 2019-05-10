@@ -15,7 +15,6 @@ public class UITrack : MonoBehaviour
 	private UIClip UIClipPrefab;
 	private UIClip UITranslationClipPrefab;
 	private UIClip UIRotationClipPrefab;
-	private int mCounter;
 
 	[SerializeField]
 	private Text nameText;
@@ -46,15 +45,14 @@ public class UITrack : MonoBehaviour
 		UIRotationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIRotationClip");
 	}
 
-	public void AddAnimationClip(double iStart, double iLength)
+	public void AddAnimationClip(string iName, double iStart, double iLength)
 	{
 		UIClip lClip = Instantiate(UIClipPrefab, mRectTransform);
 
-		string lClipName = "Clip " + mCounter.ToString();
+		string lClipName = iName + "[" + TimelineUtility.FormatDuration(iLength) + "]";
 		lClip.name = lClipName;
 		lClip.Name = lClipName;
 		lClip.Type = TimelineData.TrackType.ANIMATION;
-		mCounter++;
 
 		float lClipX = BuildClip(lClip, iStart, iLength);
 		int lPrevIndex = GetPreviousAtPosition(lClipX, lClip.Type);

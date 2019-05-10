@@ -11,6 +11,7 @@ public static class TimelineEvent
 		public int ClipIndex { get; set; }
 		public double ClipStart { get; set; }
 		public double ClipLength { get; set; }
+		public string ClipName { get; set; }
 
 		public Data(int iTrackID)
 		{

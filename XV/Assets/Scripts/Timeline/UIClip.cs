@@ -61,7 +61,9 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 			lLocalPointerPosition.x = Mathf.Clamp(lLocalPointerPosition.x, lXMin, lXMax);
 			lLocalPointerPosition.y = 0F;
             mRectTransform.localPosition = lLocalPointerPosition + new Vector2(mOffset, 0F);
-			ResizeEvent(Time.deltaTime);
+
+			float lGrow = (lLocalPointerPosition.x == lXMax) ? Time.deltaTime : 0F;
+			ResizeEvent(lGrow);
         }
     }
 
@@ -97,11 +99,11 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 			lOffset = (mRectTransform.localPosition.x + Size / 2F) - lRightLimit;
 			mRectTransform.localPosition -= new Vector3(lOffset, 0F, 0F);
 		}
-		ResizeEvent(0F);
+		ResizeEvent();
 	}
 
 
-	public void ResizeEvent(float iStartGrow)
+	public void ResizeEvent(float iStartGrow = 0F)
 	{
 		TimelineEvent.Data lEventData = new TimelineEvent.Data(Track.ID);
 		lEventData.ClipIndex = Track.GetIndex(this);

@@ -31,4 +31,10 @@ public class TimelineUtility : MonoBehaviour
 		double lStart = (iClipPosition - iTrackLimits.x) / (iTrackLimits.y - iTrackLimits.x) * lTotalDuration;
 		return lStart;
 	}
+
+	public static string FormatDuration(double iSeconds, int iMaxPrecision = 2)
+	{
+		string lStr = iSeconds.ToString();
+		return lStr.Substring(0, Mathf.Min(lStr.Length, 2 + iMaxPrecision)) + "s";
+	}
 }

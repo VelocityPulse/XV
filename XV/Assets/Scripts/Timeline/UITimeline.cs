@@ -43,7 +43,8 @@ public class UITimeline : MonoBehaviour {
 		}
 		UITrack lNewTrack = Instantiate(mUITrackPrefab, contentPanel);
 		lNewTrack.ID = iData.TrackID;
-		lNewTrack.Name = iData.TrackID.ToString();
+		GameObject lObject = TimelineManager.Instance.GetObjectFromID(iData.TrackID);
+		lNewTrack.Name = (lObject != null) ? lObject.name : "Unbound object";
 		mTracks.Add(lNewTrack);
 	}
 
@@ -64,7 +65,7 @@ public class UITimeline : MonoBehaviour {
 		if (lTrack != null) {
 			switch (iData.Type) {
 				case TimelineData.TrackType.ANIMATION:
-					lTrack.AddAnimationClip(iData.ClipStart, iData.ClipLength);
+					lTrack.AddAnimationClip(iData.ClipName, iData.ClipStart, iData.ClipLength);
 					break;
 				case TimelineData.TrackType.TRANSLATION:
 					lTrack.AddTranslationClip(iData.ClipStart);
@@ -95,11 +96,13 @@ public class UITimeline : MonoBehaviour {
 		GameObject lObject = new GameObject("TimelineBoundObject");
 		lObject.AddComponent<Animator>();
 		TimelineManager.Instance.AddAnimation(lObject, new AnimationClip());
-		TimelineManager.Instance.AddTranslation(lObject, new Action(() => {
+		TimelineManager.Instance.AddTranslation(lObject, new Predicate<float>(i => {
 			Debug.Log("Action Translation has been called");
+			return true;
 		}));
-		TimelineManager.Instance.AddRotation(lObject, new Action(() => {
+		TimelineManager.Instance.AddRotation(lObject, new Predicate<float>(i => {
 			Debug.Log("Action Rotation has been called");
+			return true;
 		}));
 	}
 

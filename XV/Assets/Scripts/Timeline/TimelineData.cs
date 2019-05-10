@@ -29,10 +29,11 @@ public sealed class TimelineData
 		lEventData.ClipStart = lTimelineClip.start;
 		lEventData.ClipLength = iClip.length;
 		lEventData.Type = TimelineData.TrackType.ANIMATION;
+		lEventData.ClipName = iClip.name;
 		TimelineEvent.OnAddClip(lEventData);
 	}
 
-	public void CreateTranslationClip(int iTrackID, Action iAction)
+	public void CreateTranslationClip(int iTrackID, Predicate<float> iAction)
 	{
 		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, TimelineData.TrackType.TRANSLATION);
 		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
@@ -46,7 +47,7 @@ public sealed class TimelineData
 		TimelineEvent.OnAddClip(lEventData);
 	}
 
-	public void CreateRotationClip(int iTrackID, Action iAction)
+	public void CreateRotationClip(int iTrackID, Predicate<float> iAction)
 	{
 		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, TimelineData.TrackType.ROTATION);
 		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
@@ -154,5 +155,12 @@ public sealed class TimelineData
 				DestroyTrack(iID);
 			}
 		}
+	}
+
+	public GameObject GetBinding(int iID)
+	{
+		GroupTrack lGroup = GetGroupTrack(iID);
+		GameObject lObject = (GameObject)mDirector.GetGenericBinding(lGroup);
+		return lObject;
 	}
 }

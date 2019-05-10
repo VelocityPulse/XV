@@ -34,7 +34,7 @@ public class UITimelineControls : MonoBehaviour
 	{
 		float lValue = float.Parse(iStringValue);
 		if (iStringValue != null) {
-			maxDurationText.text = iStringValue.Substring(0, Mathf.Min(iStringValue.Length, 4)) + "s";
+			maxDurationText.text = TimelineUtility.FormatDuration(lValue);
 		}
 		foreach (Transform lChild in timeScale) {
 			Destroy(lChild.gameObject);
