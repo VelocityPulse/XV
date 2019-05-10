@@ -221,7 +221,7 @@ public sealed class MovableEntity : AInteraction
             // TODO Calcul movement duration ...
 
             // Add the code that do the animation in the Action timeline
-            AddToTimeline((iSpeed) => {
+			TimelineManager.Instance.AddTranslation(gameObject, iSpeed => {
                 
                 // Check NavMesh component are present
                 if (mEntityObstacle == null || mAgent == null) {
@@ -257,8 +257,7 @@ public sealed class MovableEntity : AInteraction
                 }
 
                 return false;
-            } , lActionDuration);
-
+			});
         }
     }
 
@@ -271,7 +270,7 @@ public sealed class MovableEntity : AInteraction
         float lActionDuration = 2F;
 
         // Add the code that do the animation in the following Action
-        AddToTimeline((iSpeed) => {
+        TimelineManager.Instance.AddRotation(gameObject, (iSpeed) => {
 
             // Update rotation performed according to speed
             mRotationPerformed += Time.deltaTime * iSpeed;
@@ -287,7 +286,7 @@ public sealed class MovableEntity : AInteraction
             }
             return false;
 
-        }, lActionDuration);
+        });
     }
 
     //  Deplacement animation for all movable object
