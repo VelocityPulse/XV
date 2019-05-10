@@ -13,6 +13,7 @@ public class EntityParameters : MonoBehaviour {
         TROLLEY,
         VEHICLE,
         HUMAN,
+        COUNT,
     }
 
     [Header("Choose a type for this entity")]
