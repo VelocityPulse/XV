@@ -57,7 +57,6 @@ public sealed class XV_UI : MonoBehaviour
 			sInstance = this;
 
 		enabled = false;
-		mIsGUILocked = true;
 	}
 
 	public void Notify(float iDuration, string iMessage)

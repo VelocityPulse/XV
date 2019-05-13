@@ -56,7 +56,8 @@ public static class Utils
 		return true;
 	}
 
-	public static bool IsAlnum(char[] iString) {
+	public static bool IsAlnum(char[] iString)
+	{
 		int lI = -1;
 		int lLen = iString.Length;
 
