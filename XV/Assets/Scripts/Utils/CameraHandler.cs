@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public sealed class CameraHandler : MonoBehaviour
 {
-
 	public enum Mode { FREE, SUBJECTIVE, LOCKED }
 
 	[SerializeField]
@@ -21,6 +20,7 @@ public sealed class CameraHandler : MonoBehaviour
 	private Text mViewModeText;
 
 	private bool mIsRepositioning;
+	private float mSmoothTime;
 
 	private Mode mViewMode;
 
@@ -40,7 +40,7 @@ public sealed class CameraHandler : MonoBehaviour
 				mViewMode = Mode.SUBJECTIVE;
 				if (mViewModeText != null)
 					mViewModeText.text = "View mode: SUBJECTIVE";
-				StartCoroutine(SetSubjectivePositionAsync(new Vector3(transform.position.x, 1F, transform.position.z)));
+				StartCoroutine(SetPositionAsync(new Vector3(transform.position.x, 1F, transform.position.z)));
 			}
 		}
 	}
@@ -67,14 +67,27 @@ public sealed class CameraHandler : MonoBehaviour
 		}
 	}
 
+	public void Focus(Vector3 iTargetPosition)
+	{
+		Vector3 lTargetDir = iTargetPosition - transform.position;
+		lTargetDir.Normalize();
+
+		// The camera will position itself 10 units away from the focused object
+		// This can be improved by calculating the size of the object
+		Vector3 lNewPos = iTargetPosition - 10F * lTargetDir;
+		StartCoroutine(SetPositionAsync(lNewPos));
+		StartCoroutine(SetRotationAsync(iTargetPosition));
+	}
+
 	private void Start()
 	{
 		ViewMode = Mode.FREE;
 		CurrentMode = Mode.LOCKED;
 		mIsRepositioning = false;
+		mSmoothTime = 0.3F;
 	}
 
-	void Update()
+	private void Update()
 	{
 		// Hold right click to go in 'view mode' (free or subjective), otherwise stay in locked mode
 		if (Input.GetMouseButtonDown(1)) {
@@ -92,9 +105,9 @@ public sealed class CameraHandler : MonoBehaviour
 
 		if (!mIsRepositioning) {
 			ApplyMovement();
-		}
-		if (CurrentMode != Mode.LOCKED) {
-			ApplyRotation();
+			if (CurrentMode != Mode.LOCKED) {
+				ApplyRotation();
+			}
 		}
 	}
 
@@ -158,13 +171,34 @@ public sealed class CameraHandler : MonoBehaviour
 		Cursor.lockState = CursorLockMode.Locked;
 	}
 
-	private IEnumerator SetSubjectivePositionAsync(Vector3 iTarget)
+	private IEnumerator SetPositionAsync(Vector3 iTarget)
 	{
 		Vector3 lVelocity = Vector3.zero;
-		mIsRepositioning = true;
 		while (Vector3.Distance(transform.position, iTarget) > 0.1F) {
-			transform.position = Vector3.SmoothDamp(transform.position, iTarget, ref lVelocity, 0.3F);
+			mIsRepositioning = true;
+			transform.position = Vector3.SmoothDamp(transform.position, iTarget, ref lVelocity, mSmoothTime);
 			yield return new WaitForEndOfFrame();
+		}
+		mIsRepositioning = false;
+		yield break;
+	}
+
+	private IEnumerator SetRotationAsync(Vector3 iTargetPosition)
+	{
+		float lAngularVelocity = 0F;
+		Vector3 lTargetDir = iTargetPosition - transform.position;
+		Quaternion lTargetRot = Quaternion.LookRotation(lTargetDir);
+		float lDelta = Quaternion.Angle(transform.rotation, lTargetRot);
+		while (lDelta > 0.3F) {
+			mIsRepositioning = true;
+			lDelta = Quaternion.Angle(transform.rotation, lTargetRot);
+			if (lDelta > 0.0f)
+			{
+				float lAngle = Mathf.SmoothDampAngle(lDelta, 0.0f, ref lAngularVelocity, mSmoothTime);
+				lAngle = 1.0f - lAngle/lDelta;
+				transform.rotation = Quaternion.Slerp(transform.rotation, lTargetRot, lAngle);
+			}
+        	yield return new WaitForEndOfFrame();
 		}
 		mIsRepositioning = false;
 		yield break;
