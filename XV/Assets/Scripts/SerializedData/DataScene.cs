@@ -67,7 +67,7 @@ public sealed class DataScene
 
 	static public string Serialize(DataScene iDataScene)
 	{
-		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
+		string lFolderPath = Application.dataPath + RES_PATH;
 		Utils.CreateFolder(lFolderPath);
 
 		using (StreamWriter writer = new StreamWriter(lFolderPath + iDataScene.SceneName)) {
@@ -81,7 +81,7 @@ public sealed class DataScene
 
 	public string Serialize()
 	{
-		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
+		string lFolderPath = Application.dataPath + RES_PATH;
 		Utils.CreateFolder(lFolderPath);
 
 		if (!SceneName.EndsWith(".xml"))
@@ -98,7 +98,7 @@ public sealed class DataScene
 
 	static public DataScene Unserialize(string iSceneName)
 	{
-		string lFolderPath = Application.dataPath + "/Resources/SavedData/";
+		string lFolderPath = Application.dataPath + RES_PATH;
 		Utils.CreateFolder(lFolderPath);
 
 		if (!iSceneName.EndsWith(".xml"))

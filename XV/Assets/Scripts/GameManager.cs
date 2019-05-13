@@ -52,6 +52,8 @@ public class GameManager : MonoBehaviour
 
 	public Texture2D RotationTexturCursor { get; private set; }
 
+	public Recorder Recorder { get; private set; }
+
 	public bool KeyboardDeplacementActive { get; set; }
 
 	static public GameManager Instance
@@ -81,6 +83,16 @@ public class GameManager : MonoBehaviour
 		OverTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_hand");
 		CatchedTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_catch");
 		RotationTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_rotate");
+
+		Recorder = GetComponent<Recorder>();
+
+		//StartCoroutine(Utils.WaitForAsync(1F, () => {
+			
+		//	Recorder.StartRecord();
+		//	StartCoroutine(Utils.WaitForAsync(30F, () => {
+		//		Recorder.ReleaseRecord();
+		//	}));
+		//}));
 	}
 
 	void Update()
