@@ -5,6 +5,8 @@ AssetBundles.meta
 XV/Assets/Resources/SavedData/*.xml
 XV/Assets/Resources/SavedData/*.xml.meta
 XV/Assets/Resources/RecordedVideo/*
+XV/Assets/Resources/RecordedVideo.meta
+
 
 *.o
 *.a
