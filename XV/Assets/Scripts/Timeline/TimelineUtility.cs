@@ -37,4 +37,18 @@ public class TimelineUtility : MonoBehaviour
 		string lStr = iSeconds.ToString();
 		return lStr.Substring(0, Mathf.Min(lStr.Length, 2 + iMaxPrecision)) + "s";
 	}
+
+	public static string FormatType(TimelineData.TrackType iType)
+	{
+		switch (iType) {
+			case TimelineData.TrackType.ANIMATION:
+				return "Animation";
+			case TimelineData.TrackType.TRANSLATION:
+				return "Movement";
+			case TimelineData.TrackType.ROTATION:
+				return "Rotation";
+			default:
+				return "";
+		}
+	}
 }

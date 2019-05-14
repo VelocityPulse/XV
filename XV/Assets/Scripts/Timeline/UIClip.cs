@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
-public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IDragHandler
+public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private RectTransform mTrackRectTransform;
 	private RectTransform mRectTransform;
@@ -62,6 +62,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 			lLocalPointerPosition.y = 0F;
             mRectTransform.localPosition = lLocalPointerPosition + new Vector2(mOffset, 0F);
 			ResizeEvent(lLocalPointerPosition.x == lXMax);
+			OnPointerEnter(iData);
         }
     }
 
@@ -146,5 +147,18 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 			}
 		}
 		return lRightLimit;
+	}
+
+	public void OnPointerEnter(PointerEventData iData)
+	{
+		double lTime = TimelineUtility.ClipPositionToStart(mRectTransform.localPosition.x, Track.GetLimits());
+		string lTimeString = TimelineUtility.FormatDuration(lTime);
+		string lTypeString = TimelineUtility.FormatType(Type);
+		UITimelineInfo.Instance.Show(transform as RectTransform, lTypeString, lTimeString);
+	}
+
+	public void OnPointerExit(PointerEventData iData)
+	{
+		UITimelineInfo.Instance.Hide();
 	}
 }
