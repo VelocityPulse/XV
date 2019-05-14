@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Recorder))]
 public class GameManager : MonoBehaviour
 {
 	public const string UI_MATERIAL = "Materials/UI/";

@@ -213,7 +213,7 @@ public sealed class MovableEntity : AInteraction
         ResetMode();
 
         Vector3 lHitPoint = Vector3.zero;
-        float lActionDuration = 0F;
+        //float lActionDuration = 0F;
 
         // Check the hit.point clicked is the ground
         if ((GetHitPointFromMouseClic(ref lHitPoint, "scene"))) {

@@ -86,15 +86,14 @@ public class Recorder : MonoBehaviour
 		RenderTexture renderTexture = new RenderTexture(mWidth, mHeight, 24);
 		Texture2D screenShot = new Texture2D(mWidth, mHeight, TextureFormat.RGBA32, false);
 
-		Camera camera = Camera.main;
 
-		camera.targetTexture = renderTexture;
-		camera.Render();
+		mCamera.targetTexture = renderTexture;
+		mCamera.Render();
 
 		RenderTexture.active = renderTexture;
 		screenShot.ReadPixels(rect, 0, 0);
 
-		camera.targetTexture = null;
+		mCamera.targetTexture = null;
 		RenderTexture.active = null;
 
 		Destroy(renderTexture);
