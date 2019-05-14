@@ -48,7 +48,7 @@ public class UIClipResizeHandle : MonoBehaviour, IPointerDownHandler, IDragHandl
 			Resize(lSizeDelta, lResizeValue);
 		}
 		mPreviousPointerPos = mCurrentPointerPos;
-		mClip.ResizeEvent(0F);
+		mClip.ResizeEvent();
 	}
 
 	private float GetRawResizeValue()

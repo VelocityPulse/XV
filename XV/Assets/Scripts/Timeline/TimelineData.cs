@@ -40,7 +40,7 @@ public sealed class TimelineData
 		ActionAsset lActionAsset = lTimelineClip.asset as ActionAsset;
 		lActionAsset.AttachedAction = iAction;
 		lActionAsset.Track = lTrack;
-		lTimelineClip.duration = 1D;
+		lTimelineClip.duration = 0.1D;
 
 		TimelineEvent.Data lEventData = new TimelineEvent.Data(iTrackID);
 		lEventData.ClipStart = lTimelineClip.start;
@@ -68,7 +68,7 @@ public sealed class TimelineData
 	public GroupTrack CreateTrack(GameObject iObject)
 	{
 		int lID = iObject.GetInstanceID();
-		GroupTrack lGroup = (GroupTrack)mTimeline.CreateTrack(typeof(GroupTrack), null, lID.ToString());
+		GroupTrack lGroup = (GroupTrack)mTimeline.CreateTrack(typeof(GroupTrack), null, iObject.name);
 		TrackAsset lAnim = mTimeline.CreateTrack(typeof(AnimationTrack), lGroup, TrackType.ANIMATION.ToString());
 		TrackAsset lTrans = mTimeline.CreateTrack(typeof(ActionTrack), lGroup, TrackType.TRANSLATION.ToString());
 		TrackAsset lRot = mTimeline.CreateTrack(typeof(ActionTrack), lGroup, TrackType.ROTATION.ToString());

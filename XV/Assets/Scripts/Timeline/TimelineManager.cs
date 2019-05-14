@@ -175,6 +175,9 @@ public sealed class TimelineManager : MonoBehaviour
 		foreach (TrackAsset lRootTrack in lToDelete) {
 			mTimeline.DeleteTrack(lRootTrack);
 		}
+		// Creation of a dummy track to set a minimum duration of 5 seconds
+		ActivationTrack lTrack = (ActivationTrack)mTimeline.CreateTrack(typeof(ActivationTrack), null, "Duration Track");
+		lTrack.CreateDefaultClip();
 	}
 
 #if UNITY_EDITOR
