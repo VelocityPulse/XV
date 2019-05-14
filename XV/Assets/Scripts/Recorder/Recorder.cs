@@ -39,7 +39,7 @@ public class Recorder : MonoBehaviour
 		
 		Utils.CreateFolder(iPath);
 		Debug.Log("Recording to : " + iPath);
-		init(iPath);
+		Init(iPath);
 		mEncode = true;
 	}
 
@@ -52,7 +52,7 @@ public class Recorder : MonoBehaviour
 		}
 	}
 
-	private void init(string iPath)
+	private void Init(string iPath)
 	{
 		VideoTrackAttributes videoAttr = new VideoTrackAttributes {
 			frameRate = new MediaRational((int)((1 / Time.smoothDeltaTime)) / 2),
@@ -80,7 +80,7 @@ public class Recorder : MonoBehaviour
 	}
 
 
-	Texture2D RTImage()
+	private Texture2D RTImage()
 	{
 		Rect rect = new Rect(0, 0, mWidth, mHeight);
 		RenderTexture renderTexture = new RenderTexture(mWidth, mHeight, 24);
