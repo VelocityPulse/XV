@@ -80,7 +80,7 @@ public sealed class TimelineManager : MonoBehaviour
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateTranslationClip(lID, iAction);
+			mData.CreateEventClip(lID, iAction, TimelineData.TrackType.TRANSLATION);
 		}
 	}
 
@@ -91,7 +91,7 @@ public sealed class TimelineManager : MonoBehaviour
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateRotationClip(lID, iAction);
+			mData.CreateEventClip(lID, iAction, TimelineData.TrackType.ROTATION);
 		}
 	}
 

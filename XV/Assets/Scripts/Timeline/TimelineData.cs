@@ -33,31 +33,18 @@ public sealed class TimelineData
 		TimelineEvent.OnAddClip(lEventData);
 	}
 
-	public void CreateTranslationClip(int iTrackID, Predicate<float> iAction)
+	public void CreateEventClip(int iTrackID, Predicate<float> iAction, TrackType iType)
 	{
-		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, TimelineData.TrackType.TRANSLATION);
+		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, iType);
 		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
 		ActionAsset lActionAsset = lTimelineClip.asset as ActionAsset;
 		lActionAsset.AttachedAction = iAction;
+		lActionAsset.Track = lTrack;
 		lTimelineClip.duration = 1D;
 
 		TimelineEvent.Data lEventData = new TimelineEvent.Data(iTrackID);
 		lEventData.ClipStart = lTimelineClip.start;
-		lEventData.Type = TimelineData.TrackType.TRANSLATION;
-		TimelineEvent.OnAddClip(lEventData);
-	}
-
-	public void CreateRotationClip(int iTrackID, Predicate<float> iAction)
-	{
-		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, TimelineData.TrackType.ROTATION);
-		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
-		ActionAsset lActionAsset = lTimelineClip.asset as ActionAsset;
-		lActionAsset.AttachedAction = iAction;
-		lTimelineClip.duration = 1D;
-
-		TimelineEvent.Data lEventData = new TimelineEvent.Data(iTrackID);
-		lEventData.ClipStart = lTimelineClip.start;
-		lEventData.Type = TimelineData.TrackType.ROTATION;
+		lEventData.Type = iType;
 		TimelineEvent.OnAddClip(lEventData);
 	}
 
