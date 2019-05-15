@@ -24,10 +24,13 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 	{
 		mSelectedElement = null;
 
-		if ((mElementColor = GetComponentInChildren<Image>()) == null)
+		mElementColor = transform.Find("Frame").GetComponent<Image>();
+		mElementText = GetComponentInChildren<Text>();
+
+		if (mElementColor == null)
 			Debug.LogError("[ERROR] Ui Model element doesn't contain Image!");
 
-		if ((mElementText = GetComponentInChildren<Text>()) == null)
+		if (mElementText == null)
 			Debug.LogError("[ERROR] Ui Model element doesn't contain Text!");
 	}
 
@@ -44,9 +47,9 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 	public void OnPointerEnter(PointerEventData iEventData)
 	{
 		if (mElementColor)
-			mElementColor.color = Color.green;
+			mElementColor.color = new Color32(255, 211, 131, 255);
 		if (mElementText)
-			mElementText.color = Color.green;
+			mElementText.color = new Color32(255, 211, 131, 255);
 		mMouseOver = true;
 	}
 

@@ -32,8 +32,8 @@ public sealed class UIModelManager : MonoBehaviour {
 
             if ((lUIElement = Instantiate(UiElement, transform)) == null)
                 continue;
-
-            if ((lImage = lUIElement.GetComponentInChildren<Image>()) != null)
+			
+            if ((lImage = lUIElement.transform.Find("Frame/Sprite").GetComponent<Image>()) != null)
                 lImage.sprite = lModel.Sprite;
             if ((lText = lUIElement.GetComponentInChildren<Text>()) != null)
                 lText.text = lModel.GameObject.name;

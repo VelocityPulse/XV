@@ -13,6 +13,9 @@ public class UITimeline : MonoBehaviour {
 	[SerializeField]
 	private Transform contentPanel;
 
+	[SerializeField]
+	private Transform modelManager;
+
 	private void OnEnable()
 	{
 		TimelineEvent.AddTrackEvent += AddTrack;
@@ -87,7 +90,9 @@ public class UITimeline : MonoBehaviour {
 
 	public void ToggleVisibility()
 	{
+		Animator lModelManagerAnimator = modelManager.GetComponent<Animator>();
 		mAnimator.SetBool("IsVisible", !mAnimator.GetBool("IsVisible"));
+		lModelManagerAnimator.SetBool("IsCropped", !lModelManagerAnimator.GetBool("IsCropped"));
 	}
 
 	// These functions are for testing only
