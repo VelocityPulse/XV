@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 	public const string UI_MATERIAL = "Materials/UI/";
 	public const string MODELS_MATERIAL = "Materials/Models/";
 	public const string ITEM_BANK_PATH = "Prefabs/ItemBank/";
+	public const string HUMAN_ITEM_PATH = "Prefabs/Character";
 	public const string EXTERN_ITEM_BANK_PATH = "SavedData/Models/";
 	public const string UI_TEMPLATE_PATH = "Prefabs/UI/";
 	public const string UI_ICON_PATH = "Sprites/UI/Icons/";
@@ -90,7 +91,7 @@ public class GameManager : MonoBehaviour
 		//StartCoroutine(Utils.WaitForAsync(1F, () => {
 			
 		//	Recorder.StartRecord();
-		//	StartCoroutine(Utils.WaitForAsync(30F, () => {
+		//	StartCoroutine(Utils.WaitForAsync(20F, () => {
 		//		Recorder.ReleaseRecord();
 		//	}));
 		//}));
@@ -226,6 +227,28 @@ public class GameManager : MonoBehaviour
 		}
 
 		Utils.SetLayerRecursively(lTopParent, LayerMask.NameToLayer("dropable"));
+
+		return oGameObject;
+	}
+
+	public GameObject BuildHuman(HumanDataScene iHDS)
+	{
+		GameObject oGameObject;
+
+		oGameObject = ModelLoader.Instance.GetModelGameObject(iHDS.PrefabName);
+		if (oGameObject == null) {
+			Debug.LogError("Load prefab " + iHDS.PrefabName + " failed.");
+			return oGameObject;
+		}
+
+		oGameObject = Instantiate(oGameObject);
+		oGameObject.transform.position = iHDS.Position;
+
+		HumanEntity lHumanEntity = oGameObject.GetComponent<HumanEntity>();
+
+		lHumanEntity.SetDataScene(CurrentDataScene)
+					.SetHumanDataScene(iHDS);
+
 
 		return oGameObject;
 	}

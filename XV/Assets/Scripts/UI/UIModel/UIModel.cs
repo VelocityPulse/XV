@@ -4,7 +4,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public sealed class UIModel : MonoBehaviour,
+	IPointerEnterHandler,
+	IPointerExitHandler,
+	IBeginDragHandler,
+	IDragHandler,
+	IEndDragHandler
 {
 	private Image mElementColor;
 
@@ -36,7 +41,11 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
 	private void Update()
 	{
-		if (mMouseOver) {
+		if (Model.HumanModel && HumanEntity.IsInstantiatedInScene)
+			mLockSelection = true;
+		else if (Model.HumanModel && !HumanEntity.IsInstantiatedInScene)
+			mLockSelection = false;
+		else if (mMouseOver) {
 			if (Input.GetKey(KeyCode.LeftControl))
 				mLockSelection = true;
 			else
@@ -67,7 +76,7 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 	// On hit, update the selectedElement position
 	public void OnDrag(PointerEventData iEventData)
 	{
-		if (mSelectedElement != null && !mLockSelection) {
+		if (mSelectedElement != null) {
 
 			if (!mSelectedElement.activeSelf)
 				mSelectedElement.SetActive(true);
@@ -90,23 +99,42 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 	// On End restore Layer to dropable, build the object using selectedElement, delete SelectedElement.
 	public void OnEndDrag(PointerEventData eventData)
 	{
-		ObjectDataScene lODS = new ObjectDataScene {
-			Name = mElementText.text,
-			PrefabName = mElementText.text,
-			Type = Model.Type,
-			Position = mSelectedElement.transform.position,
-			Rotation = Model.GameObject.transform.rotation.eulerAngles,
-			Scale = mSelectedElement.transform.localScale,
-		};
+		if (!Model.HumanModel) {
+			ObjectDataScene lODS = new ObjectDataScene {
+				Name = mElementText.text,
+				PrefabName = mElementText.text,
+				Type = Model.Type,
+				Position = mSelectedElement.transform.position,
+				Rotation = Model.GameObject.transform.rotation.eulerAngles,
+				Scale = mSelectedElement.transform.localScale,
+			};
 
-		GameManager.Instance.BuildObject(lODS);
-		Destroy(mSelectedElement);
+			GameManager.Instance.BuildObject(lODS);
+			Destroy(mSelectedElement);
+		} else {
+
+			HumanDataScene lHDS = new HumanDataScene {
+				Name = mElementText.text,
+				PrefabName = mElementText.text,
+				Position = mSelectedElement.transform.position,
+				Rotation = Model.GameObject.transform.rotation.eulerAngles,
+				Scale = mSelectedElement.transform.localScale
+			};
+
+			GameManager.Instance.BuildHuman(lHDS);
+			Destroy(mSelectedElement);
+			// Lock because this human model must not be instantiated any more.
+			mLockSelection = true;
+		}
 	}
 
 	// Instantiate the associated Model, disable it and ignore raycast for this object.
 	public void OnBeginDrag(PointerEventData eventData)
 	{
 		if (mSelectedElement != null && mLockSelection)
+			return;
+
+		if (Model.HumanModel && HumanEntity.IsInstantiatedInScene)
 			return;
 
 		// Instantiate temporary object during drag & drop, it will follow mouse

@@ -16,6 +16,8 @@ public sealed class DataScene
 
 	public string SceneName { get; set; }
 
+	public HumanDataScene Human { get; set; }
+
 	public List<ObjectDataScene> DataObjects { get; set; }
 
 	public DataScene()

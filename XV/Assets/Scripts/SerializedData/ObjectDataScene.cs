@@ -6,11 +6,9 @@ using UnityEngine;
 [Serializable]
 public enum ObjectDataSceneType
 {
-
 	BUILT_IN,
 
-	EXTERN
-
+	EXTERN, 
 }
 
 [Serializable]

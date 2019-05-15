@@ -63,7 +63,6 @@ public sealed class MovableEntity : AInteraction
     public MovableEntity SetObjectEntity(ObjectEntity iObjectEntity)
     {
         mObjectEntity = iObjectEntity;
-        Debug.Log(mObjectEntity == null);
 
         // Add all this code to the PostPopping callback of ObjectEntity
         mObjectEntity.PostPoppingAction.Add(() => {

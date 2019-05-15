@@ -260,7 +260,7 @@ public class ObjectEntity : MonoBehaviour
 	}
 
 	// Called by unity only !
-	public void OnDestroy()
+	private void OnDestroy()
 	{
 		if (sAllEntites != null)
 			sAllEntites.Remove(this);
@@ -350,9 +350,11 @@ public class ObjectEntity : MonoBehaviour
 	public ObjectEntity SetObjectDataScene(ObjectDataScene iODS)
 	{
 		mODS = iODS;
-		if (!mDataScene.IsDataObjectsContains(mODS)) {
-			mDataScene.AddODS(mODS);
-			mDataScene.Serialize();
+		if (mDataScene != null) {
+			if (!mDataScene.IsDataObjectsContains(mODS)) {
+				mDataScene.AddODS(mODS);
+				mDataScene.Serialize();
+			}
 		}
 		return this;
 	}
