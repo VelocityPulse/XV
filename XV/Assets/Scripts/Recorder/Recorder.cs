@@ -1,7 +1,11 @@
 ﻿using UnityEditor.Media;
 using UnityEngine;
 using System.IO;
-using UnityEngine.Collections;
+
+#if UNITY_EDITOR_OSX
+    using UnityEngine.Collections;
+#endif
+
 using System.Collections;
 
 public class Recorder : MonoBehaviour

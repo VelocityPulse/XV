@@ -37,13 +37,18 @@ public sealed class UIModel : MonoBehaviour,
 
 		if (mElementText == null)
 			Debug.LogError("[ERROR] Ui Model element doesn't contain Text!");
+
+        if (Model.HumanModel) {
+            Debug.Log("1");
+            Model.GameObject.GetComponent<HumanEntity>().enabled = false;
+        }
 	}
 
 	private void Update()
 	{
-		if (Model.HumanModel && HumanEntity.IsInstantiatedInScene)
+		if (Model.HumanModel && HumanEntity.Instance != null)
 			mLockSelection = true;
-		else if (Model.HumanModel && !HumanEntity.IsInstantiatedInScene)
+		else if (Model.HumanModel && HumanEntity.Instance == null)
 			mLockSelection = false;
 		else if (mMouseOver) {
 			if (Input.GetKey(KeyCode.LeftControl))
@@ -99,19 +104,19 @@ public sealed class UIModel : MonoBehaviour,
 	// On End restore Layer to dropable, build the object using selectedElement, delete SelectedElement.
 	public void OnEndDrag(PointerEventData eventData)
 	{
-		if (!Model.HumanModel) {
-			ObjectDataScene lODS = new ObjectDataScene {
-				Name = mElementText.text,
-				PrefabName = mElementText.text,
-				Type = Model.Type,
-				Position = mSelectedElement.transform.position,
-				Rotation = Model.GameObject.transform.rotation.eulerAngles,
-				Scale = mSelectedElement.transform.localScale,
-			};
+        if (!Model.HumanModel) {
+            ObjectDataScene lODS = new ObjectDataScene {
+                Name = mElementText.text,
+                PrefabName = mElementText.text,
+                Type = Model.Type,
+                Position = mSelectedElement.transform.position,
+                Rotation = Model.GameObject.transform.rotation.eulerAngles,
+                Scale = mSelectedElement.transform.localScale,
+            };
 
-			GameManager.Instance.BuildObject(lODS);
-			Destroy(mSelectedElement);
-		} else {
+            GameManager.Instance.BuildObject(lODS);
+            Destroy(mSelectedElement);
+        } else if (HumanEntity.Instance == null) {
 
 			HumanDataScene lHDS = new HumanDataScene {
 				Name = mElementText.text,
@@ -134,9 +139,10 @@ public sealed class UIModel : MonoBehaviour,
 		if (mSelectedElement != null && mLockSelection)
 			return;
 
-		if (Model.HumanModel && HumanEntity.IsInstantiatedInScene)
-			return;
 
+        if (Model.HumanModel && HumanEntity.Instance != null)
+			return;
+        
 		// Instantiate temporary object during drag & drop, it will follow mouse
 		if ((mSelectedElement = Instantiate(Model.GameObject)) == null)
 			return;

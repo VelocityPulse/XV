@@ -6,7 +6,7 @@ using UnityEngine;
 public class HumanEntity : MonoBehaviour
 {
 
-	public static bool IsInstantiatedInScene { get; private set; }
+	public static HumanEntity Instance { get; private set; }
 
 	[SerializeField]
 	private UIBubbleInfo UIBubbleInfo;
@@ -54,7 +54,6 @@ public class HumanEntity : MonoBehaviour
 			mHDS.Name = value;
 			SaveEntity();
 		}
-
 	}
 
 	private void Start()
@@ -64,7 +63,8 @@ public class HumanEntity : MonoBehaviour
 		mCenter = mCapsuleCollider.center;
 
 		BuildHuman();
-		IsInstantiatedInScene = true;
+        Debug.Log("true");
+		Instance = this;
 	}
 
 
@@ -76,9 +76,15 @@ public class HumanEntity : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		IsInstantiatedInScene = false;
+
 	}
 
+    public void Dispose()
+    {
+        Debug.Log("false");
+        Instance = null;
+        Destroy(gameObject);
+    }
 
 	private void BuildHuman()
 	{
@@ -110,7 +116,7 @@ public class HumanEntity : MonoBehaviour
 		return this;
 	}
 
-	public HumanEntity SetDataScene(DataScene iDataScene)
+	public HumanEntity InitDataScene(DataScene iDataScene)
 	{
 		mDataScene = iDataScene;
 		return this;
@@ -119,8 +125,10 @@ public class HumanEntity : MonoBehaviour
 	public HumanEntity SetHumanDataScene(HumanDataScene iHDS)
 	{
 		mHDS = iHDS;
-		if (mDataScene.Human != iHDS)
-			mDataScene.Human = iHDS;
+        if (mDataScene.Human != iHDS) {
+            mDataScene.Human = iHDS;
+            mDataScene.Serialize();
+        }
 		return this;
 	}
 

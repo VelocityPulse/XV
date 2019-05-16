@@ -241,14 +241,15 @@ public class GameManager : MonoBehaviour
 			return oGameObject;
 		}
 
+        Debug.Log("Instantiate");
 		oGameObject = Instantiate(oGameObject);
 		oGameObject.transform.position = iHDS.Position;
 
 		HumanEntity lHumanEntity = oGameObject.GetComponent<HumanEntity>();
+        lHumanEntity.enabled = true;
 
-		lHumanEntity.SetDataScene(CurrentDataScene)
+		lHumanEntity.InitDataScene(CurrentDataScene)
 					.SetHumanDataScene(iHDS);
-
 
 		return oGameObject;
 	}
@@ -260,6 +261,8 @@ public class GameManager : MonoBehaviour
 		foreach (ObjectEntity lObjectEntity in lObjectEntities) {
 			lObjectEntity.Dispose();
 		}
+        if (HumanEntity.Instance != null)
+            HumanEntity.Instance.Dispose();
 		mCurrentDataScene = null;
 		XV_UI.Instance.SceneNameText.text = "-";
 	}
@@ -282,6 +285,8 @@ public class GameManager : MonoBehaviour
 		foreach (ObjectDataScene lODS in iDataScene.DataObjects) {
 			BuildObject(lODS, true);
 		}
+        if (iDataScene.Human != null)
+            BuildHuman(iDataScene.Human);
 	}
 
 	public void SetCursorHandOver()
