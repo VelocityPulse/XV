@@ -35,11 +35,11 @@ public sealed class CameraHandler : MonoBehaviour
 			if (value == Mode.FREE) {
 				mViewMode = Mode.FREE;
 				if (mViewModeText != null)
-					mViewModeText.text = "View mode: FREE";
+					mViewModeText.text = "Camera: Free";
 			} else if (value == Mode.SUBJECTIVE) {
 				mViewMode = Mode.SUBJECTIVE;
 				if (mViewModeText != null)
-					mViewModeText.text = "View mode: SUBJECTIVE";
+					mViewModeText.text = "Camera: Subjective";
 				StartCoroutine(SetPositionAsync(new Vector3(transform.position.x, 1F, transform.position.z)));
 			}
 		}

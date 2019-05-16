@@ -250,7 +250,7 @@ public class GameManager : MonoBehaviour
 	{
 		UnloadScene();
 		mCurrentDataScene = iDataScene;
-		XV_UI.Instance.SceneNameText.text = iDataScene.SceneName.Replace(".xml", "");
+		XV_UI.Instance.SceneNameText.text = "Scene: " + iDataScene.SceneName.Replace(".xml", "");
 
 		while (ObjectEntity.InstantiatedEntity != 0) {
 			yield return new WaitForSeconds(0.1F);

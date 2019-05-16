@@ -152,7 +152,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	public void OnPointerEnter(PointerEventData iData)
 	{
 		double lTime = TimelineUtility.ClipPositionToStart(mRectTransform.localPosition.x, Track.GetLimits());
-		string lTimeString = TimelineUtility.FormatDuration(lTime);
+		string lTimeString = TimelineUtility.FormatTime(lTime);
 		string lTypeString = TimelineUtility.FormatType(Type);
 		UITimelineInfo.Instance.Show(transform as RectTransform, lTypeString, lTimeString);
 	}

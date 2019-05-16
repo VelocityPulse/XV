@@ -38,6 +38,14 @@ public class TimelineUtility : MonoBehaviour
 		return lStr.Substring(0, Mathf.Min(lStr.Length, 2 + iMaxPrecision)) + "s";
 	}
 
+	public static string FormatTime(double iSeconds)
+	{
+		string lStr = iSeconds.ToString();
+		string lSeconds = lStr.Substring(0, lStr.IndexOf('.'));
+		string lRemain = lStr.Substring(lStr.IndexOf('.') + 1, 2);
+		return lSeconds + ":" + lRemain;
+	}
+
 	public static string FormatType(TimelineData.TrackType iType)
 	{
 		switch (iType) {
