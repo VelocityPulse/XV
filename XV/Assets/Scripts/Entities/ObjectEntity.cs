@@ -6,7 +6,7 @@ using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ObjectEntity : MonoBehaviour
+public class ObjectEntity : AEntity
 {
 	public static string TAG = "ObjectEntity";
 	public static List<ObjectEntity> sAllEntites;
@@ -54,7 +54,7 @@ public class ObjectEntity : MonoBehaviour
 		get { return mCenter; }
 	}
 
-	public bool Selected
+	public override bool Selected
 	{
 		get { return mSelected; }
 
@@ -110,12 +110,14 @@ public class ObjectEntity : MonoBehaviour
 		if (!mSelected)
 			return;
 
+        // Click mouse section
 		if (Input.GetKeyDown(KeyCode.Mouse0)) {
 			mMouseDown = true;
 			mMouseOriginClick = Input.mousePosition;
 		} else if (Input.GetKeyUp(KeyCode.Mouse0))
 			mMouseDown = false;
 
+        // Left control and Icons section
 		if (Input.GetKeyDown(KeyCode.LeftControl)) {
 			GameManager.Instance.SetCursorRotation();
 			mControlPushed = true;
@@ -148,7 +150,10 @@ public class ObjectEntity : MonoBehaviour
 			if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
 				Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
 
-				lHit.point = new Vector3(lHit.point.x, mCenter.y, lHit.point.z);
+				lHit.point = new Vector3(
+                    lHit.point.x,
+                    lHit.point.y + mCenter.y,
+                    lHit.point.z);
 				mCenteredParent.transform.position = lHit.point;
 			}
 		}
@@ -437,7 +442,7 @@ public class ObjectEntity : MonoBehaviour
 			return;
 
 		if (!mMouseDragObjectEntity) {
-			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
+            Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
 			mMouseOriginClick = Input.mousePosition;
 			GameManager.Instance.SetCursorCatchedHand();
 			mMouseDragObjectEntity = true;

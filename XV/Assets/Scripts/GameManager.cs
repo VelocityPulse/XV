@@ -22,9 +22,9 @@ public class GameManager : MonoBehaviour
 
 	private DataScene mCurrentDataScene;
 
-	private ObjectEntity mSelectedEntity;
+	private AEntity mSelectedEntity;
 
-	public ObjectEntity SelectedEntity
+	public AEntity SelectedEntity
 	{
 		get { return mSelectedEntity; }
 
