@@ -73,54 +73,196 @@ using UnityEngine;
 */
 
 
-// Classe comportant le code d'Interfacage avec le TimeLineManager
+// Classe de base contenant le managing des animations pour un item
+// Voir interfacage avec TimeLineManager qui prend un AnimationClip pour le moment
 
 public abstract class AInteraction : MonoBehaviour
 {
-    // Pseudo timeline - List of action that represent the TimeLine of this object
-    List<Predicate<float>> mTimeline = new List<Predicate<float>>();
-
-    private bool mIsBusy;
-
-    public bool TimeLineIsBusy { get { return mIsBusy; }}
-
-	private void Start()
-	{
-        mIsBusy = false;
-	}
-
-    // The action will be execute until the return value is not equal to true.
-    protected void AddToTimeline(Predicate<float> iAction, float iActionDuration)
+    protected struct AnimationInfo
     {
-        // Add to the pseudo timeline
-        if (mTimeline != null)
-            mTimeline.Add(iAction);
+        float Speed;
 
-        // Code the Interface with TimelineManager here
-        // ...
+        EntityParameters.EntityType EntityType;
     }
 
-    // This function play all Action in the object Pseudo timeline
-    protected void PlayTimeline()
+    protected class AnimationParameters
     {
-        mIsBusy = true;
-        StartCoroutine(ActionPlayerAsync(mTimeline));
-    }
+        public string Name;
 
-    // This function browse and execute all Action in the pseudo timeline
-    // When an Action is finished, it return true, then the coroutine launch the next ActionClip
-    private IEnumerator ActionPlayerAsync(List<Predicate<float>> iTimeline)
-    {
-        if (iTimeline == null)
-            yield break;
+        public EntityParameters.EntityType[] Subscriptions;
 
-        yield return new WaitForSeconds(0.2F);
+        public Predicate<AnimationInfo> Animation;
 
-        foreach (Predicate<float> lActionClip in iTimeline) {
-            yield return new WaitUntil(() => { return lActionClip(1F); });
-            yield return new WaitForSeconds(0.2F);
+        public UIBubbleInfoButton Button;
+
+        public AnimationParameters()
+        {
+
         }
-        mIsBusy = false;
-        mTimeline.Clear();
+    }
+
+    private List<AnimationParameters> mAnimations;
+
+    private EntityParameters mParameters;
+
+    private ObjectEntity mObjectEntity;
+
+    /*
+    **  Each index of this array correspond to an EntityType (HUMAN, TROLLEY, MEDIUM_ITEM, ...)
+    **  On build object, the builded object increment it's corresponding index, according to it's EntityType.
+    **  On destroy, the destroyed object decrement it's  corresponding index, according to it's EntityType.
+    **  So we now exactly what type are currently present in the scene, with this information:
+    **  We can display or not, in BuildObject, an Animation button, depending of what type are present in the scene.
+    */
+    private static int[] mEntityCounter;
+
+    public static int[] EntityCounter
+    {
+        get
+        {
+            if (mEntityCounter != null)
+                return mEntityCounter;
+            else
+                return new int[0];
+        }
+    }
+
+    private static List<Action<EntityParameters.EntityType>>[] mOnSubPresence;
+
+    private static List<Action<EntityParameters.EntityType>>[] mOnSubAbsence;
+
+    public List<Action<EntityParameters.EntityType>>[] OnSubPresence { get { return mOnSubPresence; } }
+
+    public List<Action<EntityParameters.EntityType>>[] OnSubAbsence { get { return mOnSubAbsence; } }
+
+    // Who Entity to warn when this entity counter is empty or not
+    private bool[] mPub = new bool[(int)EntityParameters.EntityType.COUNT];
+
+    // This script is associated to the item so, start run at the very beginning
+    private void Start()
+    {
+        mAnimations = new List<AnimationParameters>();
+
+        int lLenght = (int)EntityParameters.EntityType.COUNT;
+
+        if (mOnSubPresence == null) {
+            mOnSubPresence = new List<Action<EntityParameters.EntityType>>[lLenght];
+            for (int i = 0; i < lLenght; i++)
+                mOnSubPresence[i] = new List<Action<EntityParameters.EntityType>>();
+        }
+
+        if (mOnSubAbsence == null) {
+            mOnSubAbsence = new List<Action<EntityParameters.EntityType>>[lLenght];
+            for (int i = 0; i < lLenght; i++)
+                mOnSubAbsence[i] = new List<Action<EntityParameters.EntityType>>();
+        }
+
+        if (mEntityCounter == null)
+            mEntityCounter = new int[(int)EntityParameters.EntityType.COUNT];
+    }
+
+    public AInteraction SetEntityParameters(EntityParameters iParameters)
+    {
+        mParameters = iParameters;
+        return this;
+    }
+
+    public AInteraction SetObjectEntity(ObjectEntity iObjectEntity)
+    {
+        mObjectEntity = iObjectEntity;
+        // Add all this code to the PostPopping callback of ObjectEntity
+        mObjectEntity.PostPoppingAction.Add(() => {
+            // Increase the entity counter with the type of this new ObjectEntity
+            AddType();
+
+            // Child post popping
+            PostPoppingEntity();
+        });
+        return this;
+    }
+
+    protected abstract void PostPoppingEntity();
+
+    // Increase the entity counter with the type of this new ObjectEntity
+    private void AddType()
+    {
+        if (mParameters != null) {
+            if (Enum.IsDefined(typeof(EntityParameters.EntityType), mParameters.Type)) {
+
+                int lIndex = (int)mParameters.Type;
+
+                bool lValueWasZero = mEntityCounter[lIndex] == 0;
+                mEntityCounter[lIndex]++;
+                Debug.LogWarning("-- [+]Typeof(" + mParameters.Type + "):" + mEntityCounter[lIndex] + " --");
+                if (lValueWasZero && mEntityCounter[lIndex] == 1) {
+                    foreach (Action<EntityParameters.EntityType> lAction in mOnSubPresence[lIndex]) {
+                        Debug.LogWarning("--FIRE NEW---");
+                        lAction(mParameters.Type);
+                    }
+                }
+            }
+        }
+    }
+
+    // Decrease the entity counter with the type of this new ObjectEntity
+    private void RemoveType()
+    {
+        if (mParameters != null) {
+            if (Enum.IsDefined(typeof(EntityParameters.EntityType), mParameters.Type)) {
+
+                int lIndex = (int)mParameters.Type;
+                mEntityCounter[lIndex]--;
+                if (mEntityCounter[lIndex] < 0)
+                    mEntityCounter[lIndex] = 0;
+
+                Debug.LogWarning("-- [-]Typeof(" + mParameters.Type + "):" + mEntityCounter[lIndex] + " --");
+                if (mEntityCounter[lIndex] == 0) {
+                    foreach (Action<EntityParameters.EntityType> lAction in mOnSubPresence[lIndex]) {
+                        Debug.LogWarning("--FIRE LOST---");
+                        lAction(mParameters.Type);
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        RemoveType();
+    }
+
+    protected void CreateAnimation(AnimationParameters iAnimationParameters)
+    {
+        if (iAnimationParameters != null) {
+
+            // Check all field are correctly set
+            if (string.IsNullOrEmpty(iAnimationParameters.Name) || iAnimationParameters.Subscriptions == null
+                || iAnimationParameters.Subscriptions.Length == 0 || iAnimationParameters.Animation == null) {
+                Debug.LogWarning("[INTERACTION] - AnimationParameters not correctly set");
+                return;
+            }
+
+            if (mOnSubPresence.Length != mOnSubAbsence.Length) {
+                Debug.LogError("[INTERACTION] - Callback array doesn't have same size.");
+                return;
+            }
+
+            // Update Callback for EntityType Counter
+            foreach (EntityParameters.EntityType lType in iAnimationParameters.Subscriptions) {
+
+                int lIndex = (int)lType;
+
+                if (lIndex < 0 || lIndex > mOnSubPresence.Length || lIndex > mOnSubAbsence.Length) {
+                    Debug.LogError("[INTERACTION] - Callback out of range index access.");
+                } else {
+                    Debug.LogWarning("--SUB :" + lType);
+                    mOnSubPresence[lIndex].Add((iEntityType) => { Debug.LogWarning(iAnimationParameters.Name + "Triggered by new EntityType:" + iEntityType); /*show button*/});
+                    mOnSubAbsence[lIndex].Add((iEntityType) => { Debug.LogWarning(iAnimationParameters.Name + "Triggered by lost EntityType:" + iEntityType);/*hide button*/});
+                }
+            }
+
+            // Add parameters to the list of available animations
+            mAnimations.Add(iAnimationParameters);
+        }
     }
 }

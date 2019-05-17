@@ -25,7 +25,7 @@ public class EntityParameters : MonoBehaviour {
         get { return TypeOf; }
     }
 
-    [Header("Active or not, movement or rotation animation")]
+    [Header("Active or not, movement & rotation animation")]
     [SerializeField]
     private bool CanMove;
 
