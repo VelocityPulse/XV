@@ -38,10 +38,8 @@ public sealed class UIModel : MonoBehaviour,
 		if (mElementText == null)
 			Debug.LogError("[ERROR] Ui Model element doesn't contain Text!");
 
-        if (Model.HumanModel) {
-            Debug.Log("1");
+        if (Model.HumanModel)
             Model.GameObject.GetComponent<HumanEntity>().enabled = false;
-        }
 	}
 
 	private void Update()

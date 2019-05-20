@@ -104,6 +104,12 @@ public abstract class AEntity : MonoBehaviour
 				}
 				r.materials = o;
 			}
+
+			MonoBehaviour[] lMBs = iObject.GetComponents<MonoBehaviour>();
+			foreach (MonoBehaviour lMB in lMBs) {
+				Debug.Log("disabling");
+				lMB.enabled = false;
+			}
 		});
 
 		if (oGhostObject == null)

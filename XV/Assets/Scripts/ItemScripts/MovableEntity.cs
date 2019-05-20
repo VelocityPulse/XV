@@ -17,7 +17,9 @@ public sealed class MovableEntity : AInteraction
     private enum EditionMode
     {
         NONE,
+
         MOVE,
+
         ROTATE,
     }
 

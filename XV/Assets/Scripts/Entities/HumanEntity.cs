@@ -39,6 +39,7 @@ public class HumanEntity : AEntity
 		set
 		{
 			if (!value) {
+				Utils.PrintStackTrace();
 				Debug.Log("ObjectEntity : " + mHDS.Name + "Has been unselected");
 				UIBubbleInfo.Hide();
 			}
@@ -106,7 +107,6 @@ public class HumanEntity : AEntity
 			mMouseDown = false;
 
 		// Left control and Icons section
-
 		if (Input.GetKeyDown(KeyCode.LeftControl)) {
 			GameManager.Instance.SetCursorRotation();
 			mControlPushed = true;
@@ -248,10 +248,12 @@ public class HumanEntity : AEntity
 
 	private void OnMouseDown()
 	{
+		Debug.Log(EventSystem.current.IsPointerOverGameObject() + " " + mControlPushed);
 		// If the click is on a GUI : 
 		if (EventSystem.current.IsPointerOverGameObject() || mControlPushed)
 			return;
 
+		Debug.Log(mSelected + " " + mBusy);
 		if (!mSelected || mBusy) {
 			GameManager.Instance.SelectedEntity = this;
 			UIBubbleInfo.Display();
