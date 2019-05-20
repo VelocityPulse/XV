@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CapsuleCollider))]
+[RequireComponent(typeof(MovableEntity))]
 public class HumanEntity : AEntity
 {
 	public static HumanEntity Instance { get; private set; }
@@ -11,14 +13,13 @@ public class HumanEntity : AEntity
 	[SerializeField]
 	private UIBubbleInfo UIBubbleInfo;
 
-    [SerializeField]
-    private MouseHandler HumanBodyMouseHandler;
+	[SerializeField]
+	private MouseHandler HumanBodyMouseHandler;
 
-	private CapsuleCollider mCapsuleCollider;
+	private MovableEntity mMovableEntity;
 
-	private DataScene mDataScene;
 	private HumanDataScene mHDS;
-	private bool mBusy;
+	//private bool mBusy;
 	private bool mSelected;
 	private bool mControlPushed;
 	private bool mMouseDown;
@@ -26,9 +27,9 @@ public class HumanEntity : AEntity
 	private bool mMouseOverObjectEntity;
 	private bool mMouseDragObjectEntity;
 
-    private Vector3 mMouseOriginClick;
+	private Vector3 mMouseOriginClick;
 
-    private Vector3 mCenter;
+	private Vector3 mCenter;
 	//private Vector3 mSize;
 
 	public override bool Selected
@@ -45,7 +46,7 @@ public class HumanEntity : AEntity
 		}
 	}
 
-	public string Name
+	public override string Name
 	{
 		get { return gameObject.name; }
 
@@ -55,7 +56,7 @@ public class HumanEntity : AEntity
 				return;
 
 			gameObject.name = value;
-			name = value + "_mesh";
+			name = value + "_human";
 			mHDS.Name = value;
 			SaveEntity();
 		}
@@ -63,98 +64,111 @@ public class HumanEntity : AEntity
 
 	private void Start()
 	{
-		mCapsuleCollider = GetComponent<CapsuleCollider>();
+		mMovableEntity = GetComponent<MovableEntity>();
 
 		mCenter = Vector3.zero;
 
-		BuildHuman();
-        Debug.Log("true");
 		Instance = this;
 
-        HumanBodyMouseHandler.OnMouseDownAction = OnMouseDown;
-        HumanBodyMouseHandler.OnMouseOverAction = OnMouseOver;
-        HumanBodyMouseHandler.OnMouseExitAction = OnMouseExit;
-        HumanBodyMouseHandler.OnMouseDragAction = OnMouseDrag;
-        HumanBodyMouseHandler.OnMouseUpAction = OnMouseUp;
-    }
+		HumanBodyMouseHandler.OnMouseDownAction = OnMouseDown;
+		HumanBodyMouseHandler.OnMouseOverAction = OnMouseOver;
+		HumanBodyMouseHandler.OnMouseExitAction = OnMouseExit;
+		HumanBodyMouseHandler.OnMouseDragAction = OnMouseDrag;
+		HumanBodyMouseHandler.OnMouseUpAction = OnMouseUp;
+
+		SetUIBubbleInfo(UIBubbleInfo);
+
+		UIBubbleInfo.Parent = this;
+
+		UIBubbleInfo.CreateButton(new UIBubbleInfoButton {
+			Text = "Destroy",
+			ClickAction = (iObjectEntity) => {
+				Dispose();
+				RemoveEntity();
+			}
+		});
+
+		mMovableEntity.SetParent(this.gameObject, this.gameObject);
+		mMovableEntity.SetEntity(this);
+		StartCoroutine(PostPoppingAsync());
+	}
 
 	private void Update()
 	{
-        if (!mSelected)
-            return;
+		if (!mSelected)
+			return;
 
-        // Click mouse section
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            mMouseDown = true;
-            mMouseOriginClick = Input.mousePosition;
-        }
-        else if (Input.GetKeyUp(KeyCode.Mouse0))
-            mMouseDown = false;
+		// Click mouse section
+		if (Input.GetKeyDown(KeyCode.Mouse0)) {
+			mMouseDown = true;
+			mMouseOriginClick = Input.mousePosition;
+		} else if (Input.GetKeyUp(KeyCode.Mouse0))
+			mMouseDown = false;
 
-        // Left control and Icons section
+		// Left control and Icons section
 
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            GameManager.Instance.SetCursorRotation();
-            mControlPushed = true;
-            UIBubbleInfo.SetInteractable(false);
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftControl))
-        {
-            if (mMouseOverObjectEntity)
-                GameManager.Instance.SetCursorHandOver();
-            else
-                GameManager.Instance.SetCursorStandard();
-            UIBubbleInfo.SetInteractable(true);
-            mControlPushed = false;
-        }
+		if (Input.GetKeyDown(KeyCode.LeftControl)) {
+			GameManager.Instance.SetCursorRotation();
+			mControlPushed = true;
+			UIBubbleInfo.SetInteractable(false);
+		} else if (Input.GetKeyUp(KeyCode.LeftControl)) {
+			if (mMouseOverObjectEntity)
+				GameManager.Instance.SetCursorHandOver();
+			else
+				GameManager.Instance.SetCursorStandard();
+			UIBubbleInfo.SetInteractable(true);
+			mControlPushed = false;
+		}
 
-        // Rotation section
-        if (mControlPushed && mMouseDown)
-        {
-            transform.rotation = Quaternion.Euler(
-                transform.rotation.eulerAngles.x,
-                transform.rotation.eulerAngles.y + (Input.mousePosition.x - mMouseOriginClick.x),
-                transform.rotation.eulerAngles.z);
-            mMouseOriginClick = Input.mousePosition;
-        }
+		// Rotation section
+		if (mControlPushed && mMouseDown) {
+			transform.rotation = Quaternion.Euler(
+				transform.rotation.eulerAngles.x,
+				transform.rotation.eulerAngles.y + (Input.mousePosition.x - mMouseOriginClick.x),
+				transform.rotation.eulerAngles.z);
+			mMouseOriginClick = Input.mousePosition;
+		}
 
-        // Moving section
-        if (mMouseDragObjectEntity && Input.mousePosition != mMouseOriginClick)
-        {
-            mMouseOriginClick = Input.mousePosition;
+		// Moving section
+		if (mMouseDragObjectEntity && Input.mousePosition != mMouseOriginClick) {
+			mMouseOriginClick = Input.mousePosition;
 
-            RaycastHit lHit;
-            Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable")))
-            {
-                Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
+			RaycastHit lHit;
+			Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+			if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
+				Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
 
-                if (lHit.point.y > 2)
-                    lHit.point = new Vector3(lHit.point.x, mCenter.y, lHit.point.z);
-              
-                transform.position = lHit.point;
-            }
-        }
+				if (lHit.point.y > 2)
+					lHit.point = new Vector3(lHit.point.x, mCenter.y, lHit.point.z);
 
-    }
+				transform.position = lHit.point;
+			}
+		}
+	}
 
-    private void OnDestroy()
+	private void OnDestroy()
 	{
 
 	}
 
-    public void Dispose()
-    {
-        Debug.Log("false");
-        Instance = null;
-        Destroy(gameObject);
-    }
-
-	private void BuildHuman()
+	public void Dispose()
 	{
+		Debug.Log("false");
+		Instance = null;
+		Destroy(gameObject);
+	}
 
+	private IEnumerator PostPoppingAsync()
+	{
+		yield return new WaitForEndOfFrame();
+
+		while (mBusy)
+			yield return null;
+
+		foreach (Action lAction in PostPoppingAction) {
+			if (lAction != null)
+				lAction();
+		}
 	}
 
 	private HumanEntity SaveEntity()
@@ -182,82 +196,77 @@ public class HumanEntity : AEntity
 		return this;
 	}
 
-	public HumanEntity InitDataScene(DataScene iDataScene)
+	public override void SetObjectDataScene(AObjectDataScene iODS)
 	{
-		mDataScene = iDataScene;
-		return this;
+		base.SetObjectDataScene(iODS);
+
+		mHDS = (HumanDataScene)iODS;
+		if (mDataScene.Human != mHDS) {
+			mDataScene.Human = mHDS;
+			mDataScene.Serialize();
+		}
 	}
 
-	public HumanEntity SetHumanDataScene(HumanDataScene iHDS)
+	// ------------------- MOUSE EVENTS
+
+	private void OnMouseOver()
 	{
-		mHDS = iHDS;
-        if (mDataScene.Human != iHDS) {
-            mDataScene.Human = iHDS;
-            mDataScene.Serialize();
-        }
-		return this;
+		if (!mSelected || mBusy || mControlPushed)
+			return;
+
+		if (!mMouseOverObjectEntity && mSelected && !mMouseDragObjectEntity)
+			GameManager.Instance.SetCursorHandOver();
+		mMouseOverObjectEntity = true;
 	}
 
-    // ------------------- MOUSE EVENTS
+	private void OnMouseDrag()
+	{
+		if (!mSelected || mBusy || mControlPushed)
+			return;
 
-    private void OnMouseOver()
-    {
-        if (!mSelected || mBusy || mControlPushed)
-            return;
+		if (!mMouseDragObjectEntity) {
+			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
+			mMouseOriginClick = Input.mousePosition;
+			GameManager.Instance.SetCursorCatchedHand();
+			mMouseDragObjectEntity = true;
+		}
+	}
 
-        if (!mMouseOverObjectEntity && mSelected && !mMouseDragObjectEntity)
-            GameManager.Instance.SetCursorHandOver();
-        mMouseOverObjectEntity = true;
-    }
+	private void OnMouseUp()
+	{
+		if (mMouseDragObjectEntity) {
+			mMouseDragObjectEntity = false;
+			if (mMouseOverObjectEntity)
+				GameManager.Instance.SetCursorHandOver();
+			else
+				GameManager.Instance.SetCursorStandard();
+			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("dropable"));
+		}
 
-    private void OnMouseDrag()
-    {
-        if (!mSelected || mBusy || mControlPushed)
-            return;
+		SaveEntity();
+	}
 
-        if (!mMouseDragObjectEntity) {
-            Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
-            mMouseOriginClick = Input.mousePosition;
-            GameManager.Instance.SetCursorCatchedHand();
-            mMouseDragObjectEntity = true;
-        }
-    }
+	private void OnMouseDown()
+	{
+		// If the click is on a GUI : 
+		if (EventSystem.current.IsPointerOverGameObject() || mControlPushed)
+			return;
 
-    private void OnMouseUp()
-    {
-        if (mMouseDragObjectEntity) {
-            mMouseDragObjectEntity = false;
-            if (mMouseOverObjectEntity)
-                GameManager.Instance.SetCursorHandOver();
-            else
-                GameManager.Instance.SetCursorStandard();
-            Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("dropable"));
-        }
+		if (!mSelected || mBusy) {
+			GameManager.Instance.SelectedEntity = this;
+			UIBubbleInfo.Display();
+		} else {
+			GameManager.Instance.SetCursorCatchedHand();
+		}
+	}
 
-        SaveEntity();
-    }
-
-    private void OnMouseDown()
-    {
-        // If the click is on a GUI : 
-        if (EventSystem.current.IsPointerOverGameObject() || mControlPushed)
-            return;
-
-        if (!mSelected || mBusy) {
-            GameManager.Instance.SelectedEntity = this;
-            UIBubbleInfo.Display();
-        } else {
-            GameManager.Instance.SetCursorCatchedHand();
-        }
-    }
-
-    private void OnMouseExit()
-    {
-        if (mSelected && mMouseOverObjectEntity) {
-            mMouseOverObjectEntity = false;
-            if (!mMouseDragObjectEntity && !mControlPushed)
-                GameManager.Instance.SetCursorStandard();
-        }
-    }
+	private void OnMouseExit()
+	{
+		if (mSelected && mMouseOverObjectEntity) {
+			mMouseOverObjectEntity = false;
+			if (!mMouseDragObjectEntity && !mControlPushed)
+				GameManager.Instance.SetCursorStandard();
+		}
+	}
 
 }

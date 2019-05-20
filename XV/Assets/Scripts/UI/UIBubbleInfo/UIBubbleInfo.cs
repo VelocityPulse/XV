@@ -22,7 +22,7 @@ public class UIBubbleInfo : MonoBehaviour
 	[SerializeField]
 	private InputField ModelName;
 
-	public ObjectEntity Parent { get; set; }
+	public AEntity Parent { get; set; }
 
 	// Use this for initialization
 	private void Start()

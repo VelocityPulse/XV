@@ -210,20 +210,21 @@ public class GameManager : MonoBehaviour
 
 		// Setting GameEntity
 		ObjectEntity lObjectEntity = oGameObject.AddComponent<ObjectEntity>()
-				   .InitDataScene(mCurrentDataScene)
 				   .StartAnimation(iAnimatedPopping)
-				   .SetObjectDataScene(iODS)
-				   .SetUIBubbleInfo(lUIBubbleInfo.GetComponent<UIBubbleInfo>())
 				   .SaveEntity()
 				   .SetSize(lBounds.size)
 				   .SetCenter(lBounds.center)
 				   .SetParent(lTopParent, lOffsetRotation);
 
+		lObjectEntity.InitDataScene(mCurrentDataScene);
+		lObjectEntity.SetObjectDataScene(iODS);
+		lObjectEntity.SetUIBubbleInfo(lUIBubbleInfo.GetComponent<UIBubbleInfo>());
+
 		// If this item can move - Add MovableEntity script
 		if (lParameters != null && lParameters.Movable) {
 			oGameObject.AddComponent<MovableEntity>()
 					   .SetParent(lTopParent, lOffsetRotation)
-					   .SetObjectEntity(lObjectEntity);
+					   .SetEntity(lObjectEntity);
 		}
 
 		Utils.SetLayerRecursively(lTopParent, LayerMask.NameToLayer("dropable"));
@@ -248,8 +249,8 @@ public class GameManager : MonoBehaviour
 		HumanEntity lHumanEntity = oGameObject.GetComponent<HumanEntity>();
         lHumanEntity.enabled = true;
 
-		lHumanEntity.InitDataScene(CurrentDataScene)
-					.SetHumanDataScene(iHDS);
+		lHumanEntity.InitDataScene(CurrentDataScene);
+		lHumanEntity.SetObjectDataScene(iHDS);
 
 		return oGameObject;
 	}

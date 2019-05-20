@@ -25,7 +25,7 @@ public sealed class MovableEntity : AInteraction
 
     private const float ROT_SPEED = 500F;
 
-    private ObjectEntity mObjectEntity;
+	private AEntity mObjectEntity;
 
     private Image mMoveButtonColor;
 
@@ -60,7 +60,7 @@ public sealed class MovableEntity : AInteraction
         return this;
     }
 
-    public MovableEntity SetObjectEntity(ObjectEntity iObjectEntity)
+    public MovableEntity SetEntity(AEntity iObjectEntity)
     {
         mObjectEntity = iObjectEntity;
 

@@ -8,6 +8,6 @@ public sealed class UIBubbleInfoButton
 
 	public string Text { get; set; }
 
-	public Action<ObjectEntity> ClickAction { get; set; }
+	public Action<AEntity> ClickAction { get; set; }
 
 }
