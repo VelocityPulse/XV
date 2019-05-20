@@ -91,6 +91,9 @@ public class HumanEntity : AEntity
 
 		mMovableEntity.SetParent(this.gameObject, this.gameObject);
 		mMovableEntity.SetEntity(this);
+		//mMovableEntity.OnStartMove = {
+			
+		//}
 		StartCoroutine(PostPoppingAsync());
 	}
 
@@ -169,6 +172,10 @@ public class HumanEntity : AEntity
 			if (lAction != null)
 				lAction();
 		}
+
+		yield return new WaitForEndOfFrame();
+		
+		mMovableEntity.AngularSpeed = 15000F;
 	}
 
 	private HumanEntity SaveEntity()

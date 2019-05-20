@@ -55,6 +55,48 @@ public sealed class MovableEntity : AInteraction
 
 	private float mRotationPerformed;
 
+	public float AngularSpeed
+	{
+		get
+		{
+			if (mAgent == null) {
+				Debug.LogError("AngularSpeed have to be read/write after PostPopping");
+				return -1F;
+			}
+			return mAgent.angularSpeed;
+		}
+
+		set
+		{
+			if (mAgent == null) {
+				Debug.LogError("AngularSpeed have to be read/write after PostPopping");
+				return;
+			}
+			mAgent.angularSpeed = value;
+		}
+	}
+
+	public float Speed
+	{
+		get
+		{
+			if (mAgent == null) {
+				Debug.LogError("Speed have to be read/write after PostPopping");
+				return -1F;
+			}
+			return mAgent.speed;
+		}
+
+		set
+		{
+			if (mAgent == null) {
+				Debug.LogError("Speed have to be read/write after PostPopping");
+				return;
+			}
+			mAgent.speed = value;
+		}
+	}
+
 	public MovableEntity SetParent(GameObject iTopParent, GameObject iOffsetRotationParent)
 	{
 		mCenteredParent = iTopParent;
@@ -185,7 +227,7 @@ public sealed class MovableEntity : AInteraction
 				return;
 			}
 
-			// Orientation preview - When LeftAlt is  pressed a rotation is performed on the ghost.
+			// Orientation preview - When LeftAlt is pressed a rotation is performed on the ghost.
 			if (Input.GetKey(KeyCode.LeftAlt)) {
 
 				// Get increment angle from mouse axis
@@ -225,7 +267,7 @@ public sealed class MovableEntity : AInteraction
 
 			// Add the code that do the animation in the Action timeline
 			TimelineManager.Instance.AddTranslation(gameObject, iSpeed => {
-
+				
 				// Check NavMesh component are present
 				if (mEntityObstacle == null || mAgent == null) {
 					Debug.LogError("NavMeshAgent or NavMeshObstacle are missing.");
@@ -258,9 +300,11 @@ public sealed class MovableEntity : AInteraction
 						}
 					}
 				}
-
 				return false;
 			});
+
+			//OnStartMove();
+
 		}
 	}
 
