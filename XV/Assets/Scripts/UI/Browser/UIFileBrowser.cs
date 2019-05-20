@@ -57,11 +57,11 @@ public sealed class UIFileBrowser : MonoBehaviour
 	[SerializeField]
 	private Button Cancel;
 
-	[Header("Please attach: FileBrowser/Top/PWD/Text")]
+	[Header("Please attach: FileBrowser/Top/PWD/TextField/Text")]
 	[SerializeField]
 	private Text PWD;
 
-	[Header("Please attach: FileBrowser/Bottom/SelectedFile/Text")]
+	[Header("Please attach: FileBrowser/Bottom/SelectedFile/TextField/Text")]
 	[SerializeField]
 	private Text SelectedFile;
 
@@ -99,7 +99,7 @@ public sealed class UIFileBrowser : MonoBehaviour
 	// Update the list of element
 	private void UpdateFiles()
 	{
-		PWD.text = "Path:" + mPath.Replace(STARTING_PATH, "");
+		PWD.text = mPath.Replace(STARTING_PATH, "");
 		List<string> lDirs = new List<string>(Directory.GetFileSystemEntries(mPath));
 
 		foreach (string lFile in lDirs) {
@@ -108,12 +108,12 @@ public sealed class UIFileBrowser : MonoBehaviour
 				continue;
 			else if ((lAttr & FileAttributes.Directory) == FileAttributes.Directory) {
 				if (mFileUIParam != null) {
-					mFileUIParam.Text.color = Utils.ROYAL_BLUE;
+					mFileUIParam.Text.color = Color.white;
 					mFileUIParam.Icon.sprite = mSpriteFolder;
 				}
 			} else {
 				if (mFileUIParam != null) {
-					mFileUIParam.Text.color = Utils.ROYAL_GREY;
+					mFileUIParam.Text.color = Utils.PALE_ORANGE;
 					mFileUIParam.Icon.sprite = mSpriteFile;
 				}
 			}

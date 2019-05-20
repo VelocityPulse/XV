@@ -47,9 +47,9 @@ public sealed class UIModel : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 	public void OnPointerEnter(PointerEventData iEventData)
 	{
 		if (mElementColor)
-			mElementColor.color = new Color32(255, 211, 131, 255);
+			mElementColor.color = Utils.PALE_ORANGE;
 		if (mElementText)
-			mElementText.color = new Color32(255, 211, 131, 255);
+			mElementText.color = Utils.PALE_ORANGE;
 		mMouseOver = true;
 	}
 

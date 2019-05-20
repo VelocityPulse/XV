@@ -12,6 +12,8 @@ public static class Utils
 
 	public static readonly Color32 ROYAL_GREY = new Color32(80, 80, 80, 255);
 
+	public static readonly Color32 PALE_ORANGE = new Color32(255, 211, 131, 255);
+
 	public static bool CreateFolder(string iPath)
 	{
 		if (string.IsNullOrEmpty(iPath))

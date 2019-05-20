@@ -108,7 +108,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 
 			if ((lAttr & FileAttributes.Normal) == FileAttributes.Normal) {
 				if (mFileUIParam != null) {
-					mFileUIParam.Text.color = Utils.ROYAL_BLUE;
+					mFileUIParam.Text.color = Color.white;
 					mFileUIParam.Icon.sprite = mSpriteFile;
 				}
 			}
