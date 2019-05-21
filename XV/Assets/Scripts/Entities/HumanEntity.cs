@@ -255,12 +255,10 @@ public class HumanEntity : AEntity
 
 	private void OnMouseDown()
 	{
-		Debug.Log(EventSystem.current.IsPointerOverGameObject() + " " + mControlPushed);
 		// If the click is on a GUI : 
 		if (EventSystem.current.IsPointerOverGameObject() || mControlPushed)
 			return;
 
-		Debug.Log(mSelected + " " + mBusy);
 		if (!mSelected || mBusy) {
 			GameManager.Instance.SelectedEntity = this;
 			UIBubbleInfo.Display();
