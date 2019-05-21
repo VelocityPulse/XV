@@ -34,6 +34,16 @@ public class UITrack : MonoBehaviour
 
 	public float Size { get { return mRectTransform.rect.size.x; } }
 
+	private void OnEnable()
+	{
+		StartCoroutine(CheckIntegrityAsync());
+	}
+
+	private void OnDisable()
+	{
+		StopAllCoroutines();
+	}
+
 	private void Awake()
 	{
 		mRectTransform = transform.Find("Track") as RectTransform;
@@ -43,6 +53,17 @@ public class UITrack : MonoBehaviour
 		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIClip");
 		UITranslationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UITranslationClip");
 		UIRotationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIRotationClip");
+	}
+
+	private IEnumerator CheckIntegrityAsync()
+	{
+		while (true) {
+			GameObject lObject = TimelineManager.Instance.GetObjectFromID(ID);
+			if (lObject == null) {
+				TimelineManager.Instance.DeleteTrack(ID);
+			}
+			yield return new WaitForSeconds(0.2F);
+		}
 	}
 
 	public void AddAnimationClip(string iName, double iStart, double iLength)

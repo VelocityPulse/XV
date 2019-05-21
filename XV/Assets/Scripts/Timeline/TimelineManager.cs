@@ -96,18 +96,15 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 	}
 
-	public void DeleteTrack(GameObject iObject)
+	public void DeleteTrack(int iID)
 	{
 #if UNITY_EDITOR
 		// Removing a track from the timeline at runtime causes errors in the timeline EditorWindow.
 		// This closes the timeline EditorWindow before removing the track to avoid these errors.
 		CloseTimelineWindow();
 #endif
-		if (iObject != null) {
-			int lID = iObject.GetInstanceID();
-			if (mData.TrackExists(lID)) {
-				mData.DestroyTrack(lID);
-			}
+		if (mData.TrackExists(iID)) {
+			mData.DestroyTrack(iID);
 		}
 	}
 
