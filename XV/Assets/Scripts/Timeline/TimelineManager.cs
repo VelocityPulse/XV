@@ -154,11 +154,13 @@ public sealed class TimelineManager : MonoBehaviour
 	public void Play()
 	{
 		mDirector.Play();
+		UnityEngine.Time.timeScale = 1F;
 	}
 
 	public void Pause()
 	{
 		mDirector.Pause();
+		UnityEngine.Time.timeScale = 0F;
 	}
 
 	public void Stop()

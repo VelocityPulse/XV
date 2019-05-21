@@ -39,7 +39,8 @@ public class Recorder : MonoBehaviour
 	{
 		Debug.Log("Start record");
 		if (string.IsNullOrEmpty(iPath))
-			iPath = Application.dataPath + RES_PATH + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".mp4";
+			iPath = Application.dataPath + RES_PATH;
+		iPath += "XV_Record_" + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".mp4";
 		
 		Utils.CreateFolder(iPath);
 		Debug.Log("Recording to : " + iPath);
@@ -91,7 +92,6 @@ public class Recorder : MonoBehaviour
 		Rect rect = new Rect(0, 0, mWidth, mHeight);
 		RenderTexture renderTexture = new RenderTexture(mWidth, mHeight, 24);
 		Texture2D screenShot = new Texture2D(mWidth, mHeight, TextureFormat.RGBA32, false);
-
 
 		mCamera.targetTexture = renderTexture;
 		mCamera.Render();
