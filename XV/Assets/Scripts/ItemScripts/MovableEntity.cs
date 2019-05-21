@@ -276,6 +276,11 @@ public sealed class MovableEntity : AInteraction
 
 			// Add the code that do the animation in the Action timeline
 			TimelineManager.Instance.AddTranslation(gameObject, iSpeed => {
+				
+				if (TimelineManager.Paused) {
+					mAgent.enabled = false;
+					return false;
+				}
 
 				// Check NavMesh component are present
 				if (mEntityObstacle == null || mAgent == null) {
@@ -337,6 +342,11 @@ public sealed class MovableEntity : AInteraction
 
 		// Add the code that do the animation in the following Action
 		TimelineManager.Instance.AddRotation(gameObject, (iSpeed) => {
+
+			if (TimelineManager.Paused) {
+				mAgent.enabled = false;
+				return false;
+			}
 
 			// Update rotation performed according to speed
 			mRotationPerformed += Time.deltaTime * iSpeed;

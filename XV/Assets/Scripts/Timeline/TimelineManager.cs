@@ -14,6 +14,7 @@ using UnityEditor;
 public sealed class TimelineManager : MonoBehaviour
 {
 	public static TimelineManager Instance { get; private set; }
+	public static bool Paused { get; private set; }
 
 	public double Duration
 	{
@@ -154,18 +155,19 @@ public sealed class TimelineManager : MonoBehaviour
 	public void Play()
 	{
 		mDirector.Play();
-		UnityEngine.Time.timeScale = 1F;
+		Paused = false;
 	}
 
 	public void Pause()
 	{
 		mDirector.Pause();
-		UnityEngine.Time.timeScale = 0F;
+		Paused = true;
 	}
 
 	public void Stop()
 	{
 		mDirector.Stop();
+		// TODO: Reset all objects transforms
 	}
 
 	private void ClearTimeline()
