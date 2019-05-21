@@ -79,6 +79,8 @@ public class Recorder : MonoBehaviour
 		Texture2D lTex = RTImage();
 		mEncoder.AddFrame(lTex);
 
+
+
 		Object.Destroy(lTex);
 		lTex = null;
 	}

@@ -9,20 +9,7 @@ using UnityEngine.UI;
 public class ObjectEntity : AEntity
 {
 	public static string TAG = "ObjectEntity";
-	public static List<ObjectEntity> sAllEntites;
 
-	public static ObjectEntity[] AllEntities
-	{
-		get
-		{
-			if (sAllEntites != null)
-				return sAllEntites.ToArray();
-			else
-				return new ObjectEntity[0];
-		}
-	}
-
-	public static int InstantiatedEntity { get { return AllEntities.Length; } }
 
 	private ObjectDataScene mODS;
 
@@ -36,7 +23,7 @@ public class ObjectEntity : AEntity
 	private Vector3 mMouseOriginClick;
 
 	private Vector3 mCenter;
-	private GameObject mCenteredParent; 
+	private GameObject mCenteredParent;
 	private GameObject mOffsetRotationParent;
 
 	public bool IsBusy { get { return mBusy; } }
@@ -76,11 +63,11 @@ public class ObjectEntity : AEntity
 		}
 	}
 
-	private void Start()
+	protected void Start()
 	{
 		// Adding this to all ObjectEntities
 		if (sAllEntites == null)
-			sAllEntites = new List<ObjectEntity>();
+			sAllEntites = new List<AEntity>();
 		sAllEntites.Add(this);
 
 		// Set tag
@@ -209,7 +196,7 @@ public class ObjectEntity : AEntity
 	}
 
 	// Called by XV
-	public void Dispose()
+	public override void Dispose()
 	{
 		if (!mBusy)
 			StartCoroutine(DestroyObjectsTimedAsync());

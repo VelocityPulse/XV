@@ -97,6 +97,10 @@ public sealed class MovableEntity : AInteraction
 		}
 	}
 
+	public List<Action> OnStartMovement { get; private set; }
+
+	public List<Action> OnEndMovement { get; private set; }
+
 	public MovableEntity SetParent(GameObject iTopParent, GameObject iOffsetRotationParent)
 	{
 		mCenteredParent = iTopParent;
@@ -152,8 +156,10 @@ public sealed class MovableEntity : AInteraction
 				// Get the NavMeshObstacle to perform mutual exclusion with NavMeshAgent
 				mEntityObstacle = GetComponent<NavMeshObstacle>();
 
-				if (mEntityObstacle == null)
-					Debug.LogError("NavMeshObstacle is null");
+				if (mEntityObstacle == null) {
+					if ((mEntityObstacle = GetComponentInChildren<NavMeshObstacle>()) == null)
+						Debug.LogError("NavMeshObstacle is null");
+				}
 
 				// ------ TMP CODE PLAY BUTTON TO PLAY ANIMATION CLICKED -----
 				// Debug buttton to execute each actions
@@ -174,6 +180,9 @@ public sealed class MovableEntity : AInteraction
 
 	private void Start()
 	{
+		OnStartMovement = new List<Action>();
+		OnEndMovement = new List<Action>();
+
 		mEditionMode = EditionMode.NONE;
 		mUITargetTemplate = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "UITarget");
 	}
@@ -267,7 +276,7 @@ public sealed class MovableEntity : AInteraction
 
 			// Add the code that do the animation in the Action timeline
 			TimelineManager.Instance.AddTranslation(gameObject, iSpeed => {
-				
+
 				// Check NavMesh component are present
 				if (mEntityObstacle == null || mAgent == null) {
 					Debug.LogError("NavMeshAgent or NavMeshObstacle are missing.");
@@ -296,9 +305,19 @@ public sealed class MovableEntity : AInteraction
 							mAgent.enabled = false;
 							mEntityObstacle.enabled = true;
 							// End of this Action
+
+							foreach (Action lAction in OnEndMovement) {
+								if (lAction != null)
+									lAction();
+							}
+
 							return true;
 						}
 					}
+				}
+				foreach (Action lAction in OnStartMovement) {
+					if (lAction != null)
+						lAction();
 				}
 				return false;
 			});

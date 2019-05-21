@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CapsuleCollider))]
 [RequireComponent(typeof(MovableEntity))]
 public class HumanEntity : AEntity
@@ -18,8 +19,9 @@ public class HumanEntity : AEntity
 
 	private MovableEntity mMovableEntity;
 
+	private Animator mAnimator;
+
 	private HumanDataScene mHDS;
-	//private bool mBusy;
 	private bool mSelected;
 	private bool mControlPushed;
 	private bool mMouseDown;
@@ -28,9 +30,7 @@ public class HumanEntity : AEntity
 	private bool mMouseDragObjectEntity;
 
 	private Vector3 mMouseOriginClick;
-
 	private Vector3 mCenter;
-	//private Vector3 mSize;
 
 	public override bool Selected
 	{
@@ -65,7 +65,13 @@ public class HumanEntity : AEntity
 
 	private void Start()
 	{
+		// Adding this to all ObjectEntities
+		if (sAllEntites == null)
+			sAllEntites = new List<AEntity>();
+		sAllEntites.Add(this);
+
 		mMovableEntity = GetComponent<MovableEntity>();
+		mAnimator = GetComponent<Animator>();
 
 		mCenter = Vector3.zero;
 
@@ -91,11 +97,22 @@ public class HumanEntity : AEntity
 
 		mMovableEntity.SetParent(this.gameObject, this.gameObject);
 		mMovableEntity.SetEntity(this);
-		//mMovableEntity.OnStartMove = {
-			
-		//}
+		mMovableEntity.OnEndMovement.Add(OnEndMovement);
+		mMovableEntity.OnStartMovement.Add(OnStartMovement);
+
 		StartCoroutine(PostPoppingAsync());
 	}
+
+	private void OnEndMovement()
+	{
+		mAnimator.SetFloat("Forward", 0F);
+	}
+
+	private void OnStartMovement()
+	{
+		mAnimator.SetFloat("Forward", 0.5F);
+	}
+
 
 	private void Update()
 	{
@@ -154,9 +171,8 @@ public class HumanEntity : AEntity
 
 	}
 
-	public void Dispose()
+	public override void Dispose()
 	{
-		Debug.Log("false");
 		Instance = null;
 		Destroy(gameObject);
 	}
@@ -174,8 +190,8 @@ public class HumanEntity : AEntity
 		}
 
 		yield return new WaitForEndOfFrame();
-		
-		mMovableEntity.AngularSpeed = 15000F;
+
+		mMovableEntity.AngularSpeed = 10000F;
 	}
 
 	private HumanEntity SaveEntity()

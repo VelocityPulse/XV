@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
 		Recorder = GetComponent<Recorder>();
 
 		//StartCoroutine(Utils.WaitForAsync(1F, () => {
-			
+
 		//	Recorder.StartRecord();
 		//	StartCoroutine(Utils.WaitForAsync(20F, () => {
 		//		Recorder.ReleaseRecord();
@@ -242,12 +242,11 @@ public class GameManager : MonoBehaviour
 			return oGameObject;
 		}
 
-        Debug.Log("Instantiate");
 		oGameObject = Instantiate(oGameObject);
 		oGameObject.transform.position = iHDS.Position;
 
 		HumanEntity lHumanEntity = oGameObject.GetComponent<HumanEntity>();
-        lHumanEntity.enabled = true;
+		lHumanEntity.enabled = true;
 
 		lHumanEntity.InitDataScene(CurrentDataScene);
 		lHumanEntity.SetObjectDataScene(iHDS);
@@ -257,13 +256,13 @@ public class GameManager : MonoBehaviour
 
 	public void UnloadScene()
 	{
-		ObjectEntity[] lObjectEntities = ObjectEntity.AllEntities;
+		AEntity[] lObjectEntities = AEntity.AllEntities;
 
-		foreach (ObjectEntity lObjectEntity in lObjectEntities) {
+		foreach (AEntity lObjectEntity in lObjectEntities) {
 			lObjectEntity.Dispose();
 		}
-        if (HumanEntity.Instance != null)
-            HumanEntity.Instance.Dispose();
+		if (HumanEntity.Instance != null)
+			HumanEntity.Instance.Dispose();
 		mCurrentDataScene = null;
 		XV_UI.Instance.SceneNameText.text = "-";
 	}
@@ -286,8 +285,8 @@ public class GameManager : MonoBehaviour
 		foreach (ObjectDataScene lODS in iDataScene.DataObjects) {
 			BuildObject(lODS, true);
 		}
-        if (iDataScene.Human != null)
-            BuildHuman(iDataScene.Human);
+		if (iDataScene.Human != null)
+			BuildHuman(iDataScene.Human);
 	}
 
 	public void SetCursorHandOver()

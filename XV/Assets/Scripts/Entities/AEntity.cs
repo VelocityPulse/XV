@@ -11,11 +11,24 @@ public abstract class AEntity : MonoBehaviour
 
 	public abstract string Name { get; set; }
 
-	public List<Action> PostPoppingAction { get { return mPostPoppingAction; } }
+	public List<Action> PostPoppingAction { get; private set; }
 
 	public virtual Vector3 Size { get { return mSize; } }
 
-	protected List<Action> mPostPoppingAction;
+	public static List<AEntity> sAllEntites;
+
+	public static AEntity[] AllEntities
+	{
+		get
+		{
+			if (sAllEntites != null)
+				return sAllEntites.ToArray();
+			else
+				return new ObjectEntity[0];
+		}
+	}
+
+	public static int InstantiatedEntity { get { return AllEntities.Length; } }
 
 	protected UIBubbleInfo mUIBubbleInfo;
 
@@ -24,12 +37,14 @@ public abstract class AEntity : MonoBehaviour
 	protected Vector3 mSize;
 
 	protected bool mBusy;
-	
+
 	private AObjectDataScene mODS;
 
-	private void Awake()
+	public abstract void Dispose();
+
+	protected virtual void Awake()
 	{
-		mPostPoppingAction = new List<Action>();
+		PostPoppingAction = new List<Action>();
 	}
 
 	public AEntity InitDataScene(DataScene iDataScene)
@@ -106,10 +121,8 @@ public abstract class AEntity : MonoBehaviour
 			}
 
 			MonoBehaviour[] lMBs = iObject.GetComponents<MonoBehaviour>();
-			foreach (MonoBehaviour lMB in lMBs) {
-				Debug.Log("disabling");
+			foreach (MonoBehaviour lMB in lMBs)
 				lMB.enabled = false;
-			}
 		});
 
 		if (oGhostObject == null)
