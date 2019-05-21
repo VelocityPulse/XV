@@ -164,7 +164,8 @@ public sealed class TimelineManager : MonoBehaviour
 	public void Stop()
 	{
 		mDirector.Stop();
-		// TODO: Reset all objects transforms
+		Paused = true;
+		AEntity.ForEachEntities(iEntity => iEntity.ResetWorldState());
 	}
 
 	private void ClearTimeline()
