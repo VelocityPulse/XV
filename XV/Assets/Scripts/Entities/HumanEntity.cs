@@ -177,6 +177,13 @@ public class HumanEntity : AEntity
 		Destroy(gameObject);
 	}
 
+	public override void ResetWorldState()
+	{
+		base.ResetWorldState();
+
+		mAnimator.SetFloat("Forward", 0F);
+	}
+
 	private IEnumerator PostPoppingAsync()
 	{
 		yield return new WaitForEndOfFrame();

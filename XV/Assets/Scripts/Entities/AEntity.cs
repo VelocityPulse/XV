@@ -79,6 +79,16 @@ public abstract class AEntity : MonoBehaviour
 		return mUIBubbleInfo.CreateButton(iButtonInfo);
 	}
 
+	public static void ForEachEntities(Action<AEntity> iAction)
+	{
+		if (iAction == null)
+			return;
+
+		AEntity[] lEntities = AllEntities;
+		foreach (AEntity lEntity in lEntities)
+			iAction(lEntity);
+	}
+
 	// This function Instantiate associated Model & make it child of OffsetRotation
 	// Then all material are replace by GhostMaterial
 	public GameObject CreateGhostObject()
@@ -130,4 +140,11 @@ public abstract class AEntity : MonoBehaviour
 
 		return oGhostObject;
 	}
+
+	public virtual void ResetWorldState()
+	{
+		transform.position = mODS.Position;
+		transform.transform.eulerAngles = mODS.Rotation;
+	}
+
 }

@@ -232,6 +232,13 @@ public class GameManager : MonoBehaviour
 		return oGameObject;
 	}
 
+	public void DebutButton()
+	{
+		AEntity.ForEachEntities((iEntity) => {
+			iEntity.ResetWorldState();
+		});
+	}
+
 	public GameObject BuildHuman(HumanDataScene iHDS)
 	{
 		GameObject oGameObject;
@@ -244,6 +251,7 @@ public class GameManager : MonoBehaviour
 
 		oGameObject = Instantiate(oGameObject);
 		oGameObject.transform.position = iHDS.Position;
+		oGameObject.transform.eulerAngles = iHDS.Rotation;
 
 		HumanEntity lHumanEntity = oGameObject.GetComponent<HumanEntity>();
 		lHumanEntity.enabled = true;

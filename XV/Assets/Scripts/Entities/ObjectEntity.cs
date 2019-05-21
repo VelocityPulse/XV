@@ -134,6 +134,12 @@ public class ObjectEntity : AEntity
 		}
 	}
 
+	public override void ResetWorldState()
+	{
+		mCenteredParent.transform.position = mODS.Position + mCenter;
+		mCenteredParent.transform.eulerAngles = mODS.Rotation;
+	}
+
 	// Place all the code you want to execute only after all the mesh enable animations
 	private IEnumerator PostPoppingAsync()
 	{
