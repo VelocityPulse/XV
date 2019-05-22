@@ -14,7 +14,6 @@ using UnityEditor;
 public sealed class TimelineManager : MonoBehaviour
 {
 	public static TimelineManager Instance { get; private set; }
-	public static bool Paused { get; private set; }
 
 	public double Duration
 	{
@@ -152,19 +151,19 @@ public sealed class TimelineManager : MonoBehaviour
 	public void Play()
 	{
 		mDirector.Play();
-		Paused = false;
+		TimelineEvent.OnPlay(null);
 	}
 
 	public void Pause()
 	{
 		mDirector.Pause();
-		Paused = true;
+		TimelineEvent.OnPause(null);
 	}
 
 	public void Stop()
 	{
 		mDirector.Stop();
-		Paused = true;
+		TimelineEvent.OnStop(null);
 		AEntity.ForEachEntities(iEntity => iEntity.ResetWorldState());
 	}
 

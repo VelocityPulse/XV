@@ -277,7 +277,12 @@ public sealed class MovableEntity : AInteraction
 			// Add the code that do the animation in the Action timeline
 			TimelineManager.Instance.AddTranslation(gameObject, iSpeed => {
 				
-				if (TimelineManager.Paused) {
+				if (iSpeed == ActionTrack.STOP) {
+					mAgent.enabled = false;
+					return true;
+				}
+
+				if (iSpeed == ActionTrack.PAUSE) {
 					mAgent.enabled = false;
 					return false;
 				}
@@ -343,7 +348,12 @@ public sealed class MovableEntity : AInteraction
 		// Add the code that do the animation in the following Action
 		TimelineManager.Instance.AddRotation(gameObject, (iSpeed) => {
 
-			if (TimelineManager.Paused) {
+			if (iSpeed == ActionTrack.STOP) {
+				mAgent.enabled = false;
+				return true;
+			}
+
+			if (iSpeed == ActionTrack.PAUSE) {
 				mAgent.enabled = false;
 				return false;
 			}

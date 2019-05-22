@@ -32,6 +32,11 @@ public static class TimelineEvent
 	public static event TimelineAction UIDeleteClipEvent;
 	public static event TimelineAction UIResizeClipEvent;
 
+	// Other events
+	public static event TimelineAction PauseEvent;
+	public static event TimelineAction StopEvent;
+	public static event TimelineAction PlayEvent;
+
 	public static void OnAddTrack(Data iData)
 	{
 		if (AddTrackEvent != null) {
@@ -78,6 +83,27 @@ public static class TimelineEvent
 	{
 		if (UIDeleteClipEvent != null) {
 			UIDeleteClipEvent(iData);
+		}
+	}
+
+	public static void OnPause(Data iData)
+	{
+		if (PauseEvent != null) {
+			PauseEvent(iData);
+		}
+	}
+
+	public static void OnStop(Data iData)
+	{
+		if (StopEvent != null) {
+			StopEvent(iData);
+		}
+	}
+
+	public static void OnPlay(Data iData)
+	{
+		if (PlayEvent != null) {
+			PlayEvent(iData);
 		}
 	}
 }
