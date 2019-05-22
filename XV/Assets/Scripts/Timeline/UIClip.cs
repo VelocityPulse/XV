@@ -5,11 +5,12 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
-public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private RectTransform mTrackRectTransform;
 	private RectTransform mRectTransform;
 	private float mOffset;
+	private Vector2 mPointerPosition;
 	public static float sSizeMin = 25F;
 
 
@@ -50,20 +51,21 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
     }
 
     public void OnDrag(PointerEventData iData) {
-        Vector2 lPointerPostion = iData.position;
+        Vector2 lPointerPosition = iData.position;
         Vector2 lLocalPointerPosition;
 
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            mTrackRectTransform, lPointerPostion, iData.pressEventCamera, out lLocalPointerPosition
+            mTrackRectTransform, lPointerPosition, iData.pressEventCamera, out lLocalPointerPosition
         )) {
 			float lXMin = GetLeftLimit() + Size / 2F - mOffset;
 			float lXMax = GetRightLimit() - Size / 2F - mOffset;
 			lLocalPointerPosition.x = Mathf.Clamp(lLocalPointerPosition.x, lXMin, lXMax);
 			lLocalPointerPosition.y = 0F;
             mRectTransform.localPosition = lLocalPointerPosition + new Vector2(mOffset, 0F);
-			ResizeEvent(lLocalPointerPosition.x == lXMax);
+			ResizeEvent(lLocalPointerPosition.x == lXMax && mPointerPosition.x < lPointerPosition.x);
 			OnPointerEnter(iData);
         }
+		mPointerPosition = lPointerPosition;
     }
 
 	public void OnPointerClick(PointerEventData iData)
@@ -160,6 +162,11 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 	}
 
 	public void OnPointerExit(PointerEventData iData)
+	{
+		UITimelineInfo.Instance.Hide();
+	}
+
+	public void OnPointerUp(PointerEventData iData)
 	{
 		UITimelineInfo.Instance.Hide();
 	}

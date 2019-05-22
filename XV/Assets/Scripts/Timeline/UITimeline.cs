@@ -95,6 +95,7 @@ public class UITimeline : MonoBehaviour {
 		lModelManagerAnimator.SetBool("IsCropped", !lModelManagerAnimator.GetBool("IsCropped"));
 	}
 
+/*
 	// These functions are for testing only
 	public void NewTimelineBinding()
 	{
@@ -110,5 +111,6 @@ public class UITimeline : MonoBehaviour {
 			return true;
 		}));
 	}
+ */
 
 }
