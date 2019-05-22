@@ -57,6 +57,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 	private void Start()
 	{
 		mSavedScenePath = Application.dataPath + DataScene.RES_PATH;
+		Utils.CreateFolder(mSavedScenePath);
 
 		// Init some variables
 		if ((mCanvasGroup = GetComponent<CanvasGroup>()) != null)
@@ -79,7 +80,6 @@ public sealed class UISceneBrowser : MonoBehaviour
 		NewSceneButton.onClick.AddListener(OnClickNewScene);
 		CancelButton.onClick.AddListener(OnClickCancel);
 		RemoveButton.onClick.AddListener(OnClickRemove);
-
 
 		DisplayBrowser();
 	}
@@ -224,6 +224,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 
 	public void HideBrowser(bool iKeepKeyboardLocked = false)
 	{
+		XV_UI.Instance.UnlockGUI();
 		if (mDisplayed) {
 			mDisplayed = false;
 			if (mCanvasGroup != null) {

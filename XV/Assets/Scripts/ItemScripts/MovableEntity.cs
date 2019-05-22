@@ -204,17 +204,16 @@ public sealed class MovableEntity : AInteraction
 			// Raycast on MousePosition to put UITarget on destination
 			RaycastHit lHit;
 			Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(lRay, out lHit, 1000, LayerMask.GetMask("dropable"))) {
-
+			if (Physics.Raycast(lRay, out lHit, 100000, LayerMask.GetMask("dropable"))) {
 				// Make UI follow mouse
-				mUITarget.transform.position = new Vector3(lHit.point.x, lHit.point.y + 0.5F, lHit.point.z);
+				mUITarget.transform.position = new Vector3(lHit.point.x, lHit.point.y + 0.1F, lHit.point.z);
 
 				// Change UI color according to the object Hit
 				if (mUITargetRenderer != null && lHit.collider.tag == "scene")
 					mUITargetRenderer.material.color = Color.green;
 				else if (mUITargetRenderer != null)
 					mUITargetRenderer.material.color = Color.red;
-			} else if (mUITargetRenderer != null)
+			} else if (mUITargetRenderer != null) 
 				mUITargetRenderer.material.color = Color.red;
 
 			// On click leave this mode and continue animation movement adding process

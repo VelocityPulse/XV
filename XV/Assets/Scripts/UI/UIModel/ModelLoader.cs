@@ -27,6 +27,7 @@ public sealed class ModelLoader
 
 	private ModelLoader()
 	{
+		Utils.CreateFolder(Application.dataPath + "/Resources/SavedData/Models/");
 		if ((mModelPool = new Dictionary<string, Model>()) == null) {
 			Debug.LogError("[MODEL_POOL] Error while creating the dictionary.");
 			ModelPoolLenght = 0;
