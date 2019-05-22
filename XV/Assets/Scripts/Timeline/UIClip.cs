@@ -81,6 +81,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 		mRectTransform.sizeDelta = new Vector2(iSize, mRectTransform.sizeDelta.y);
 	}
 
+/*
 	private void FitInPlace()
 	{
 		float lRightLimit = GetRightLimit();
@@ -100,6 +101,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, 
 		}
 		ResizeEvent();
 	}
+ */
 
 
 	public void ResizeEvent(bool iShouldGrow = false)

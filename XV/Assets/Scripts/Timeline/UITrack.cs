@@ -75,7 +75,7 @@ public class UITrack : MonoBehaviour
 		lClip.Name = lClipName;
 		lClip.Type = TimelineData.TrackType.ANIMATION;
 
-		float lClipX = BuildClip(lClip, iStart, iLength);
+		float lClipX = BuildClip(lClip, iStart, iLength, TimelineData.TrackType.ANIMATION);
 		int lPrevIndex = GetPreviousAtPosition(lClipX, lClip.Type);
 
 		// Insert clip at the end of the list
@@ -118,18 +118,26 @@ public class UITrack : MonoBehaviour
 		}
 	}
 
-	public void ResizeClip(int iClipIndex, double iClipStart, double iClipLength)
+	public void ResizeClip(TimelineEvent.Data iData)
 	{
-		if (mClips.Count > iClipIndex) {
-			BuildClip(mClips[iClipIndex], iClipStart, iClipLength);
+		List<UIClip> lClips = GetClipList(iData.Type);
+		if (lClips.Count > iData.ClipIndex) {
+			BuildClip(lClips[iData.ClipIndex], iData.ClipStart, iData.ClipLength, iData.Type);
 		}
 	}
 
-	private float BuildClip(UIClip iClip, double iClipStart, double iClipLength)
+	private float BuildClip(UIClip iClip, double iClipStart, double iClipLength, TimelineData.TrackType iType)
 	{
-		float lClipSize = TimelineUtility.ClipDurationToSize(iClipLength, mRectTransform.rect.size.x);
-		float lClipX = TimelineUtility.ClipStartToPosition(iClipStart, GetLimits()) + lClipSize / 2F;
-		iClip.Build(lClipSize, lClipX);
+		float lClipX = TimelineUtility.ClipStartToPosition(iClipStart, GetLimits()); // + lClipSize / 2F;
+		if (iType == TimelineData.TrackType.ANIMATION) {
+			float lClipSize = TimelineUtility.ClipDurationToSize(iClipLength, mRectTransform.rect.size.x);
+			lClipX += lClipSize / 2F;
+			iClip.Build(lClipSize, lClipX);
+		}
+		else {
+			lClipX += UIClip.sSizeMin / 2F;
+			iClip.Build(iClip.Size, lClipX);
+		}
 		return lClipX;
 	}
 

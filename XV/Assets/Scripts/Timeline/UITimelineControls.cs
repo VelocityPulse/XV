@@ -30,6 +30,7 @@ public class UITimelineControls : MonoBehaviour
 			SetTimeScale(lDuration.ToString());
 		}
 	}
+	
 	public void SetTimeScale(string iStringValue)
 	{
 		float lValue = float.Parse(iStringValue);

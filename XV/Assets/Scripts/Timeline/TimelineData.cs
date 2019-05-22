@@ -90,6 +90,22 @@ public sealed class TimelineData
 		TimelineEvent.OnDeleteTrack(lEventData);
 	}
 
+	public void RebuildTracksOfType(TrackType iType)
+	{
+		Dictionary<int, TrackAsset> lTracks = GetAllTracksOfType(iType);
+		foreach (KeyValuePair<int, TrackAsset> lTrack in lTracks) {
+			List<TimelineClip> lClips = lTrack.Value.GetClips().ToList();
+			for (int lIndex = 0; lIndex < lClips.Count; lIndex++) {
+				TimelineEvent.Data lEventData = new TimelineEvent.Data(lTrack.Key);
+				lEventData.ClipIndex = lIndex;
+				lEventData.ClipStart = lClips[lIndex].start;
+				lEventData.ClipLength = lClips[lIndex].duration;
+				lEventData.Type = iType;
+				TimelineEvent.OnResizeClip(lEventData);
+			}
+		}
+	}
+
 	public TrackAsset GetTrack(int iID, TrackType iType)
 	{
 		GroupTrack lGroup = GetGroupTrack(iID);

@@ -84,7 +84,7 @@ public class UITimeline : MonoBehaviour {
 	{
 		UITrack lTrack = mTracks.Find(iTrack => iTrack.ID == iData.TrackID);
 		if (lTrack != null) {
-			lTrack.ResizeClip(iData.ClipIndex, iData.ClipStart, iData.ClipLength);
+			lTrack.ResizeClip(iData);
 		}
 	}
 

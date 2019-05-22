@@ -109,17 +109,9 @@ public sealed class TimelineManager : MonoBehaviour
 
 	public void Rebuild()
 	{
-		Dictionary<int, TrackAsset> lTracks = mData.GetAllTracksOfType(TimelineData.TrackType.ANIMATION);
-		foreach (KeyValuePair<int, TrackAsset> lTrack in lTracks) {
-			List<TimelineClip> lClips = lTrack.Value.GetClips().ToList();
-			for (int lIndex = 0; lIndex < lClips.Count; lIndex++) {
-				TimelineEvent.Data lEventData = new TimelineEvent.Data(lTrack.Key);
-				lEventData.ClipIndex = lIndex;
-				lEventData.ClipStart = lClips[lIndex].start;
-				lEventData.ClipLength = lClips[lIndex].duration;
-				TimelineEvent.OnResizeClip(lEventData);
-			}
-		}
+		mData.RebuildTracksOfType(TimelineData.TrackType.ANIMATION);
+		mData.RebuildTracksOfType(TimelineData.TrackType.TRANSLATION);
+		mData.RebuildTracksOfType(TimelineData.TrackType.ROTATION);
 	}
 
 	public GameObject GetObjectFromID(int iID)
