@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using RockVR.Video;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(VideoCapture))]
 public sealed class CameraHandler : MonoBehaviour
 {
 	public enum Mode { FREE, SUBJECTIVE, LOCKED }
@@ -67,6 +69,9 @@ public sealed class CameraHandler : MonoBehaviour
 		}
 	}
 
+	public VideoCapture VideoCapture { get; private set; }
+
+
 	public void Focus(Vector3 iTargetPosition)
 	{
 		Vector3 lTargetDir = iTargetPosition - transform.position;
@@ -81,6 +86,8 @@ public sealed class CameraHandler : MonoBehaviour
 
 	private void Start()
 	{
+		VideoCapture = GetComponent<VideoCapture>();
+
 		ViewMode = Mode.FREE;
 		CurrentMode = Mode.LOCKED;
 		mIsRepositioning = false;
@@ -192,13 +199,12 @@ public sealed class CameraHandler : MonoBehaviour
 		while (lDelta > 0.3F) {
 			mIsRepositioning = true;
 			lDelta = Quaternion.Angle(transform.rotation, lTargetRot);
-			if (lDelta > 0.0f)
-			{
+			if (lDelta > 0.0f) {
 				float lAngle = Mathf.SmoothDampAngle(lDelta, 0.0f, ref lAngularVelocity, mSmoothTime);
-				lAngle = 1.0f - lAngle/lDelta;
+				lAngle = 1.0f - lAngle / lDelta;
 				transform.rotation = Quaternion.Slerp(transform.rotation, lTargetRot, lAngle);
 			}
-        	yield return new WaitForEndOfFrame();
+			yield return new WaitForEndOfFrame();
 		}
 		mIsRepositioning = false;
 		yield break;

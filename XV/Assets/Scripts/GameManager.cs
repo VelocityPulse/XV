@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
 
 	private static GameManager sInstance;
 
+
 	private DataScene mCurrentDataScene;
 
 	private AEntity mSelectedEntity;
@@ -91,7 +92,7 @@ public class GameManager : MonoBehaviour
 		//StartCoroutine(Utils.WaitForAsync(1F, () => {
 
 		//	Recorder.StartRecord();
-		//	StartCoroutine(Utils.WaitForAsync(20F, () => {
+		//	StartCoroutine(Utils.WaitForAsync(5F, () => {
 		//		Recorder.ReleaseRecord();
 		//	}));
 		//}));
@@ -232,11 +233,12 @@ public class GameManager : MonoBehaviour
 		return oGameObject;
 	}
 
-	public void DebutButton()
+	public void DebugButton()
 	{
-		AEntity.ForEachEntities((iEntity) => {
-			iEntity.ResetWorldState();
-		});
+		Recorder.StartRecord();
+		StartCoroutine(Utils.WaitForAsync(5F, () => {
+			Recorder.ReleaseRecord();
+		}));
 	}
 
 	public GameObject BuildHuman(HumanDataScene iHDS)
