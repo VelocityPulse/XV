@@ -80,32 +80,102 @@ public abstract class AInteraction : MonoBehaviour
 {
     protected struct AnimationInfo
     {
+        /// <summary>
+        /// Speed coefficient of the animation.
+        /// </summary>
         float Speed;
 
-        EntityParameters.EntityType EntityType;
     }
 
+    /// <summary>
+    /// Parameters for an Animation, with Animation's code, UI Button and Subscriptions...
+    /// </summary>
     protected class AnimationParameters
     {
+        /// <summary>
+        /// Name of this Animation.
+        /// </summary>
         public string Name;
 
+        /// <summary>
+        /// Info to understand how to use this animation.
+        /// </summary>
+        public string Help;
+
+        /// <summary>
+        /// Subscriptions of this animation, defined what type of Entity this Animation can interact with.
+        /// </summary>
         public EntityParameters.EntityType[] Subscriptions;
 
+        /// <summary>
+        /// Animation function, which will be called in the Timeline.
+        /// </summary>
         public Predicate<AnimationInfo> Animation;
 
+        /// <summary>
+        /// UIBubbleInfoButton of this Animation, it will be displayed only when one of Subscription is present in the scene.
+        /// </summary>
         public UIBubbleInfoButton Button;
 
+        /// <summary>
+        /// Will be called when the UI Button is display.
+        /// </summary>
+        public Action OnDisplay;
+
+        /// <summary>
+        /// Will be called when the UI Button is hide.
+        /// </summary>
+        public Action OnHide;
+
+        private bool mIsDisplayed;
+
+        /// <summary>
+        /// Return true if this Animations is displayed.
+        /// </summary>
+        public bool IsDisplayed { get { return mIsDisplayed; } }
+
+        private ObjectEntity mBindedObjectEntity;
+
+        internal ObjectEntity BindedObjectEntity { set { mBindedObjectEntity = value; } }
+
+        /// <summary>
+        /// Parameters for an Animation, with Animation's code, UI Button and Subscriptions.
+        /// </summary>
         public AnimationParameters()
         {
+            mIsDisplayed = false;
+            mBindedObjectEntity = null;
+            OnDisplay = null;
+            OnHide = null;
+            Help = null;
+        }
 
+        internal void Display()
+        {
+            // Check the Button is Hided
+            if (!mIsDisplayed) {
+                mIsDisplayed = true;
+                if (mBindedObjectEntity != null) {
+                    mBindedObjectEntity.CreateBubleInfoButton(Button);
+                    if (OnDisplay != null)
+                        OnDisplay();
+                }
+            }
+        }
+
+        internal void Hide()
+        {
+            // Check the Button is Displayed
+            if (mIsDisplayed) {
+                mIsDisplayed = false;
+                if (mBindedObjectEntity != null) {
+                    mBindedObjectEntity.DestroyBubleInfoButton(Button);
+                    if (OnHide != null)
+                        OnHide();
+                }
+            }
         }
     }
-
-    private List<AnimationParameters> mAnimations;
-
-    private EntityParameters mParameters;
-
-    private ObjectEntity mObjectEntity;
 
     /*
     **  Each index of this array correspond to an EntityType (HUMAN, TROLLEY, MEDIUM_ITEM, ...)
@@ -114,51 +184,53 @@ public abstract class AInteraction : MonoBehaviour
     **  So we now exactly what type are currently present in the scene, with this information:
     **  We can display or not, in BuildObject, an Animation button, depending of what type are present in the scene.
     */
-    private static int[] mEntityCounter;
+    private static int[] sEntityCounter;
 
     public static int[] EntityCounter
     {
         get
         {
-            if (mEntityCounter != null)
-                return mEntityCounter;
+            if (sEntityCounter != null)
+                return sEntityCounter;
             else
                 return new int[0];
         }
     }
 
-    private static List<Action<EntityParameters.EntityType>>[] mOnSubPresence;
+    private static List<AnimationParameters>[] sOnSubPresence;
 
-    private static List<Action<EntityParameters.EntityType>>[] mOnSubAbsence;
+    private static List<AnimationParameters>[] sOnSubAbsence;
 
-    public List<Action<EntityParameters.EntityType>>[] OnSubPresence { get { return mOnSubPresence; } }
+    private EntityParameters mParameters;
 
-    public List<Action<EntityParameters.EntityType>>[] OnSubAbsence { get { return mOnSubAbsence; } }
+    private ObjectEntity mObjectEntity;
 
-    // Who Entity to warn when this entity counter is empty or not
-    private bool[] mPub = new bool[(int)EntityParameters.EntityType.COUNT];
+    private List<AnimationParameters> mAnimationParameters;
 
-    // This script is associated to the item so, start run at the very beginning
+    protected List<AnimationParameters>[] OnSubPresence { get { return sOnSubPresence; } }
+
+    protected List<AnimationParameters>[] OnSubAbsence { get { return sOnSubAbsence; } }
+
     private void Start()
     {
-        mAnimations = new List<AnimationParameters>();
+        mAnimationParameters = new List<AnimationParameters>();
 
         int lLenght = (int)EntityParameters.EntityType.COUNT;
 
-        if (mOnSubPresence == null) {
-            mOnSubPresence = new List<Action<EntityParameters.EntityType>>[lLenght];
+        if (sOnSubPresence == null) {
+            sOnSubPresence = new List<AnimationParameters>[lLenght];
             for (int i = 0; i < lLenght; i++)
-                mOnSubPresence[i] = new List<Action<EntityParameters.EntityType>>();
+                sOnSubPresence[i] = new List<AnimationParameters>();
         }
 
-        if (mOnSubAbsence == null) {
-            mOnSubAbsence = new List<Action<EntityParameters.EntityType>>[lLenght];
+        if (sOnSubAbsence == null) {
+            sOnSubAbsence = new List<AnimationParameters>[lLenght];
             for (int i = 0; i < lLenght; i++)
-                mOnSubAbsence[i] = new List<Action<EntityParameters.EntityType>>();
+                sOnSubAbsence[i] = new List<AnimationParameters>();
         }
 
-        if (mEntityCounter == null)
-            mEntityCounter = new int[(int)EntityParameters.EntityType.COUNT];
+        if (sEntityCounter == null)
+            sEntityCounter = new int[(int)EntityParameters.EntityType.COUNT];
     }
 
     public AInteraction SetEntityParameters(EntityParameters iParameters)
@@ -177,11 +249,28 @@ public abstract class AInteraction : MonoBehaviour
 
             // Child post popping
             PostPoppingEntity();
+
+            UpdateAvailableInteraction();
         });
         return this;
     }
 
     protected abstract void PostPoppingEntity();
+
+    /// <summary>
+    /// Display UI of available interaction according to Entities in the scene.
+    /// </summary>
+    public void UpdateAvailableInteraction()
+    {
+        foreach (AnimationParameters lAnimationParameter in mAnimationParameters) {
+
+            foreach (EntityParameters.EntityType lType in lAnimationParameter.Subscriptions) {
+                if (sEntityCounter[(int)lType] > 0)
+                    lAnimationParameter.Display();
+            }
+
+        }
+    }
 
     // Increase the entity counter with the type of this new ObjectEntity
     private void AddType()
@@ -191,14 +280,13 @@ public abstract class AInteraction : MonoBehaviour
 
                 int lIndex = (int)mParameters.Type;
 
-                bool lValueWasZero = mEntityCounter[lIndex] == 0;
-                mEntityCounter[lIndex]++;
-                Debug.LogWarning("-- [+]Typeof(" + mParameters.Type + "):" + mEntityCounter[lIndex] + " --");
-                if (lValueWasZero && mEntityCounter[lIndex] == 1) {
-                    foreach (Action<EntityParameters.EntityType> lAction in mOnSubPresence[lIndex]) {
-                        Debug.LogWarning("--FIRE NEW---");
-                        lAction(mParameters.Type);
-                    }
+                bool lValueWasZero = sEntityCounter[lIndex] == 0;
+                sEntityCounter[lIndex]++;
+                //Debug.LogWarning("-- [+]Typeof(" + mParameters.Type + "):" + mEntityCounter[lIndex] + " --");
+
+                if (lValueWasZero && sEntityCounter[lIndex] == 1) {
+                    foreach (AnimationParameters lAnimationParameters in sOnSubPresence[lIndex])
+                        lAnimationParameters.Display();
                 }
             }
         }
@@ -211,16 +299,14 @@ public abstract class AInteraction : MonoBehaviour
             if (Enum.IsDefined(typeof(EntityParameters.EntityType), mParameters.Type)) {
 
                 int lIndex = (int)mParameters.Type;
-                mEntityCounter[lIndex]--;
-                if (mEntityCounter[lIndex] < 0)
-                    mEntityCounter[lIndex] = 0;
+                sEntityCounter[lIndex]--;
+                if (sEntityCounter[lIndex] < 0)
+                    sEntityCounter[lIndex] = 0;
+                //Debug.LogWarning("-- [-]Typeof(" + mParameters.Type + "):" + mEntityCounter[lIndex] + " --");
 
-                Debug.LogWarning("-- [-]Typeof(" + mParameters.Type + "):" + mEntityCounter[lIndex] + " --");
-                if (mEntityCounter[lIndex] == 0) {
-                    foreach (Action<EntityParameters.EntityType> lAction in mOnSubPresence[lIndex]) {
-                        Debug.LogWarning("--FIRE LOST---");
-                        lAction(mParameters.Type);
-                    }
+                if (sEntityCounter[lIndex] == 0) {
+                    foreach (AnimationParameters lAnimationParameters in sOnSubAbsence[lIndex])
+                        lAnimationParameters.Hide();
                 }
             }
         }
@@ -231,6 +317,11 @@ public abstract class AInteraction : MonoBehaviour
         RemoveType();
     }
 
+    /// <summary>
+    /// Add and handle an animation, it's button will be displayed only when available,
+    /// according to Subscriptions field of AnimationParameters.
+    /// </summary>
+    /// <param name="iAnimationParameters"></param>
     protected void CreateAnimation(AnimationParameters iAnimationParameters)
     {
         if (iAnimationParameters != null) {
@@ -238,11 +329,11 @@ public abstract class AInteraction : MonoBehaviour
             // Check all field are correctly set
             if (string.IsNullOrEmpty(iAnimationParameters.Name) || iAnimationParameters.Subscriptions == null
                 || iAnimationParameters.Subscriptions.Length == 0 || iAnimationParameters.Animation == null) {
-                Debug.LogWarning("[INTERACTION] - AnimationParameters not correctly set");
+                Debug.LogError("[INTERACTION] - AnimationParameters not correctly set");
                 return;
             }
 
-            if (mOnSubPresence.Length != mOnSubAbsence.Length) {
+            if (sOnSubPresence.Length != sOnSubAbsence.Length) {
                 Debug.LogError("[INTERACTION] - Callback array doesn't have same size.");
                 return;
             }
@@ -252,17 +343,16 @@ public abstract class AInteraction : MonoBehaviour
 
                 int lIndex = (int)lType;
 
-                if (lIndex < 0 || lIndex > mOnSubPresence.Length || lIndex > mOnSubAbsence.Length) {
+                if (lIndex < 0 || lIndex > sOnSubPresence.Length || lIndex > sOnSubAbsence.Length) {
                     Debug.LogError("[INTERACTION] - Callback out of range index access.");
                 } else {
-                    Debug.LogWarning("--SUB :" + lType);
-                    mOnSubPresence[lIndex].Add((iEntityType) => { Debug.LogWarning(iAnimationParameters.Name + "Triggered by new EntityType:" + iEntityType); /*show button*/});
-                    mOnSubAbsence[lIndex].Add((iEntityType) => { Debug.LogWarning(iAnimationParameters.Name + "Triggered by lost EntityType:" + iEntityType);/*hide button*/});
+                    iAnimationParameters.BindedObjectEntity = mObjectEntity;
+                    sOnSubPresence[lIndex].Add(iAnimationParameters);
+                    sOnSubAbsence[lIndex].Add(iAnimationParameters);
                 }
             }
 
-            // Add parameters to the list of available animations
-            mAnimations.Add(iAnimationParameters);
+            mAnimationParameters.Add(iAnimationParameters);
         }
     }
 }

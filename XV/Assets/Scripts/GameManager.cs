@@ -215,7 +215,6 @@ public class GameManager : MonoBehaviour
 				   .SaveEntity()
 				   .SetSize(lBounds.size)
 				   .SetCenter(lBounds.center)
-                   .SetEntityParameters(lParameters)
 				   .SetParent(lTopParent, lOffsetRotation);
 
 		lObjectEntity.InitDataScene(mCurrentDataScene);

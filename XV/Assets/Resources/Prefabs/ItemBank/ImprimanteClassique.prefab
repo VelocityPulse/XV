@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4559523405559508}
   - component: {fileID: 114399950720783538}
+  - component: {fileID: 114814572040311118}
   m_Layer: 9
   m_Name: ImprimanteClassique
   m_TagString: Untagged
@@ -114,6 +115,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: dc8ad3fe0afbe4ddfa7fe4909ab86689, type: 3}
   - {fileID: 2100002, guid: dc8ad3fe0afbe4ddfa7fe4909ab86689, type: 3}
@@ -175,3 +177,14 @@ MonoBehaviour:
   TypeOf: 1
   CanMove: 0
   RotationOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &114814572040311118
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1420897004247330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab10f8901f91ce949820826a184e79a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

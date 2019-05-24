@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChariotMainPlateForme : AInteraction {
+public sealed class ChariotMainPlateForme : AInteraction {
 
     protected override void PostPoppingEntity()
     {

@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4134289275413420}
   - component: {fileID: 114171058696896170}
+  - component: {fileID: 114176167723377550}
   m_Layer: 9
   m_Name: EtiquetteCodeBarre
   m_TagString: Untagged
@@ -114,6 +115,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: effb59a229a1d43f8936df9d3abbf926, type: 3}
   - {fileID: 2100002, guid: effb59a229a1d43f8936df9d3abbf926, type: 3}
@@ -169,5 +171,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1602f39823932499b9ed7d1e04d0f1b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TypeOf: 0
   CanMove: 0
   RotationOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &114176167723377550
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1234185156992554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab10f8901f91ce949820826a184e79a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

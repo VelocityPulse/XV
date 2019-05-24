@@ -788,6 +788,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4637439787940748}
   - component: {fileID: 114546668438963704}
+  - component: {fileID: 114458256842517972}
   m_Layer: 9
   m_Name: Etageres2
   m_TagString: Untagged
@@ -1479,6 +1480,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1513,6 +1515,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1547,6 +1550,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1581,6 +1585,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1615,6 +1620,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1649,6 +1655,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1683,6 +1690,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1717,6 +1725,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1751,6 +1760,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1785,6 +1795,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1819,6 +1830,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1853,6 +1865,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1887,6 +1900,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1921,6 +1935,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1955,6 +1970,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -1989,6 +2005,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -2023,6 +2040,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -2057,6 +2075,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -2091,6 +2110,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -2125,6 +2145,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -2159,6 +2180,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
   m_StaticBatchInfo:
@@ -2621,6 +2643,17 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300024, guid: 066dad9bea2934ef18d170c185795d54, type: 3}
+--- !u!114 &114458256842517972
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1993679477364752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab10f8901f91ce949820826a184e79a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114546668438963704
 MonoBehaviour:
   m_ObjectHideFlags: 1

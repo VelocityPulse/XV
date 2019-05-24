@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChariotPlateForme : AInteraction {
+public sealed class ChariotPlateForme : AInteraction {
 
     /*
     **  To code animation on an item, inherit from AInteraction 
@@ -21,16 +21,30 @@ public class ChariotPlateForme : AInteraction {
         // Exemple of an animation creation
         CreateAnimation(new AnimationParameters() {
             Name = "TakeAnObject",
-            Subscriptions = new EntityParameters.EntityType[] { EntityParameters.EntityType.TROLLEY },
+            Help = "Will carry the next object you click on.",
+            Subscriptions = new EntityParameters.EntityType[] { EntityParameters.EntityType.HEAVY_ITEM },
             Animation = TakeAnObject,
+            Button = new UIBubbleInfoButton() {
+                Text = "TakeAnObject",
+                Tag = name + "_TAKE_OBJECT",
+                ClickAction = (iEntity) => { /*ADD TO TIMELINE HERE*/ Debug.LogWarning("Click on TakeObject from " + name); },
+            },
         });
 
         CreateAnimation(new AnimationParameters() {
             Name = "DropAnObject",
-            Subscriptions = new EntityParameters.EntityType[] { EntityParameters.EntityType.TROLLEY },
+            Help = "Will drop an object, the next position you click on.",
+            Subscriptions = new EntityParameters.EntityType[] { EntityParameters.EntityType.HEAVY_ITEM },
             Animation = DropAnObject,
+            Button = new UIBubbleInfoButton() {
+                Text = "DropObject",
+                Tag = name + "_DROP_OBJECT",
+                ClickAction = (iEntity) => { /*ADD TO TIMELINE HERE*/ Debug.LogWarning("Click on DropObject from " + name); },
+            },
         });
     }
+
+    // =================== ANIMATION CODE ==================
 
     private bool TakeAnObject(AnimationInfo iAnimationInfo)
     {

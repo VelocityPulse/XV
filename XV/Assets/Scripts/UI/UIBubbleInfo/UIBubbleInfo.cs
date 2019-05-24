@@ -11,7 +11,7 @@ public class UIBubbleInfo : MonoBehaviour
 	private CanvasGroup mCanvasGroup;
 	private ContentSizeFitter mContentSizeFitter;
 
-	private List<Button> mButtons;
+	private List<KeyValuePair<string, Button>> mButtons;
 
 	[SerializeField]
 	private GameObject GridContainer;
@@ -27,7 +27,7 @@ public class UIBubbleInfo : MonoBehaviour
 	// Use this for initialization
 	private void Start()
 	{
-		mButtons = new List<Button>();
+		mButtons = new List<KeyValuePair<string, Button>>();
 		mCanvasGroup = GetComponent<CanvasGroup>();
 		mContentSizeFitter = GetComponentInChildren<ContentSizeFitter>();
 		mCanvasGroup.alpha = 0F;
@@ -68,24 +68,54 @@ public class UIBubbleInfo : MonoBehaviour
 			if (iInfoButton.ClickAction != null)
 				iInfoButton.ClickAction(Parent);
 		});
-		mButtons.Add(lButtonComponant);
 
-		lNewButton.GetComponentInChildren<Text>().text = iInfoButton.Text;
+        if (string.IsNullOrEmpty(iInfoButton.Tag))
+            mButtons.Add(new KeyValuePair<string, Button>("untagged", lButtonComponant));
+        else
+            mButtons.Add(new KeyValuePair<string, Button>(iInfoButton.Tag, lButtonComponant));
+
+        lNewButton.GetComponentInChildren<Text>().text = iInfoButton.Text;
 		lNewButton.name = iInfoButton.Text;
 		lNewButton.SetActive(true);
 		Canvas.ForceUpdateCanvases();
 		return lButtonComponant;
 	}
 
-	public void SetUIName(string iName)
+    public bool ContainsButton(string iTag)
+    {
+        if (string.IsNullOrEmpty(iTag))
+            return false;
+        foreach (KeyValuePair<string, Button> lButton in mButtons) {
+            if (lButton.Key == iTag) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void DestroyButton(string iTag)
+    {
+        if (string.IsNullOrEmpty(iTag))
+            return;
+        foreach (KeyValuePair<string, Button> lButton in mButtons) {
+            if (lButton.Key == iTag) {
+                mButtons.Remove(lButton);
+                Destroy(lButton.Value.gameObject);
+                Canvas.ForceUpdateCanvases();
+                return;
+            }
+        }
+    }
+
+    public void SetUIName(string iName)
 	{
 		ModelName.text = iName;
 	}
 
 	public void SetInteractable(bool iInteractable)
 	{
-		foreach (Button lButton in mButtons) {
-			lButton.interactable = iInteractable;
+		foreach (KeyValuePair<string, Button> lButton in mButtons) {
+			lButton.Value.interactable = iInteractable;
 		}
 		ModelName.interactable = iInteractable;
 	}

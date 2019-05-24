@@ -161,7 +161,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4079265777254166}
   - component: {fileID: 114376199619266140}
-  - component: {fileID: 114247201559889304}
+  - component: {fileID: 114280559232850164}
   m_Layer: 9
   m_Name: ChariotMainPlateForme
   m_TagString: Untagged
@@ -664,6 +664,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100004, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
   - {fileID: 2100002, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
@@ -701,6 +702,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
   - {fileID: 2100002, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
@@ -736,6 +738,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100004, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
   - {fileID: 2100002, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
@@ -773,6 +776,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
   - {fileID: 2100002, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
@@ -808,6 +812,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100004, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
   - {fileID: 2100002, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
@@ -845,6 +850,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
   - {fileID: 2100002, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
@@ -882,6 +888,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
   - {fileID: 2100002, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
@@ -917,6 +924,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
   - {fileID: 2100002, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
@@ -952,6 +960,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
   - {fileID: 2100002, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
@@ -988,6 +997,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100004, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
   - {fileID: 2100002, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
@@ -1222,7 +1232,7 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300014, guid: c15722f53d6f945ed8088bdfddbd78be, type: 3}
---- !u!114 &114247201559889304
+--- !u!114 &114280559232850164
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -1230,7 +1240,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1565396361524952}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44cccb6160fdb414795ce2f2da2001c7, type: 3}
+  m_Script: {fileID: 11500000, guid: 8d37e28ae1ac1784eb4bab6b0f6d8a61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114376199619266140

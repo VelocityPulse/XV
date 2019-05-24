@@ -79,7 +79,19 @@ public abstract class AEntity : MonoBehaviour
 		return mUIBubbleInfo.CreateButton(iButtonInfo);
 	}
 
-	public static void ForEachEntities(Action<AEntity> iAction)
+    public void DestroyBubleInfoButton(UIBubbleInfoButton iButtonInfo)
+    {
+        if (mUIBubbleInfo != null)
+            mUIBubbleInfo.DestroyButton(iButtonInfo.Tag);
+    }
+
+    public void DestroyBubleInfoButton(string iTag)
+    {
+        if (mUIBubbleInfo != null)
+            mUIBubbleInfo.DestroyButton(iTag);
+    }
+
+    public static void ForEachEntities(Action<AEntity> iAction)
 	{
 		if (iAction == null)
 			return;

@@ -12,7 +12,7 @@ using UnityEngine.UI;
 // some object are not correctly on the ground (ex: ConvoyeurPalettes)
 // on drag & drop model, some model are shifted in position (ex: gerbeur electrique)
 
-public sealed class MovableEntity : AInteraction
+public sealed class MovableEntity : MonoBehaviour
 {
 	private enum EditionMode
 	{
@@ -160,19 +160,6 @@ public sealed class MovableEntity : AInteraction
 					if ((mEntityObstacle = GetComponentInChildren<NavMeshObstacle>()) == null)
 						Debug.LogError("NavMeshObstacle is null");
 				}
-
-				// ------ TMP CODE PLAY BUTTON TO PLAY ANIMATION CLICKED -----
-				// Debug buttton to execute each actions
-				iObj.CreateBubleInfoButton(new UIBubbleInfoButton {
-					Text = "Play",
-					ClickAction = (iObject) => {
-						if (!TimeLineIsBusy) {
-							Debug.LogWarning("Play clicked");
-							PlayTimeline();
-						}
-					}
-				});
-				// ------ END TMP CODE ---
 			}, mObjectEntity));
 		});
 		return this;
