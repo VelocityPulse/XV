@@ -7,7 +7,6 @@ XV/Assets/Resources/SavedData/*.xml.meta
 XV/Assets/Resources/RecordedVideo/*
 XV/Assets/Resources/RecordedVideo.meta
 XV/VideoCaptureLib_Log.txt
-XV/Assets/Timelines/Timeline.playable
 
 
 *.o
