@@ -7,12 +7,12 @@ using UnityEngine.UI;
 
 public class UITrack : MonoBehaviour
 {
-	private List<UIClip> mClips;
+	private List<UIClip> mAnimations;
 	private List<UIClip> mTranslations;
 	private List<UIClip> mRotations;
 
 	private RectTransform mRectTransform;
-	private UIClip UIClipPrefab;
+	private UIClip UIAnimationClipPrefab;
 	private UIClip UITranslationClipPrefab;
 	private UIClip UIRotationClipPrefab;
 
@@ -47,10 +47,10 @@ public class UITrack : MonoBehaviour
 	private void Awake()
 	{
 		mRectTransform = transform.Find("Track") as RectTransform;
-		mClips = new List<UIClip>();
+		mAnimations = new List<UIClip>();
 		mTranslations = new List<UIClip>();
 		mRotations = new List<UIClip>();
-		UIClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIClip");
+		UIAnimationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIAnimationClip");
 		UITranslationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UITranslationClip");
 		UIRotationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIRotationClip");
 	}
@@ -66,44 +66,29 @@ public class UITrack : MonoBehaviour
 		}
 	}
 
-	public void AddAnimationClip(string iName, double iStart, double iLength)
+	public void AddAnimationClip(double iStart)
 	{
-		UIClip lClip = Instantiate(UIClipPrefab, mRectTransform);
-
-		string lClipName = iName + "[" + TimelineUtility.FormatDuration(iLength) + "]";
-		lClip.name = lClipName;
-		lClip.Name = lClipName;
+		UIClip lClip = Instantiate(UIAnimationClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.TrackType.ANIMATION;
-
-		float lClipX = BuildClip(lClip, iStart, iLength, TimelineData.TrackType.ANIMATION);
-		int lPrevIndex = GetPreviousAtPosition(lClipX, lClip.Type);
-
-		// Insert clip at the end of the list
-		if (lPrevIndex == mClips.Count - 1) {
-			mClips.Add(lClip);
-		}
-		// Insert clip in the list at specified index
-		else {
-			mClips.Insert(lPrevIndex + 1, lClip);
-		}
+		float lClipX = TimelineUtility.ClipStartToPosition(iStart, GetLimits()) + UIClip.sSizeMin / 2F;
+		mAnimations.Add(lClip);
+		lClip.Build(lClip.Size, lClipX);
 	}
 
 	public void AddTranslationClip(double iStart)
 	{
 		UIClip lClip = Instantiate(UITranslationClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.TrackType.TRANSLATION;
-		float lClipX = TimelineUtility.ClipStartToPosition(iStart, GetLimits()) + UIClip.sSizeMin / 2F;
 		mTranslations.Add(lClip);
-		lClip.Build(lClip.Size, lClipX);
+		BuildClip(lClip, iStart);
 	}
 
 	public void AddRotationClip(double iStart)
 	{
 		UIClip lClip = Instantiate(UIRotationClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.TrackType.ROTATION;
-		float lClipX = TimelineUtility.ClipStartToPosition(iStart, GetLimits()) + UIClip.sSizeMin / 2F;
 		mRotations.Add(lClip);
-		lClip.Build(lClip.Size, lClipX);
+		BuildClip(lClip, iStart);
 	}
 
 	public void DeleteClip(UIClip iClip)
@@ -122,22 +107,15 @@ public class UITrack : MonoBehaviour
 	{
 		List<UIClip> lClips = GetClipList(iData.Type);
 		if (lClips.Count > iData.ClipIndex) {
-			BuildClip(lClips[iData.ClipIndex], iData.ClipStart, iData.ClipLength, iData.Type);
+			BuildClip(lClips[iData.ClipIndex], iData.ClipStart);
 		}
 	}
 
-	private float BuildClip(UIClip iClip, double iClipStart, double iClipLength, TimelineData.TrackType iType)
+	private float BuildClip(UIClip iClip, double iClipStart)
 	{
-		float lClipX = TimelineUtility.ClipStartToPosition(iClipStart, GetLimits()); // + lClipSize / 2F;
-		if (iType == TimelineData.TrackType.ANIMATION) {
-			float lClipSize = TimelineUtility.ClipDurationToSize(iClipLength, mRectTransform.rect.size.x);
-			lClipX += lClipSize / 2F;
-			iClip.Build(lClipSize, lClipX);
-		}
-		else {
-			lClipX += UIClip.sSizeMin / 2F;
-			iClip.Build(iClip.Size, lClipX);
-		}
+		float lClipX = TimelineUtility.ClipStartToPosition(iClipStart, GetLimits());
+		lClipX += UIClip.sSizeMin / 2F;
+		iClip.Build(iClip.Size, lClipX);
 		return lClipX;
 	}
 
@@ -197,7 +175,7 @@ public class UITrack : MonoBehaviour
 	{
 		switch (iType) {
 			case TimelineData.TrackType.ANIMATION:
-				return mClips;
+				return mAnimations;
 			case TimelineData.TrackType.TRANSLATION:
 				return mTranslations;
 			case TimelineData.TrackType.ROTATION:
@@ -206,17 +184,4 @@ public class UITrack : MonoBehaviour
 				return null;
 		}
 	}
-
-// Removed possibility to add a clip by clicking on the track
-/*
-	public void OnPointerClick(PointerEventData iData)
-	{
-		Vector2 lLocalPointerPosition;
-		RectTransformUtility.ScreenPointToLocalPointInRectangle(mRectTransform, iData.position, iData.pressEventCamera, out lLocalPointerPosition);
-		if (iData.button == PointerEventData.InputButton.Left) {
-			GameObject lObject = TimelineManager.Instance.GetObjectFromID(ID);
-			TimelineManager.Instance.AddClip(lObject, new AnimationClip());
-		}
-	}
- */
 }

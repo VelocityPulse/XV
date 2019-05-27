@@ -83,29 +83,6 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 		mRectTransform.sizeDelta = new Vector2(iSize, mRectTransform.sizeDelta.y);
 	}
 
-/*
-	private void FitInPlace()
-	{
-		float lRightLimit = GetRightLimit();
-		float lLeftLimit = GetLeftLimit();
-		float lPotentialSize = lRightLimit - lLeftLimit;
-		float lOffset;
-		if (lPotentialSize < Size) {
-			mRectTransform.sizeDelta = new Vector2(lPotentialSize, mRectTransform.sizeDelta.y);
-		}
-		if (mRectTransform.localPosition.x - Size / 2F < lLeftLimit) {
-			lOffset = lLeftLimit - (mRectTransform.localPosition.x - Size / 2F);
-			mRectTransform.localPosition += new Vector3(lOffset, 0F, 0F);
-		}
-		if (mRectTransform.localPosition.x + Size / 2F > lRightLimit) {
-			lOffset = (mRectTransform.localPosition.x + Size / 2F) - lRightLimit;
-			mRectTransform.localPosition -= new Vector3(lOffset, 0F, 0F);
-		}
-		ResizeEvent();
-	}
- */
-
-
 	public void ResizeEvent(bool iShouldGrow = false)
 	{
 		TimelineEvent.Data lEventData = new TimelineEvent.Data(Track.ID);
@@ -155,7 +132,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 
 	public void OnPointerEnter(PointerEventData iData)
 	{
-		double lTime = TimelineUtility.ClipPositionToStart(mRectTransform.localPosition.x, Track.GetLimits());
+		double lTime = TimelineUtility.ClipPositionToStart(mRectTransform.localPosition.x - Mathf.Floor(Size / 2F), Track.GetLimits());
 		string lTimeString = TimelineUtility.FormatTime(lTime);
 		string lTypeString = TimelineUtility.FormatType(Type);
 		UITimelineInfo.Instance.Show(transform as RectTransform, lTypeString, lTimeString);

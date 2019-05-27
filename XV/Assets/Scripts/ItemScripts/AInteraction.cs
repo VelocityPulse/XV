@@ -85,12 +85,6 @@ public class AnimationInfo
 	/// Speed coefficient of the animation.
 	/// </summary>
 	public float Speed;
-
-	/// <summary>
-	/// Length in the seconds of the animation.
-	/// </summary>
-	public float Length;
-
 }
 
 // Classe de base contenant le managing des animations pour un item

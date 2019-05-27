@@ -64,14 +64,14 @@ public sealed class TimelineManager : MonoBehaviour
 		ClearTimeline();
 	}
 
-	public void AddAnimation(GameObject iObject, AnimationClip iClip)
+	public void AddAnimation(GameObject iObject, AnimAction iAction)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateAnimationClip(lID, iClip);
+			mData.CreateEventClip(lID, iAction, TimelineData.TrackType.ANIMATION);
 		}
 	}
 

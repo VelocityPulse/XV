@@ -11,8 +11,6 @@ using AnimAction = System.Predicate<AnimationInfo>;
 public class ActionTrack : TrackAsset
 {
 	private Queue<AnimAction> mActions;
-	private static bool sPaused;
-	private static bool sStopped;
 
 	private static float ACTIONS_LOOP_TIME = 0.2F;
 
@@ -34,8 +32,6 @@ public class ActionTrack : TrackAsset
 	{
 		mActions = new Queue<AnimAction>();
 		TimelineManager.Instance.StartCoroutine(ActionQueueCallAsync());
-		sPaused = false;
-		sStopped = false;
 	}
 
 	public void QueueAction(AnimAction iAction)
