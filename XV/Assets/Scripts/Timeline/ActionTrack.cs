@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Timeline;
 
+using AnimAction = System.Predicate<AnimationInfo>;
+
 [TrackClipType(typeof(ActionAsset))]
 [TrackBindingType(typeof(GameObject))]
 public class ActionTrack : TrackAsset
 {
-	private Queue<Predicate<float>> mActions;
+	private Queue<AnimAction> mActions;
 	private static bool sPaused;
 	private static bool sStopped;
-
-	public static float PAUSE = -1F;
-	public static float STOP = -2F;
 
 	private static float ACTIONS_LOOP_TIME = 0.2F;
 
@@ -33,13 +32,13 @@ public class ActionTrack : TrackAsset
 
 	private void Awake()
 	{
-		mActions = new Queue<Predicate<float>>();
+		mActions = new Queue<AnimAction>();
 		TimelineManager.Instance.StartCoroutine(ActionQueueCallAsync());
 		sPaused = false;
 		sStopped = false;
 	}
 
-	public void QueueAction(Predicate<float> iAction)
+	public void QueueAction(AnimAction iAction)
 	{
 		mActions.Enqueue(iAction);
 	}
@@ -48,8 +47,8 @@ public class ActionTrack : TrackAsset
 	{
 		while (true) {
 			if (mActions.Count > 0) {
-				Predicate<float> lAction = mActions.Dequeue();
-				yield return new WaitUntil(() => lAction(GetState()));
+				AnimAction lAction = mActions.Dequeue();
+				yield return new WaitUntil(() => lAction(GetInfo()));
 			}
 			else {
 				yield return new WaitForSeconds(ACTIONS_LOOP_TIME);
@@ -57,23 +56,17 @@ public class ActionTrack : TrackAsset
 		}
 	}
 
-	private float GetState()
+	private AnimationInfo GetInfo()
 	{
-		if (sStopped) {
-			return STOP;
-		}
-		if (sPaused) {
-			return PAUSE;
-		}
-		// This is supposed to be the speed
-		// Should be improved
-		return 1F;
+		// Temporary
+		AnimationInfo lInfo = new AnimationInfo();
+		lInfo.Speed = 1F;
+		return lInfo;
 	}
 	
 	private static void Reset()
 	{
-		sPaused = false;
-		sStopped = false;
+		AnimationInfo.sGlobalState = AnimationInfo.State.PLAY;
 	}
 
 	private static void Play(TimelineEvent.Data iData)
@@ -83,12 +76,12 @@ public class ActionTrack : TrackAsset
 
 	private static void Pause(TimelineEvent.Data iData)
 	{
-		sPaused = true;
+		AnimationInfo.sGlobalState = AnimationInfo.State.PAUSE;
 	}
 
 	private static void Stop(TimelineEvent.Data iData)
 	{
-		sStopped = true;
+		AnimationInfo.sGlobalState = AnimationInfo.State.STOP;
 		TimelineManager.Instance.StartCoroutine(Utils.WaitForAsync(ACTIONS_LOOP_TIME, Reset));
 	}
 }

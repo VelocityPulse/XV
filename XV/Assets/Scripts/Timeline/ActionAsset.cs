@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
+using AnimAction = System.Predicate<AnimationInfo>;
+
 public class ActionAsset : PlayableAsset
 {
-	public Predicate<float> AttachedAction { get; set; }
+	public AnimAction AttachedAction { get; set; }
 	public ActionTrack Track { get; set; }
 
 	public override Playable CreatePlayable(PlayableGraph iGraph, GameObject iOwner)

@@ -72,20 +72,31 @@ using UnityEngine;
 **  Tout les objets comportants animations ou interactions en plus, auront un bouton Animer dans l'UIBubleInfo.
 */
 
+public class AnimationInfo
+{
+	public enum State { PLAY, PAUSE, STOP };
+
+	/// <summary>
+	/// Global state of the all animations.
+	/// </summary>
+	public static State sGlobalState;
+
+	/// <summary>
+	/// Speed coefficient of the animation.
+	/// </summary>
+	public float Speed;
+
+	/// <summary>
+	/// Length in the seconds of the animation.
+	/// </summary>
+	public float Length;
+
+}
 
 // Classe de base contenant le managing des animations pour un item
 // Voir interfacage avec TimeLineManager qui prend un AnimationClip pour le moment
-
 public abstract class AInteraction : MonoBehaviour
 {
-    protected struct AnimationInfo
-    {
-        /// <summary>
-        /// Speed coefficient of the animation.
-        /// </summary>
-        float Speed;
-
-    }
 
     /// <summary>
     /// Parameters for an Animation, with Animation's code, UI Button and Subscriptions...

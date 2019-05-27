@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
+using AnimAction = System.Predicate<AnimationInfo>;
+
 public sealed class TimelineData
 {
 	public enum TrackType { ANIMATION, TRANSLATION, ROTATION };
@@ -33,7 +35,7 @@ public sealed class TimelineData
 		TimelineEvent.OnAddClip(lEventData);
 	}
 
-	public void CreateEventClip(int iTrackID, Predicate<float> iAction, TrackType iType)
+	public void CreateEventClip(int iTrackID, AnimAction iAction, TrackType iType)
 	{
 		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, iType);
 		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();

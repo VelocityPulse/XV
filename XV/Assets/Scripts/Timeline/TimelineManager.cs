@@ -10,6 +10,8 @@ using UnityEngine.Animations;
 using UnityEditor;
 #endif
 
+using AnimAction = System.Predicate<AnimationInfo>;
+
 [RequireComponent(typeof(PlayableDirector))]
 public sealed class TimelineManager : MonoBehaviour
 {
@@ -73,7 +75,7 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 	}
 
-	public void AddTranslation(GameObject iObject, Predicate<float> iAction)
+	public void AddTranslation(GameObject iObject, AnimAction iAction)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
@@ -84,7 +86,7 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 	}
 
-	public void AddRotation(GameObject iObject, Predicate<float> iAction)
+	public void AddRotation(GameObject iObject, AnimAction iAction)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();

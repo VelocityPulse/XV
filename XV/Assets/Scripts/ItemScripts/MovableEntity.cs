@@ -261,14 +261,14 @@ public sealed class MovableEntity : MonoBehaviour
 			// TODO Calcul movement duration ...
 
 			// Add the code that do the animation in the Action timeline
-			TimelineManager.Instance.AddTranslation(gameObject, iSpeed => {
+			TimelineManager.Instance.AddTranslation(gameObject, iInfo => {
 				
-				if (iSpeed == ActionTrack.STOP) {
+				if (AnimationInfo.sGlobalState == AnimationInfo.State.STOP) {
 					mAgent.enabled = false;
 					return true;
 				}
 
-				if (iSpeed == ActionTrack.PAUSE) {
+				if (AnimationInfo.sGlobalState == AnimationInfo.State.PAUSE) {
 					mAgent.enabled = false;
 					return false;
 				}
@@ -289,8 +289,8 @@ public sealed class MovableEntity : MonoBehaviour
 				mAgent.enabled = true;
 				// Update speed
 				mAgent.ResetPath();
-				mAgent.speed *= iSpeed;
-				mAgent.acceleration *= iSpeed;
+				mAgent.speed *= iInfo.Speed;
+				mAgent.acceleration *= iInfo.Speed;
 				mAgent.SetDestination(lHitPoint);
 
 				// Check if we have reached the destination
@@ -332,20 +332,20 @@ public sealed class MovableEntity : MonoBehaviour
 		float lActionDuration = 2F;
 
 		// Add the code that do the animation in the following Action
-		TimelineManager.Instance.AddRotation(gameObject, (iSpeed) => {
+		TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
 
-			if (iSpeed == ActionTrack.STOP) {
+			if (AnimationInfo.sGlobalState == AnimationInfo.State.STOP) {
 				mAgent.enabled = false;
 				return true;
 			}
 
-			if (iSpeed == ActionTrack.PAUSE) {
+			if (AnimationInfo.sGlobalState == AnimationInfo.State.PAUSE) {
 				mAgent.enabled = false;
 				return false;
 			}
 
 			// Update rotation performed according to speed
-			mRotationPerformed += Time.deltaTime * iSpeed;
+			mRotationPerformed += Time.deltaTime * iInfo.Speed;
 
 			// Rotate to the correct amount
 			mCenteredParent.transform.rotation = Quaternion.Slerp(mCenteredParent.transform.rotation, iTarget, mRotationPerformed / lActionDuration);
