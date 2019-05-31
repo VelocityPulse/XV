@@ -3,21 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimationInfo
-{
-	public enum State { PLAY, PAUSE, STOP };
-
-	/// <summary>
-	/// Global state of the all animations.
-	/// </summary>
-	public static State sGlobalState;
-
-	/// <summary>
-	/// Speed coefficient of the animation.
-	/// </summary>
-	public float Speed;
-}
-
 public class AnimationParameters
 {
     public enum AnimationTargetType { ENTITY, POSITION };
@@ -39,34 +24,30 @@ public class AnimationParameters
 /// </summary>
 public abstract class AInteraction : MonoBehaviour
 {
-    protected enum InteractionMode { NONE, TARGET, };
-
-    public delegate bool AnimationPredicate(AnimationInfo iAnimInfo, AnimationParameters iParameters);
-
     /// <summary>
-    /// Parameters for an Animation, with Animation's code, UI Button and Subscriptions...
+    /// This class define an Interaction
     /// </summary>
-    protected class ItemAnimation
+    protected class ItemInteraction
     {
         /// <summary>
-        /// Name of this Animation.
+        /// Name of this Interaction.
         /// </summary>
         public string Name;
 
         /// <summary>
-        /// Info to understand how to use this animation.
+        /// Info to understand how to use this Interaction.
         /// </summary>
         public string Help;
 
         /// <summary>
-        /// Subscriptions of this animation, defined what type of Entity this Animation can interact with.
+        /// Subscriptions of this interaction, defined what type of Entity this interaction can interact with.
         /// </summary>
-        public EntityParameters.EntityType[] Subscriptions;
+        public EntityParameters.EntityType[] InteractWith;
 
         /// <summary>
-        /// Animation function, which will be called in the Timeline.
+        /// interaction function, which will be called in the Timeline.
         /// </summary>
-        public AnimationPredicate AnimationImpl;
+        public Predicate<AnimationInfo> AnimationImpl;
 
         /// <summary>
         /// UIBubbleInfoButton of this Animation, it will be displayed only when one of Subscription is present in the scene.
@@ -86,7 +67,7 @@ public abstract class AInteraction : MonoBehaviour
         private bool mIsDisplayed;
 
         /// <summary>
-        /// Return true if this Animations is displayed.
+        /// Return true if this Interaction UI is displayed.
         /// </summary>
         public bool IsDisplayed { get { return mIsDisplayed; } }
 
@@ -97,7 +78,7 @@ public abstract class AInteraction : MonoBehaviour
         /// <summary>
         /// Parameters for an Animation, with Animation's code, UI Button and Subscriptions.
         /// </summary>
-        public ItemAnimation()
+        public ItemInteraction()
         {
             mIsDisplayed = false;
             mBindedObjectEntity = null;
@@ -106,7 +87,7 @@ public abstract class AInteraction : MonoBehaviour
             Help = null;
         }
 
-        internal void Display()
+        internal void DisplayUI()
         {
             // Check the Button is Hided
             if (!mIsDisplayed) {
@@ -119,7 +100,7 @@ public abstract class AInteraction : MonoBehaviour
             }
         }
 
-        internal void Hide()
+        internal void HideUI()
         {
             // Check the Button is Displayed
             if (mIsDisplayed) {
@@ -140,66 +121,42 @@ public abstract class AInteraction : MonoBehaviour
     **  So we now exactly what type are currently present in the scene, with this information:
     **  We can display or not, in BuildObject, an Animation button, depending of what type are present in the scene.
     */
-    private static int[] sEntityCounter;
+    private static int[] sEntityTypeCounter;
 
-    public static int[] EntityCounter
+    public static int[] EntityTypeCounter
     {
         get
         {
-            if (sEntityCounter != null)
-                return sEntityCounter;
+            if (sEntityTypeCounter != null)
+                return sEntityTypeCounter;
             else
                 return new int[0];
         }
     }
 
-    private static List<ItemAnimation>[] sOnSubPresence;
-
-    private static List<ItemAnimation>[] sOnSubAbsence;
+    private static List<ItemInteraction>[] sTypeSubscribers;
 
     private EntityParameters mParameters;
 
     private ObjectEntity mObjectEntity;
 
-    private List<ItemAnimation> mItemAnimations;
-
-    protected List<ItemAnimation>[] OnSubPresence { get { return sOnSubPresence; } }
-
-    protected List<ItemAnimation>[] OnSubAbsence { get { return sOnSubAbsence; } }
-
-    protected InteractionMode mMode;
+    private List<ItemInteraction> mItemInteractions;
 
     private void Start()
     {
-        mItemAnimations = new List<ItemAnimation>();
+        mItemInteractions = new List<ItemInteraction>();
 
         int lLenght = (int)EntityParameters.EntityType.COUNT;
 
-        if (sOnSubPresence == null) {
-            sOnSubPresence = new List<ItemAnimation>[lLenght];
+        if (sTypeSubscribers == null) {
+            sTypeSubscribers = new List<ItemInteraction>[lLenght];
             for (int i = 0; i < lLenght; i++)
-                sOnSubPresence[i] = new List<ItemAnimation>();
+                sTypeSubscribers[i] = new List<ItemInteraction>();
         }
 
-        if (sOnSubAbsence == null) {
-            sOnSubAbsence = new List<ItemAnimation>[lLenght];
-            for (int i = 0; i < lLenght; i++)
-                sOnSubAbsence[i] = new List<ItemAnimation>();
-        }
+        if (sEntityTypeCounter == null)
+            sEntityTypeCounter = new int[(int)EntityParameters.EntityType.COUNT];
 
-        if (sEntityCounter == null)
-            sEntityCounter = new int[(int)EntityParameters.EntityType.COUNT];
-
-        mMode = InteractionMode.NONE;
-    }
-
-    private void Update()
-    {
-        if (mMode == InteractionMode.NONE)
-            return;
-        if (mMode == InteractionMode.TARGET) {
-
-            }
     }
 
     public AInteraction SetEntityParameters(EntityParameters iParameters)
@@ -231,11 +188,11 @@ public abstract class AInteraction : MonoBehaviour
     /// </summary>
     public void UpdateAvailableInteraction()
     {
-        foreach (ItemAnimation lAnimationParameter in mItemAnimations) {
+        foreach (ItemInteraction lAnimationParameter in mItemInteractions) {
 
-            foreach (EntityParameters.EntityType lType in lAnimationParameter.Subscriptions) {
-                if (sEntityCounter[(int)lType] > 0)
-                    lAnimationParameter.Display();
+            foreach (EntityParameters.EntityType lType in lAnimationParameter.InteractWith) {
+                if (sEntityTypeCounter[(int)lType] > 0)
+                    lAnimationParameter.DisplayUI();
             }
 
         }
@@ -249,14 +206,11 @@ public abstract class AInteraction : MonoBehaviour
 
                 int lIndex = (int)mParameters.Type;
 
-                bool lValueWasZero = sEntityCounter[lIndex] == 0;
-                sEntityCounter[lIndex]++;
-                //Debug.LogWarning("-- [+]Typeof(" + mParameters.Type + "):" + mEntityCounter[lIndex] + " --");
+                bool lValueWasZero = sEntityTypeCounter[lIndex] == 0;
+                sEntityTypeCounter[lIndex]++;
 
-                if (lValueWasZero && sEntityCounter[lIndex] == 1) {
-                    foreach (ItemAnimation lAnimationParameters in sOnSubPresence[lIndex])
-                        lAnimationParameters.Display();
-                }
+                if (lValueWasZero && sEntityTypeCounter[lIndex] == 1)
+                    FireOnTypeAppear(mParameters.Type);
             }
         }
     }
@@ -267,18 +221,50 @@ public abstract class AInteraction : MonoBehaviour
         if (mParameters != null) {
             if (Enum.IsDefined(typeof(EntityParameters.EntityType), mParameters.Type)) {
 
-                int lIndex = (int)mParameters.Type;
-                sEntityCounter[lIndex]--;
-                if (sEntityCounter[lIndex] < 0)
-                    sEntityCounter[lIndex] = 0;
-                //Debug.LogWarning("-- [-]Typeof(" + mParameters.Type + "):" + mEntityCounter[lIndex] + " --");
+                int lType = (int)mParameters.Type;
+                sEntityTypeCounter[lType]--;
+                if (sEntityTypeCounter[lType] < 0)
+                    sEntityTypeCounter[lType] = 0;
 
-                if (sEntityCounter[lIndex] == 0) {
-                    foreach (ItemAnimation lAnimationParameters in sOnSubAbsence[lIndex])
-                        lAnimationParameters.Hide();
+                if (sEntityTypeCounter[lType] == 0)
+                    FireOnTypeDisappear(mParameters.Type);
+            }
+        }
+    }
+
+    private static void FireOnTypeAppear(EntityParameters.EntityType iType)
+    {
+        foreach (ItemInteraction lAnimationParameters in sTypeSubscribers[(int)iType])
+            lAnimationParameters.DisplayUI();
+    }
+
+    private static void FireOnTypeDisappear(EntityParameters.EntityType iType)
+    {
+        foreach (ItemInteraction lAnimationParameters in sTypeSubscribers[(int)iType])
+            lAnimationParameters.HideUI();
+    }
+
+    /// <summary>
+    /// Return true if iInteractionName can interact with iType Entity.
+    /// </summary>
+    /// <returns><c>true</c>, if interact with was caned, <c>false</c> otherwise.</returns>
+    /// <param name="iInteractionName">I interaction name.</param>
+    /// <param name="iType">I type.</param>
+    protected bool CanInteractWith(string iInteractionName, EntityParameters.EntityType iType)
+    {
+        foreach (ItemInteraction lInteraction in mItemInteractions) {
+
+            // Find the requested Interaction
+            if (lInteraction.Name == iInteractionName) {
+                
+                // Check if the request EntityType can interact with this interaction
+                foreach (EntityParameters.EntityType lType in lInteraction.InteractWith) {
+                    if (iType == lType)
+                        return true;
                 }
             }
         }
+        return false;
     }
 
     private void OnDestroy()
@@ -290,38 +276,31 @@ public abstract class AInteraction : MonoBehaviour
     /// Add and handle an animation, it's button will be displayed only when available,
     /// according to Subscriptions field of AnimationParameters.
     /// </summary>
-    /// <param name="iAnimation"></param>
-    protected void CreateAnimation(ItemAnimation iAnimation)
+    /// <param name="iInteraction"></param>
+    protected void CreateInteraction(ItemInteraction iInteraction)
     {
-        if (iAnimation != null) {
+        if (iInteraction != null) {
 
             // Check all field are correctly set
-            if (string.IsNullOrEmpty(iAnimation.Name) || iAnimation.Subscriptions == null
-                || iAnimation.Subscriptions.Length == 0 || iAnimation.AnimationImpl == null) {
+            if (string.IsNullOrEmpty(iInteraction.Name) || iInteraction.InteractWith == null
+                || iInteraction.InteractWith.Length == 0 || iInteraction.AnimationImpl == null) {
                 Debug.LogError("[INTERACTION] - AnimationParameters not correctly set");
                 return;
             }
 
-            if (sOnSubPresence.Length != sOnSubAbsence.Length) {
-                Debug.LogError("[INTERACTION] - Callback array doesn't have same size.");
-                return;
-            }
-
             // Update Callback for EntityType Counter
-            foreach (EntityParameters.EntityType lType in iAnimation.Subscriptions) {
+            foreach (EntityParameters.EntityType lType in iInteraction.InteractWith) {
 
-                int lIndex = (int)lType;
+                int lIntType = (int)lType;
 
-                if (lIndex < 0 || lIndex > sOnSubPresence.Length || lIndex > sOnSubAbsence.Length) {
-                    Debug.LogError("[INTERACTION] - Callback out of range index access.");
+                if (lIntType < 0 || lIntType > sTypeSubscribers.Length) {
+                    Debug.LogError("[INTERACTION] - Subscribers list out of range index access.");
                 } else {
-                    iAnimation.BindedObjectEntity = mObjectEntity;
-                    sOnSubPresence[lIndex].Add(iAnimation);
-                    sOnSubAbsence[lIndex].Add(iAnimation);
+                    iInteraction.BindedObjectEntity = mObjectEntity;
+                    sTypeSubscribers[lIntType].Add(iInteraction);
                 }
             }
-
-            mItemAnimations.Add(iAnimation);
+            mItemInteractions.Add(iInteraction);
         }
     }
 }
