@@ -9,13 +9,13 @@ using AnimAction = System.Predicate<AnimationInfo>;
 public class ActionAsset : PlayableAsset
 {
 	public List<AnimAction> Actions { get; set; }
-	public List<AnimationParameters> Parameters { get; set; }
+	public List<object> Parameters { get; set; }
 	public ActionTrack Track { get; set; }
 
 	public void Awake()
 	{
 		Actions = new List<AnimAction>();
-		Parameters = new List<AnimationParameters>();
+		Parameters = new List<object>();
 	}
 
 	public override Playable CreatePlayable(PlayableGraph iGraph, GameObject iOwner)

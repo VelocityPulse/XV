@@ -14,5 +14,10 @@ public class AnimationInfo
 	/// <summary>
 	/// The parameters use by the Implementation of the Animation.
 	/// </summary>
-	public AnimationParameters Parameters;
+	public AnimationParameters Parameters
+	{
+		get { return (AnimationParameters)tag; }
+	}
+
+	public object tag;
 }

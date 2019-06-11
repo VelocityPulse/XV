@@ -11,7 +11,7 @@ using AnimAction = System.Predicate<AnimationInfo>;
 public class ActionTrack : TrackAsset
 {
 	private Queue<List<AnimAction>> mActionsSets;
-	private Queue<List<AnimationParameters>> mParamsSets;
+	private Queue<List<object>> mParamsSets;
 
 	private static float ACTIONS_LOOP_TIME = 0.2F;
 
@@ -32,11 +32,11 @@ public class ActionTrack : TrackAsset
 	private void Awake()
 	{
 		mActionsSets = new Queue<List<AnimAction>>();
-		mParamsSets = new Queue<List<AnimationParameters>>();
+		mParamsSets = new Queue<List<object>>();
 		TimelineManager.Instance.StartCoroutine(ActionQueueCallAsync());
 	}
 
-	public void QueueActions(List<AnimAction> iAction, List<AnimationParameters> iParams = null)
+	public void QueueActions(List<AnimAction> iAction, List<object> iParams = null)
 	{
 		mActionsSets.Enqueue(iAction);
 		mParamsSets.Enqueue(iParams);
@@ -50,7 +50,8 @@ public class ActionTrack : TrackAsset
 				for (int lIndex = 0; lIndex < lActions.Count; lIndex++) {
 					AnimAction lAction = lActions[lIndex];
 					if (lAction != null) {
-						yield return new WaitUntil(() => lAction(GetInfo(lIndex)));
+						AnimationInfo lInfo = GetInfo(lIndex);
+						yield return new WaitUntil(() => lAction(lInfo));
 					}
 					else {
 						Debug.LogError("An error occured while trying to execute a Timeline Action");
@@ -67,10 +68,10 @@ public class ActionTrack : TrackAsset
 	{
 		AnimationInfo lInfo = new AnimationInfo();
 		if (mParamsSets.Count > 0) {
-			List<AnimationParameters> lParams = mParamsSets.Dequeue();
-			lInfo.Parameters = lParams[iIndex];
+			List<object> lParams = mParamsSets.Dequeue();
+			lInfo.tag = lParams[iIndex];
 		} else
-			lInfo.Parameters = new AnimationParameters();
+			lInfo.tag = new AnimationParameters();
 		return lInfo;
 	}
 	
