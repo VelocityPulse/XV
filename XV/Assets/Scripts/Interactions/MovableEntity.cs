@@ -142,7 +142,7 @@ public sealed class MovableEntity : MonoBehaviour
 					// Agent radius is the biggest size of the bounding box
 					mAgent.radius = (iObj.Size.x > iObj.Size.z) ? (iObj.Size.x / 2) : (iObj.Size.z / 2);
 					// Increase a little the radius to avoid limit of a mesh
-					mAgent.radius += 0.1F;
+					mAgent.radius += 0.5F;
 					// Adjust the cylinder with the height position
 					mAgent.baseOffset = -transform.position.y;
 					// Add a limit to the target destination

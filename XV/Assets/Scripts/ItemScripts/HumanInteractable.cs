@@ -5,15 +5,23 @@ using UnityEngine.AI;
 
 
 [RequireComponent(typeof(MovableEntity))]
+[RequireComponent(typeof(Animator))]
 public class HumanInteractable : AInteraction
 {
 	private MovableEntity mMovableEntity;
+
+	private Animator mAnimator;
+
+	private Vector3 mItemPosition;
 
 	protected override void Start()
 	{
 		base.Start();
 
 		mMovableEntity = GetComponent<MovableEntity>();
+		mAnimator = GetComponent<Animator>();
+
+		mItemPosition = new Vector3(0F, 0.813F, 0.308F);
 	}
 
 	protected override void PostPoppingEntity()
@@ -22,7 +30,7 @@ public class HumanInteractable : AInteraction
 			Name = "TakeObject",
 			Help = "Take an object",
 			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.SMALL_ITEM, EntityParameters.EntityType.MEDIUM_ITEM },
-			AnimationImpl = TakeObject,
+			AnimationImpl = TakeObjectMoveToTarget,
 			Button = new UIBubbleInfoButton() {
 				Text = "TakeObject",
 				Tag = name + "_TAKE_OBJECT",
@@ -63,15 +71,20 @@ public class HumanInteractable : AInteraction
 							AnimationTarget = lEntityParam.gameObject,
 						};
 
-                        List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+						List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 
-                        lInteractionSteps.Add(new InteractionStep {
-                            tag = lAnimationParameters,
-                            action = TakeObject
-                        });
+						lInteractionSteps.Add(new InteractionStep {
+							tag = lAnimationParameters,
+							action = TakeObjectMoveToTarget
+						});
+
+						lInteractionSteps.Add(new InteractionStep {
+							tag = lAnimationParameters,
+							action = TakeObjectAnimationTake
+						});
 
 
-                        TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+						TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
 
 						return false;
 					}
@@ -85,17 +98,54 @@ public class HumanInteractable : AInteraction
 		AEntity.DisableHideNoInteractable();
 	}
 
-	private bool TakeObject(object iAnimInfo)
+	private bool TakeObjectMoveToTarget(object iParams)
 	{
-        // premier coup ok 
-        // deuxieme coup parameters est vide
-        Debug.Log(iAnimInfo.Parameters.GetHashCode());
-        GameObject lTarget = (GameObject)iAnimInfo.Parameters.AnimationTarget;
+		AnimationParameters lParams = (AnimationParameters)iParams;
 
-		if (mMovableEntity.Move(lTarget.transform.position, iAnimInfo) == false)
+		// debug
+		Debug.Log(lParams.GetHashCode());
+		// debug
+
+		GameObject lTarget = (GameObject)lParams.AnimationTarget;
+
+		if (mMovableEntity.Move(lTarget.transform.position, lParams) == false)
 			return false;
+
+		return true;
+	}
+
+	private bool TakeObjectAnimationTake(object iParams)
+	{
+		AnimationParameters lParams = (AnimationParameters)iParams;
+
+		// debug
+		if (lParams == null)
+			Debug.LogError("l'Object iParams est null");
+
+		Debug.Log(lParams.GetHashCode());
+		// debug
+
+		mAnimator.SetTrigger("PickUp");
+
+		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("PickUp"))
+			mAnimator.SetBool("IdleWithBox", true);
+
+		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("IdleWithBox") &&
+				mAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 &&
+				!mAnimator.IsInTransition(0)) {
+			
+			GameObject lTarget = (GameObject)lParams.AnimationTarget;
+
+			lTarget.transform.parent = gameObject.transform;
+			lTarget.transform.localPosition = mItemPosition;
+
+			return true;
+		}
 
 		return false;
 	}
+
+
+
 
 }
