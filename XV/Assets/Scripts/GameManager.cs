@@ -251,7 +251,7 @@ public class GameManager : MonoBehaviour
 
 	public void UnloadScene()
 	{
-
+        StartCoroutine(UnloadSceneAsync());
 	}
 
 	public void LoadScene(DataScene iDataScene)

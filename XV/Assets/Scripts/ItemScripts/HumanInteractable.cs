@@ -62,8 +62,17 @@ public class HumanInteractable : AInteraction
 							TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 							AnimationTarget = lEntityParam.gameObject,
 						};
-						TimelineManager.Instance.AddAnimation(gameObject, TakeObject, lAnimationParameters);
-						//TimelineManager.Instance.AddAnimation(gameObject, TakeObject, new AnimationParameters());
+
+                        List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+
+                        lInteractionSteps.Add(new InteractionStep {
+                            tag = lAnimationParameters,
+                            action = TakeObject
+                        });
+
+
+                        TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+
 						return false;
 					}
 					Debug.LogWarning("[TARGET SELECTOR] The object you click on is not interactable with this object !");
@@ -78,16 +87,13 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObject(object iAnimInfo)
 	{
+        // premier coup ok 
+        // deuxieme coup parameters est vide
+        Debug.Log(iAnimInfo.Parameters.GetHashCode());
+        GameObject lTarget = (GameObject)iAnimInfo.Parameters.AnimationTarget;
 
-		if (mMovableEntity.Move(
-			//((AEntity)iAnimInfo.Parameters.AnimationTarget).transform.position,
-			Vector3.zero,
-			iAnimInfo) == false)
+		if (mMovableEntity.Move(lTarget.transform.position, iAnimInfo) == false)
 			return false;
-
-		// attendre le addInteraction de louis, capable de prendre un nombre exaustif d'actions
-
-
 
 		return false;
 	}
