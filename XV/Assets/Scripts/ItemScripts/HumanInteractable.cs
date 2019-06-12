@@ -101,11 +101,6 @@ public class HumanInteractable : AInteraction
 	private bool TakeObjectMoveToTarget(object iParams)
 	{
 		AnimationParameters lParams = (AnimationParameters)iParams;
-
-		// debug
-		Debug.Log(lParams.GetHashCode());
-		// debug
-
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
 		if (mMovableEntity.Move(lTarget.transform.position, lParams) == false)
@@ -116,29 +111,17 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObjectAnimationTake(object iParams)
 	{
-		AnimationParameters lParams = (AnimationParameters)iParams;
-
-		// debug
-		if (lParams == null)
-			Debug.LogError("l'Object iParams est null");
-
-		Debug.Log(lParams.GetHashCode());
-		// debug
-
 		mAnimator.SetTrigger("PickUp");
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("PickUp"))
 			mAnimator.SetBool("IdleWithBox", true);
 
-		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("IdleWithBox") &&
-				mAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 &&
-				!mAnimator.IsInTransition(0)) {
-			
+		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("IdleWithBox")) {
+			AnimationParameters lParams = (AnimationParameters)iParams;
 			GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
 			lTarget.transform.parent = gameObject.transform;
 			lTarget.transform.localPosition = mItemPosition;
-
 			return true;
 		}
 
