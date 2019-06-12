@@ -47,11 +47,15 @@ public class ActionTrack : TrackAsset
 		while (true) {
 			if (mActionsSets.Count > 0) {
 				List<AnimAction> lActions = mActionsSets.Dequeue();
+				List<object> lParams = mParamsSets.Count > 0 ? mParamsSets.Dequeue() : null;
+
 				for (int lIndex = 0; lIndex < lActions.Count; lIndex++) {
+
 					AnimAction lAction = lActions[lIndex];
+					object lParam = GetParam(lParams, lIndex);
+
 					if (lAction != null) {
-						object lParams = GetParams(lIndex);
-						yield return new WaitUntil(() => lAction(lParams));
+						yield return new WaitUntil(() => lAction(lParam));
 					}
 					else {
 						Debug.LogError("An error occured while trying to execute a Timeline Action");
@@ -64,12 +68,11 @@ public class ActionTrack : TrackAsset
 		}
 	}
 
-	private object GetParams(int iIndex)
+	private object GetParam(List<object> iParams, int iIndex)
 	{
-		if (mParamsSets.Count > 0) {
-			List<object> lParams = mParamsSets.Dequeue();
-			if (iIndex < lParams.Capacity) {
-				return lParams[iIndex];
+		if (iParams != null) {
+			if (iIndex < iParams.Capacity) {
+				return iParams[iIndex];
 			}
 		}
 		return null;
