@@ -52,7 +52,7 @@ public abstract class AInteraction : MonoBehaviour
 		/// <summary>
 		/// interaction function, which will be called in the Timeline.
 		/// </summary>
-		public Predicate<AnimationInfo> AnimationImpl;
+		public Predicate<object> AnimationImpl;
 
 		/// <summary>
 		/// UIBubbleInfoButton of this Animation, it will be displayed only when one of Subscription is present in the scene.

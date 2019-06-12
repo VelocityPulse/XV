@@ -267,14 +267,14 @@ public sealed class MovableEntity : MonoBehaviour
 		}
 	}
 
-	public bool Move(Vector3 iDestination, AnimationInfo iInfo, Action iOnEndMovement = null)
+	public bool Move(Vector3 iDestination, object iParams, Action iOnEndMovement = null)
 	{
-		if (AnimationInfo.sGlobalState == AnimationInfo.State.STOP) {
+		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
 			mAgent.enabled = false;
 			return true;
 		}
 
-		if (AnimationInfo.sGlobalState == AnimationInfo.State.PAUSE) {
+		if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE) {
 			mAgent.enabled = false;
 			return false;
 		}
@@ -291,12 +291,14 @@ public sealed class MovableEntity : MonoBehaviour
 			return false;
 		}
 
+		AnimationParameters lAnimParams = (AnimationParameters)iParams;
+
 		// Active Agent
 		mAgent.enabled = true;
 		// Update speed
 		mAgent.ResetPath();
-		mAgent.speed *= iInfo.Parameters.Speed;
-		mAgent.acceleration *= iInfo.Parameters.Speed;
+		mAgent.speed *= lAnimParams.Speed;
+		mAgent.acceleration *= lAnimParams.Speed;
 		mAgent.SetDestination(iDestination);
 
 		// Check if we have reached the destination
@@ -333,20 +335,22 @@ public sealed class MovableEntity : MonoBehaviour
 		float lActionDuration = 2F;
 
 		// Add the code that do the animation in the following Action
-		TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
+		TimelineManager.Instance.AddRotation(gameObject, iParams => {
 
-			if (AnimationInfo.sGlobalState == AnimationInfo.State.STOP) {
+			if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
 				mAgent.enabled = false;
 				return true;
 			}
 
-			if (AnimationInfo.sGlobalState == AnimationInfo.State.PAUSE) {
+			if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE) {
 				mAgent.enabled = false;
 				return false;
 			}
 
+			AnimationParameters lAnimParams = (AnimationParameters)iParams;
+
 			// Update rotation performed according to speed
-			mRotationPerformed += Time.deltaTime * iInfo.Parameters.Speed;
+			mRotationPerformed += Time.deltaTime * lAnimParams.Speed;
 
 			// Rotate to the correct amount
 			gameObject.transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, iTarget, mRotationPerformed / lActionDuration);

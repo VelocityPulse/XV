@@ -10,12 +10,14 @@ using UnityEngine.Animations;
 using UnityEditor;
 #endif
 
-using AnimAction = System.Predicate<AnimationInfo>;
+using AnimAction = System.Predicate<object>;
 
 [RequireComponent(typeof(PlayableDirector))]
 public sealed class TimelineManager : MonoBehaviour
 {
 	public static TimelineManager Instance { get; private set; }
+	public enum State { PLAY, PAUSE, STOP };
+	public static State sGlobalState;
 
 	public double Duration
 	{
@@ -62,10 +64,9 @@ public sealed class TimelineManager : MonoBehaviour
 		mTimeline = (TimelineAsset)mDirector.playableAsset;
 		mData = new TimelineData(mTimeline, mDirector);
 		ClearTimeline();
-		//SetGlobalSpeed(1F);
 	}
 
-	public void AddAnimation(GameObject iObject, AnimAction iAction, AnimationParameters iParams)
+	public void AddAnimation(GameObject iObject, AnimAction iAction, object iParams)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
@@ -173,14 +174,6 @@ public sealed class TimelineManager : MonoBehaviour
 		TimelineEvent.OnStop(null);
 		AEntity.ForEachEntities(iEntity => iEntity.ResetWorldState());
 	}
-
-	//public void SetGlobalSpeed(float iSpeedMultiplier)
-	//{
-	//	AnimationInfo.sGlobalSpeed = iSpeedMultiplier;
-	//	if (mDirector.playableGraph.IsValid() && mDirector.playableGraph.IsPlaying()) {
-	//		mDirector.playableGraph.GetRootPlayable(0).SetSpeed(AnimationInfo.sGlobalSpeed);
-	//	}
-	//}
 
 	private void ClearTimeline()
 	{

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Timeline;
 
-using AnimAction = System.Predicate<AnimationInfo>;
+using AnimAction = System.Predicate<object>;
 
 [TrackClipType(typeof(ActionAsset))]
 [TrackBindingType(typeof(GameObject))]
@@ -50,8 +50,8 @@ public class ActionTrack : TrackAsset
 				for (int lIndex = 0; lIndex < lActions.Count; lIndex++) {
 					AnimAction lAction = lActions[lIndex];
 					if (lAction != null) {
-						AnimationInfo lInfo = GetInfo(lIndex);
-						yield return new WaitUntil(() => lAction(lInfo));
+						object lParams = GetParams(lIndex);
+						yield return new WaitUntil(() => lAction(lParams));
 					}
 					else {
 						Debug.LogError("An error occured while trying to execute a Timeline Action");
@@ -64,22 +64,20 @@ public class ActionTrack : TrackAsset
 		}
 	}
 
-	private AnimationInfo GetInfo(int iIndex)
+	private object GetParams(int iIndex)
 	{
-		AnimationInfo lInfo = new AnimationInfo();
 		if (mParamsSets.Count > 0) {
 			List<object> lParams = mParamsSets.Dequeue();
-			lInfo.tag = lParams[iIndex];
+			if (iIndex < lParams.Capacity) {
+				return lParams[iIndex];
+			}
 		}
-		else {
-			lInfo.tag = null;
-		}
-		return lInfo;
+		return null;
 	}
 	
 	private static void Reset()
 	{
-		AnimationInfo.sGlobalState = AnimationInfo.State.PLAY;
+		TimelineManager.sGlobalState = TimelineManager.State.PLAY;
 	}
 
 	private static void Play(TimelineEvent.Data iData)
@@ -89,12 +87,12 @@ public class ActionTrack : TrackAsset
 
 	private static void Pause(TimelineEvent.Data iData)
 	{
-		AnimationInfo.sGlobalState = AnimationInfo.State.PAUSE;
+		TimelineManager.sGlobalState = TimelineManager.State.PAUSE;
 	}
 
 	private static void Stop(TimelineEvent.Data iData)
 	{
-		AnimationInfo.sGlobalState = AnimationInfo.State.STOP;
+		TimelineManager.sGlobalState = TimelineManager.State.STOP;
 		TimelineManager.Instance.StartCoroutine(Utils.WaitForAsync(ACTIONS_LOOP_TIME, Reset));
 	}
 }

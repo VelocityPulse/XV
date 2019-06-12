@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 public class AnimationInfo
 {
 	public enum State { PLAY, PAUSE, STOP };
@@ -27,3 +28,4 @@ public class AnimationInfo
 
 	public object tag;
 }
+*/

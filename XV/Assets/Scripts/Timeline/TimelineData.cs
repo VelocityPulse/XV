@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-using AnimAction = System.Predicate<AnimationInfo>;
+using AnimAction = System.Predicate<object>;
 
 public sealed class TimelineData
 {
@@ -22,7 +22,7 @@ public sealed class TimelineData
 		mBindings = new Dictionary<int, GroupTrack>();
 	}
 
-	public void CreateEventClip(int iTrackID, AnimAction iAction, EventType iType, AnimationParameters iParams = null)
+	public void CreateEventClip(int iTrackID, AnimAction iAction, EventType iType, object iParams = null)
 	{
 		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, iType);
 		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
@@ -46,7 +46,7 @@ public sealed class TimelineData
 		ActionAsset lActionAsset = lTimelineClip.asset as ActionAsset;
 		foreach (InteractionStep lStep in iSteps) {
 			lActionAsset.Actions.Add(lStep.action);
-			lActionAsset.Parameters.Add((AnimationParameters)lStep.tag);
+			lActionAsset.Parameters.Add(lStep.tag);
 			lActionAsset.Track = lTrack;
 			lTimelineClip.duration = 0.1D;
 		}

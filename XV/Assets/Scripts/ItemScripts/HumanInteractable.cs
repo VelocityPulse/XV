@@ -76,7 +76,7 @@ public class HumanInteractable : AInteraction
 		AEntity.DisableHideNoInteractable();
 	}
 
-	private bool TakeObject(AnimationInfo iAnimInfo)
+	private bool TakeObject(object iAnimInfo)
 	{
 
 		if (mMovableEntity.Move(

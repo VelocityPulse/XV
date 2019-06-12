@@ -104,7 +104,7 @@ public sealed class ChariotPlateForme : AInteraction
     // Attention aux dependances ... quitter proprement si destroy de la target ...
     // penser au virtual / override pour la visibilite et comprendre direct qu'il y a du code dans l'Abstraite
     // find suffix / prefix pour que ca soit clair que c'est appeler par une coroutine dans la timeline
-    private bool TakeAnObject(AnimationInfo iAnimInfo)
+    private bool TakeAnObject(object iAnimInfo)
     {
         Debug.Log("---- TAKE AN OBJECT ANIMATIONS ----");
         return true;
@@ -115,7 +115,7 @@ public sealed class ChariotPlateForme : AInteraction
         Debug.LogWarning("Click on DropObject from " + name);
     }
 
-    private bool DropAnObject(AnimationInfo iAnimInfo)
+    private bool DropAnObject(object iAnimInfo)
     {
         Debug.Log("---- DROP AN OBJECT ANIMATIONS ----");
         return true;

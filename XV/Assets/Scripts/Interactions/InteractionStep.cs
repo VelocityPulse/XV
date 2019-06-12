@@ -6,5 +6,5 @@ using UnityEngine;
 public class InteractionStep
 {
 	public object tag;
-	public Predicate<AnimationInfo> action;
+	public Predicate<object> action;
 }

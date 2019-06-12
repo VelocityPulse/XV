@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
-using AnimAction = System.Predicate<AnimationInfo>;
+using AnimAction = System.Predicate<object>;
 
 public class ActionAsset : PlayableAsset
 {
