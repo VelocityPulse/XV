@@ -163,6 +163,40 @@ public class HumanEntity : AEntity
 		mHumanInteractable.ResetWorldState();
 	}
 
+	public override void SaveEntity()
+	{
+		if (mHDS != null) {
+			Vector3 lPosition = new Vector3(
+				transform.position.x,
+				transform.position.y,
+				transform.position.z
+			);
+			mHDS.Position = lPosition;
+			mHDS.Rotation = transform.rotation.eulerAngles;
+			mHDS.Scale = transform.localScale;
+			mDataScene.Serialize();
+		}
+	}
+
+	public override void RemoveEntity()
+	{
+		if (mHDS != null && mDataScene.Human != null) {
+			mDataScene.SetHDS(null);
+			mDataScene.Serialize();
+		}
+	}
+
+	public override void SetObjectDataScene(AObjectDataScene iODS)
+	{
+		base.SetObjectDataScene(iODS);
+
+		mHDS = (HumanDataScene)iODS;
+		if (mDataScene.Human != mHDS) {
+			mDataScene.SetHDS(mHDS);
+			mDataScene.Serialize();
+		}
+	}
+
 	private IEnumerator PostPoppingAsync()
 	{
 		yield return new WaitForEndOfFrame();
@@ -178,42 +212,6 @@ public class HumanEntity : AEntity
 		yield return new WaitForEndOfFrame();
 
 		mMovableEntity.AngularSpeed = 10000F;
-	}
-
-	private HumanEntity SaveEntity()
-	{
-		if (mHDS != null) {
-			Vector3 lPosition = new Vector3(
-				transform.position.x,
-				transform.position.y,
-				transform.position.z
-			);
-			mHDS.Position = lPosition;
-			mHDS.Rotation = transform.rotation.eulerAngles;
-			mHDS.Scale = transform.localScale;
-			mDataScene.Serialize();
-		}
-		return this;
-	}
-
-	public HumanEntity RemoveEntity()
-	{
-		if (mHDS != null && mDataScene.Human != null) {
-			mDataScene.SetHDS(null);
-			mDataScene.Serialize();
-		}
-		return this;
-	}
-
-	public override void SetObjectDataScene(AObjectDataScene iODS)
-	{
-		base.SetObjectDataScene(iODS);
-
-		mHDS = (HumanDataScene)iODS;
-		if (mDataScene.Human != mHDS) {
-			mDataScene.SetHDS(mHDS);
-			mDataScene.Serialize();
-		}
 	}
 
 	// ------------------- MOUSE EVENTS

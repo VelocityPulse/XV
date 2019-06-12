@@ -48,6 +48,10 @@ public abstract class AEntity : MonoBehaviour
 
 	public abstract void Dispose();
 
+	public abstract void RemoveEntity();
+
+	public abstract void SaveEntity();
+
 	protected virtual void Awake()
 	{
 		PostPoppingAction = new List<Action>();

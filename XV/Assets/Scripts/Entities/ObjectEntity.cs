@@ -185,6 +185,28 @@ public class ObjectEntity : AEntity
 			StartCoroutine(DestroyObjectsTimedAsync());
 	}
 
+	public override void SaveEntity()
+	{
+		if (mODS != null) {
+			mODS.Position = transform.position; ;
+			mODS.Rotation = transform.rotation.eulerAngles;
+			mODS.Scale = transform.localScale;
+			mDataScene.Serialize();
+		}
+	}
+
+	public override void RemoveEntity()
+	{
+		if (mODS != null) {
+			if (mDataScene.IsDataObjectsContains(mODS)) {
+				mDataScene.RemoveODS(mODS);
+				mDataScene.Serialize();
+			} else {
+				Debug.LogWarning("ODS not contained in DO");
+			}
+		}
+	}
+
 	private IEnumerator DestroyObjectsTimedAsync()
 	{
 		mBusy = true;
@@ -261,30 +283,6 @@ public class ObjectEntity : AEntity
 	public ObjectEntity SetSize(Vector3 iVector)
 	{
 		mSize = iVector;
-		return this;
-	}
-
-	public ObjectEntity SaveEntity()
-	{
-		if (mODS != null) {
-			mODS.Position = transform.position; ;
-			mODS.Rotation = transform.rotation.eulerAngles;
-			mODS.Scale = transform.localScale;
-			mDataScene.Serialize();
-		}
-		return this;
-	}
-
-	public ObjectEntity RemoveEntity()
-	{
-		if (mODS != null) {
-			if (mDataScene.IsDataObjectsContains(mODS)) {
-				mDataScene.RemoveODS(mODS);
-				mDataScene.Serialize();
-			} else {
-				Debug.LogWarning("ODS not contained in DO");
-			}
-		}
 		return this;
 	}
 

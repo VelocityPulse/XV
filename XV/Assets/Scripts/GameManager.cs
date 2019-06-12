@@ -183,13 +183,14 @@ public class GameManager : MonoBehaviour
 		// Setting ObjectEntity
 		ObjectEntity lObjectEntity = oGameObject.AddComponent<ObjectEntity>()
 				   .StartAnimation(iAnimatedPopping)
-				   .SaveEntity()
 				   .SetSize(lBounds.size);
 
 		// Setting AEntity
 		lObjectEntity.InitDataScene(mCurrentDataScene);
 		lObjectEntity.SetObjectDataScene(iODS);
 		lObjectEntity.SetUIBubbleInfo(lUIBubbleInfo.GetComponent<UIBubbleInfo>());
+		lObjectEntity.SaveEntity();
+
 
 		// If this item can move - Add MovableEntity script
 		if (lParameters != null && lParameters.Movable) {

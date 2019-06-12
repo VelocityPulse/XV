@@ -54,6 +54,7 @@ public class HumanInteractable : AInteraction
 	{
 		if (mObjectHeld != null) {
 			mObjectHeld.transform.parent = null;
+			mObjectHeld.RemoveEntity();
 			mObjectHeld.Dispose();
 		}
 	}
