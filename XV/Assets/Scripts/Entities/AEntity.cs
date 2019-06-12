@@ -128,6 +128,16 @@ public abstract class AEntity : MonoBehaviour
 		return this;
 	}
 
+    /// <summary>
+    /// The Speed input given by the user.
+    /// If the user give an invalid input, or if an error occured a default value is used.
+    /// Default Value: 1
+    /// </summary>
+    public float GetSpeedInput()
+    {
+        return mUIBubbleInfo.Speed;
+    }
+
 	public Button CreateBubbleInfoButton(UIBubbleInfoButton iButtonInfo)
 	{
 		if (mUIBubbleInfo == null) {

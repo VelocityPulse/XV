@@ -271,7 +271,7 @@ public sealed class MovableEntity : MonoBehaviour
 			// Add the code that do the animation in the Action timeline
 			TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 				return Move(lHitPoint, iInfo);
-			}, new AnimationParameters());
+			}, new AnimationParameters() { Speed = mEntity.GetSpeedInput() });
 
 		}
 	}

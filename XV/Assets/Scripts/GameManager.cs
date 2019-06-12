@@ -193,10 +193,13 @@ public class GameManager : MonoBehaviour
 
 
 		// If this item can move - Add MovableEntity script
-		if (lParameters != null && lParameters.Movable) {
-			oGameObject.AddComponent<MovableEntity>()
-					   .SetEntity(lObjectEntity);
-		}
+		if (lParameters != null) {
+            if (lParameters.Movable) {
+                oGameObject.AddComponent<MovableEntity>()
+                           .SetEntity(lObjectEntity);
+            } else
+                lUIBubbleInfo.GetComponent<UIBubbleInfo>().HideSpeedInput();
+        }
 
 		Utils.SetLayerRecursively(oGameObject, LayerMask.NameToLayer("dropable"));
 
