@@ -280,6 +280,7 @@ public class ObjectEntity : AEntity
 	{
 		if (mODS != null) {
 			if (mDataScene.IsDataObjectsContains(mODS)) {
+				mDataScene.RemoveODS(mODS);
 				mDataScene.Serialize();
 			} else {
 				Debug.LogWarning("ODS not contained in DO");
