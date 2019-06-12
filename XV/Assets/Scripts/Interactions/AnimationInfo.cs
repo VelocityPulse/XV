@@ -16,7 +16,13 @@ public class AnimationInfo
 	/// </summary>
 	public AnimationParameters Parameters
 	{
-		get { return (AnimationParameters)tag; }
+		get
+		{
+			if (tag is AnimationParameters) {
+				return tag as AnimationParameters;
+			}
+			return null;
+		}
 	}
 
 	public object tag;
