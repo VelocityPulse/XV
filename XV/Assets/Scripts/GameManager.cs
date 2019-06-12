@@ -260,9 +260,7 @@ public class GameManager : MonoBehaviour
 		TimelineManager.Instance.Stop();
 		AEntity.ForEachEntities((iObj) => iObj.SaveEntity());
 
-		StartCoroutine(Utils.WaitForAsync(5, () => StartCoroutine(LoadSceneAsync(iDataScene))));
-
-		//StartCoroutine(LoadSceneAsync(iDataScene));
+		StartCoroutine(LoadSceneAsync(iDataScene));
 	}
 
 	private IEnumerator LoadSceneAsync(DataScene iDataScene)
