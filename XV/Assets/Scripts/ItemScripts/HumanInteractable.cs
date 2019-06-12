@@ -12,7 +12,9 @@ public class HumanInteractable : AInteraction
 
 	private Animator mAnimator;
 
-	private Vector3 mItemPosition;
+	private Vector3 mItemTakenPosition;
+
+	private Vector3 mItemPutPosition;
 
 	private AEntity mObjectHeld;
 
@@ -27,7 +29,8 @@ public class HumanInteractable : AInteraction
 		mMovableEntity = GetComponent<MovableEntity>();
 		mAnimator = GetComponent<Animator>();
 
-		mItemPosition = new Vector3(0F, 0.813F, 0.308F);
+		mItemTakenPosition = new Vector3(0F, 0.813F, 0.308F);
+		mItemPutPosition = new Vector3(0F, 0.039F, 0.7F);
 	}
 
 	protected override void PostPoppingEntity()
@@ -39,7 +42,8 @@ public class HumanInteractable : AInteraction
 			Name = "Take",
 			Help = "Take an object",
 			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.SMALL_ITEM, EntityParameters.EntityType.MEDIUM_ITEM },
-			AnimationImpl = TakeObjectMoveToTarget,
+			AnimationImpl = TakeObjectMoveToTargetCallback,
+			AInteraction = this,
 			Button = new UIBubbleInfoButton() {
 				Text = "TakeObject",
 				Tag = name + "_TAKE_OBJECT",
@@ -56,7 +60,7 @@ public class HumanInteractable : AInteraction
 		mTakeOffBubbleButton = new UIBubbleInfoButton() {
 			Text = "Take off",
 			Tag = "TakeOffButton",
-			ClickAction = TakeOffObject
+			ClickAction = OnClickTakeOffObject
 		};
 	}
 
@@ -73,7 +77,7 @@ public class HumanInteractable : AInteraction
 
 	private void OnClickTakeObject(AEntity iEntity)
 	{
-		StartCoroutine(InteractionWaitForTargetAsync("TakeObject"));
+		StartCoroutine(InteractionWaitForTargetAsync("Take"));
 	}
 
 	private IEnumerator InteractionWaitForTargetAsync(string iInteractionName)
@@ -107,12 +111,17 @@ public class HumanInteractable : AInteraction
 
 						lInteractionSteps.Add(new InteractionStep {
 							tag = lAnimationParameters,
-							action = TakeObjectMoveToTarget
+							action = TakeObjectMoveToTargetCallback
 						});
 
 						lInteractionSteps.Add(new InteractionStep {
 							tag = lAnimationParameters,
-							action = TakeObjectAnimationTake
+							action = TakeObjectAnimationTakeCallback
+						});
+
+						lInteractionSteps.Add(new InteractionStep {
+							tag = lAnimationParameters,
+							action = TakeObjectWaitAnimationEndCallback
 						});
 
 						TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
@@ -129,7 +138,7 @@ public class HumanInteractable : AInteraction
 		AEntity.DisableHideNoInteractable();
 	}
 
-	private bool TakeObjectMoveToTarget(object iParams)
+	private bool TakeObjectMoveToTargetCallback(object iParams)
 	{
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
@@ -145,7 +154,7 @@ public class HumanInteractable : AInteraction
 		return true;
 	}
 
-	private bool TakeObjectAnimationTake(object iParams)
+	private bool TakeObjectAnimationTakeCallback(object iParams)
 	{
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
@@ -157,16 +166,17 @@ public class HumanInteractable : AInteraction
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("PickUp")) {
 			mAnimator.SetBool("IdleWithBox", true);
-			mAnimator.ResetTrigger("PickUp");
 		}
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("IdleWithBox")) {
+			mAnimator.ResetTrigger("PickUp");
+
 			mObjectHeld = lTarget.GetComponent<AEntity>();
 			mObjectHeld.Selected = false;
 			mObjectHeld.NavMeshObjstacleEnabled = false;
 
 			lTarget.transform.parent = gameObject.transform;
-			lTarget.transform.localPosition = mItemPosition;
+			lTarget.transform.localPosition = mItemTakenPosition;
 			OnHold();
 			return true;
 		}
@@ -174,13 +184,41 @@ public class HumanInteractable : AInteraction
 		return false;
 	}
 
+	private bool TakeObjectWaitAnimationEndCallback(object iParams)
+	{
+		if (mAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
+			return true;
+		return false;
+	}
+
 	#endregion TakeObject
 
 	#region TakeOffObject
 
-	private void TakeOffObject(AEntity iEntity)
+	private void OnClickTakeOffObject(AEntity iEntity)
 	{
+		AnimationParameters lAnimationParameters = new AnimationParameters() {
+			TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+			AnimationTarget = mObjectHeld
+		};
 
+		List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+
+		lInteractionSteps.Add(new InteractionStep {
+			tag = lAnimationParameters,
+			action = TakeOffObjectCallback
+		});
+
+		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+	}
+
+	private bool TakeOffObjectCallback(object iParams)
+	{
+		ResetAnimator();
+		mObjectHeld.transform.localPosition = mItemPutPosition;
+		mObjectHeld.transform.parent = null;
+		OnUnhold();
+		return true;
 	}
 
 	#endregion TakeOffObject
@@ -190,12 +228,17 @@ public class HumanInteractable : AInteraction
 		mTakeObjectInteraction.Enabled = false;
 		if (!mEntity.ContainsBubbleInfoButton(mTakeOffBubbleButton.Tag))
 			mEntity.CreateBubbleInfoButton(mTakeOffBubbleButton);
-		// continue here 
 	}
 
 	private void OnUnhold()
 	{
+		mEntity.DestroyBubbleInfoButton(mTakeOffBubbleButton);
 		mTakeObjectInteraction.Enabled = true;
+		if (mObjectHeld != null) {
+			mObjectHeld.NavMeshObjstacleEnabled = true;
+			mObjectHeld = null;
+		} else
+			Debug.LogWarning("[HUMAN INTERACTABLE] Object Held shouldn't be null in OnUnhold");
 	}
 
 	private void OnHumanMove(AEntity iEntity)
@@ -205,22 +248,18 @@ public class HumanInteractable : AInteraction
 
 	public void ResetWorldState()
 	{
-		OnUnhold();
-		mObjectHeld.NavMeshObjstacleEnabled = true;
-		mObjectHeld = null;
+		if (mObjectHeld != null)
+			OnUnhold();
+		ResetAnimator();
+	}
+
+	private void ResetAnimator()
+	{
 		mAnimator.SetFloat("Forward", 0F);
 		mAnimator.ResetTrigger("PickUp");
 		mAnimator.SetBool("WalkingWithBox", false);
 		mAnimator.SetBool("IdleWithBox", false);
 		mAnimator.SetBool("Pushing", false);
-	}
-
-	private void OnEndMovement()
-	{
-		if (mObjectHeld == null)
-			mAnimator.SetFloat("Forward", 0F);
-		else
-			mAnimator.SetBool("WalkingWithBox", true);
 	}
 
 	private void OnStartMovement()
@@ -230,4 +269,13 @@ public class HumanInteractable : AInteraction
 		else
 			mAnimator.SetBool("WalkingWithBox", true);
 	}
+
+	private void OnEndMovement()
+	{
+		if (mObjectHeld == null)
+			mAnimator.SetFloat("Forward", 0F);
+		else
+			mAnimator.SetBool("WalkingWithBox", false);
+	}
+
 }
