@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CapsuleCollider))]
 [RequireComponent(typeof(MovableEntity))]
+[RequireComponent(typeof(HumanInteractable))]
 public class HumanEntity : AEntity
 {
 	public static HumanEntity Instance { get; private set; }
@@ -18,6 +19,8 @@ public class HumanEntity : AEntity
 	private MouseHandler HumanBodyMouseHandler;
 
 	private MovableEntity mMovableEntity;
+
+	private HumanInteractable mHumanInteractable;
 
 	private Animator mAnimator;
 
@@ -66,6 +69,7 @@ public class HumanEntity : AEntity
 
 		mMovableEntity = GetComponent<MovableEntity>();
 		mAnimator = GetComponent<Animator>();
+		mHumanInteractable = GetComponent<HumanInteractable>();
 
 		mCenter = Vector3.zero;
 
@@ -90,20 +94,7 @@ public class HumanEntity : AEntity
 		});
 
 		mMovableEntity.SetEntity(this);
-		mMovableEntity.OnStartMovement.Add(OnStartMovement);
-		mMovableEntity.OnEndMovement.Add(OnEndMovement);
-
 		StartCoroutine(PostPoppingAsync());
-	}
-
-	private void OnEndMovement()
-	{
-		mAnimator.SetFloat("Forward", 0F);
-	}
-
-	private void OnStartMovement()
-	{
-		mAnimator.SetFloat("Forward", 0.5F);
 	}
 
 	private void Update()
@@ -173,7 +164,7 @@ public class HumanEntity : AEntity
 	{
 		base.ResetWorldState();
 
-		mAnimator.SetFloat("Forward", 0F);
+		mHumanInteractable.ResetWorldState();
 	}
 
 	private IEnumerator PostPoppingAsync()

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
+using UnityEngine.UI;
 
 [RequireComponent(typeof(MovableEntity))]
 [RequireComponent(typeof(Animator))]
@@ -13,6 +13,8 @@ public class HumanInteractable : AInteraction
 	private Animator mAnimator;
 
 	private Vector3 mItemPosition;
+
+	private bool mObjectHeld;
 
 	protected override void Start()
 	{
@@ -26,6 +28,9 @@ public class HumanInteractable : AInteraction
 
 	protected override void PostPoppingEntity()
 	{
+		mMovableEntity.OnStartMovement.Add(OnStartMovement);
+		mMovableEntity.OnEndMovement.Add(OnEndMovement);
+
 		CreateInteraction(new ItemInteraction() {
 			Name = "TakeObject",
 			Help = "Take an object",
@@ -37,7 +42,15 @@ public class HumanInteractable : AInteraction
 				ClickAction = OnClickTakeObject
 			}
 		});
+
+		Button lButton = mEntity.CreateBubbleInfoButton(new UIBubbleInfoButton() {
+			Text = "Move",
+			ClickAction = OnHumanMove
+		});
+		mMovableEntity.SetMoveButton(lButton);
 	}
+
+	#region TakeObject
 
 	private void OnClickTakeObject(AEntity iEntity)
 	{
@@ -113,8 +126,10 @@ public class HumanInteractable : AInteraction
 	{
 		mAnimator.SetTrigger("PickUp");
 
-		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("PickUp"))
+		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("PickUp")) {
 			mAnimator.SetBool("IdleWithBox", true);
+			mAnimator.ResetTrigger("PickUp");
+		}
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("IdleWithBox")) {
 			AnimationParameters lParams = (AnimationParameters)iParams;
@@ -122,13 +137,43 @@ public class HumanInteractable : AInteraction
 
 			lTarget.transform.parent = gameObject.transform;
 			lTarget.transform.localPosition = mItemPosition;
+
 			return true;
 		}
 
 		return false;
 	}
 
+	#endregion TakeObject
 
+	private void OnHumanMove(AEntity iEntity)
+	{
+		mMovableEntity.OnMoveClick();
+	}
 
+	public void ResetWorldState()
+	{
+		mAnimator.SetFloat("Forward", 0F);
+		mAnimator.ResetTrigger("PickUp");
+		mAnimator.SetBool("WalkingWithBox", false);
+		mAnimator.SetBool("IdleWithBox", false);
+		mAnimator.SetBool("Pushing", false);
+	}
+
+	private void OnEndMovement()
+	{
+		if (!mObjectHeld)
+			mAnimator.SetFloat("Forward", 0F);
+		else
+			mAnimator.SetBool("WalkingWithBox", true);
+	}
+
+	private void OnStartMovement()
+	{
+		if (!mObjectHeld)
+			mAnimator.SetFloat("Forward", 0.8F);
+		else
+			mAnimator.SetBool("WalkingWithBox", true);
+	}
 
 }

@@ -36,7 +36,7 @@ public sealed class MovableEntity : MonoBehaviour
 
 	private const float ROT_SPEED = 500F;
 
-	private AEntity mObjectEntity;
+	private AEntity mEntity;
 
 	private Image mMoveButtonColor;
 
@@ -108,24 +108,27 @@ public sealed class MovableEntity : MonoBehaviour
 
 	public MovableEntity SetEntity(AEntity iObjectEntity)
 	{
-		mObjectEntity = iObjectEntity;
+		mEntity = iObjectEntity;
 
 		// Add all this code to the PostPopping callback of ObjectEntity
-		mObjectEntity.PostPoppingAction.Add(() => {
+		mEntity.PostPoppingAction.Add(() => {
 
 			// Execute this at the next frame
 			StartCoroutine(Utils.WaitNextFrameAsync((iObj) => {
-
-				// Add Move button & Keep track of the button image to edit color
 				Button lButton;
-				lButton = iObj.CreateBubbleInfoButton(new UIBubbleInfoButton {
-					Text = "Move",
-					ClickAction = (iObject) => {
-						Debug.LogWarning("Deplacer: " + iObject.name + " has been clicked");
-						OnMoveClick();
-					}
-				});
-				mMoveButtonColor = lButton.GetComponent<Image>();
+
+				if (mEntity.EntityParameters.Type != EntityParameters.EntityType.HUMAN) {
+
+					// Add Move button & Keep track of the button image to edit color
+					lButton = iObj.CreateBubbleInfoButton(new UIBubbleInfoButton {
+						Text = "Move",
+						ClickAction = (iObject) => {
+							//Debug.LogWarning("Deplacer: " + iObject.name + " has been clicked");
+							OnMoveClick();
+						}
+					});
+					mMoveButtonColor = lButton.GetComponent<Image>();
+				}
 
 				// Add Rotate Button & Keep track of the button image to edit color
 				lButton = iObj.CreateBubbleInfoButton(new UIBubbleInfoButton {
@@ -160,7 +163,7 @@ public sealed class MovableEntity : MonoBehaviour
 					if ((mEntityObstacle = GetComponentInChildren<NavMeshObstacle>()) == null)
 						Debug.LogError("NavMeshObstacle is null");
 				}
-			}, mObjectEntity));
+			}, mEntity));
 		});
 		return this;
 	}
@@ -245,6 +248,12 @@ public sealed class MovableEntity : MonoBehaviour
 			if (Input.GetMouseButtonDown(0))
 				ResetMode();
 		}
+	}
+
+	public void SetMoveButton(Button iButton)
+	{
+		if (iButton != null)
+			mMoveButtonColor = iButton.GetComponent<Image>();
 	}
 
 	private void AddAndExecuteMove()
@@ -368,12 +377,13 @@ public sealed class MovableEntity : MonoBehaviour
 
 	//  Deplacement animation for all movable object
 	//  UIBubleInfo `Move` is bind with this func.
-	private bool OnMoveClick()
+	public bool OnMoveClick()
 	{
 		if (mEditionMode == EditionMode.NONE) {
 			// Enter in move edition mode
 			mEditionMode = EditionMode.MOVE;
-			mMoveButtonColor.color = Color.red;
+			if (mMoveButtonColor != null)
+				mMoveButtonColor.color = Color.red;
 			mUITarget = Instantiate(mUITargetTemplate);
 
 			// Get the renderer of the UI object
@@ -397,7 +407,7 @@ public sealed class MovableEntity : MonoBehaviour
 			mRotateButtonColor.color = Color.red;
 
 			// Create a Ghost clone to preview rotation
-			mGhostEntity = mObjectEntity.CreateGhostObject();
+			mGhostEntity = mEntity.CreateGhostObject();
 
 			// Cancel rotation if error
 			if (mGhostEntity == null) {
@@ -418,7 +428,8 @@ public sealed class MovableEntity : MonoBehaviour
 	private void ResetMode()
 	{
 		// Reset Button & Mode
-		mMoveButtonColor.color = Color.white;
+		if (mMoveButtonColor != null)
+			mMoveButtonColor.color = Color.white;
 		mRotateButtonColor.color = Color.white;
 		mEditionMode = EditionMode.NONE;
 		mAngle = 0F;

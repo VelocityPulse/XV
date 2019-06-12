@@ -115,8 +115,7 @@ public class ObjectEntity : AEntity
 
 	public override void ResetWorldState()
 	{
-		transform.position = mODS.Position;
-		transform.eulerAngles = mODS.Rotation;
+		base.ResetWorldState();
 	}
 
 	// Place all the code you want to execute only after all the mesh enable animations

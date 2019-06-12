@@ -30,6 +30,8 @@ public abstract class AEntity : MonoBehaviour
 
 	public static int InstantiatedEntity { get { return AllEntities.Length; } }
 
+	public EntityParameters EntityParameters { get { return mEntityParameters; }}
+
 	protected UIBubbleInfo mUIBubbleInfo;
 
 	protected EntityParameters mEntityParameters;
@@ -221,7 +223,6 @@ public abstract class AEntity : MonoBehaviour
 		mODS.IsColored = true;
 		mODS.OriginalColorsMaterial = new List<Color>(mOriginalColorsMaterial);
 		mDataScene.Serialize();
-		//Debug.Log("Queue size : " + mOriginalColorsMaterial.Count);
 	}
 
 	// This function Instantiate associated Model & make it child of OffsetRotation
@@ -278,6 +279,8 @@ public abstract class AEntity : MonoBehaviour
 
 	public virtual void ResetWorldState()
 	{
+		transform.parent = null;
+		transform.localPosition = Vector3.zero;
 		transform.position = mODS.Position;
 		transform.transform.eulerAngles = mODS.Rotation;
 	}
