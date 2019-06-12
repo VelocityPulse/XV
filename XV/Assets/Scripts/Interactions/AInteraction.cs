@@ -69,12 +69,33 @@ public abstract class AInteraction : MonoBehaviour
 		/// </summary>
 		public Action OnHide;
 
+		public AInteraction AInteraction;
+
 		private bool mIsDisplayed;
+
+		private bool mEnabled;
 
 		/// <summary>
 		/// Return true if this Interaction UI is displayed.
 		/// </summary>
 		public bool IsDisplayed { get { return mIsDisplayed; } }
+
+		/// <summary>
+		/// Allow to force disable an interaction. This will hide a button even if it can interacts with something.
+		/// </summary>
+		public bool Enabled
+		{
+			get { return mEnabled; }
+
+			set
+			{
+				mEnabled = value;
+				if (value == false)
+					HideUI();
+				else
+					AInteraction.UpdateAvailableInteraction();
+			}
+		}
 
 		private AEntity mBindedObjectEntity;
 
@@ -85,6 +106,7 @@ public abstract class AInteraction : MonoBehaviour
 		/// </summary>
 		public ItemInteraction()
 		{
+			mEnabled = true;
 			mIsDisplayed = false;
 			mBindedObjectEntity = null;
 			OnDisplay = null;
@@ -95,7 +117,7 @@ public abstract class AInteraction : MonoBehaviour
 		internal void DisplayUI()
 		{
 			// Check the Button is Hided
-			if (!mIsDisplayed) {
+			if (!mIsDisplayed && mEnabled) {
 				mIsDisplayed = true;
 				if (mBindedObjectEntity != null) {
 					mBindedObjectEntity.CreateBubbleInfoButton(Button);
@@ -289,7 +311,7 @@ public abstract class AInteraction : MonoBehaviour
 	/// according to Subscriptions field of AnimationParameters.
 	/// </summary>
 	/// <param name="iInteraction"></param>
-	protected void CreateInteraction(ItemInteraction iInteraction)
+	protected ItemInteraction CreateInteraction(ItemInteraction iInteraction)
 	{
 		if (iInteraction != null) {
 
@@ -297,7 +319,7 @@ public abstract class AInteraction : MonoBehaviour
 			if (string.IsNullOrEmpty(iInteraction.Name) || iInteraction.InteractWith == null
 				|| iInteraction.InteractWith.Length == 0 || iInteraction.AnimationImpl == null) {
 				Debug.LogError("[INTERACTION] - AnimationParameters not correctly set");
-				return;
+				return null;
 			}
 
 			// Update Callback for EntityType Counter
@@ -314,6 +336,7 @@ public abstract class AInteraction : MonoBehaviour
 			}
 			mItemInteractions.Add(iInteraction);
 		}
+		return iInteraction;
 	}
 }
 

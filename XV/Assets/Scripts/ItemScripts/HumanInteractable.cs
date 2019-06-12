@@ -16,6 +16,10 @@ public class HumanInteractable : AInteraction
 
 	private AEntity mObjectHeld;
 
+	private ItemInteraction mTakeObjectInteraction;
+
+	private UIBubbleInfoButton mTakeOffBubbleButton;
+
 	protected override void Start()
 	{
 		base.Start();
@@ -31,8 +35,8 @@ public class HumanInteractable : AInteraction
 		mMovableEntity.OnStartMovement.Add(OnStartMovement);
 		mMovableEntity.OnEndMovement.Add(OnEndMovement);
 
-		CreateInteraction(new ItemInteraction() {
-			Name = "TakeObject",
+		mTakeObjectInteraction = CreateInteraction(new ItemInteraction() {
+			Name = "Take",
 			Help = "Take an object",
 			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.SMALL_ITEM, EntityParameters.EntityType.MEDIUM_ITEM },
 			AnimationImpl = TakeObjectMoveToTarget,
@@ -48,6 +52,12 @@ public class HumanInteractable : AInteraction
 			ClickAction = OnHumanMove
 		});
 		mMovableEntity.SetMoveButton(lButton);
+
+		mTakeOffBubbleButton = new UIBubbleInfoButton() {
+			Text = "Take off",
+			Tag = "TakeOffButton",
+			ClickAction = TakeOffObject
+		};
 	}
 
 	private void OnDestroy()
@@ -105,7 +115,6 @@ public class HumanInteractable : AInteraction
 							action = TakeObjectAnimationTake
 						});
 
-
 						TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
 
 						return false;
@@ -158,6 +167,7 @@ public class HumanInteractable : AInteraction
 
 			lTarget.transform.parent = gameObject.transform;
 			lTarget.transform.localPosition = mItemPosition;
+			OnHold();
 			return true;
 		}
 
@@ -166,6 +176,28 @@ public class HumanInteractable : AInteraction
 
 	#endregion TakeObject
 
+	#region TakeOffObject
+
+	private void TakeOffObject(AEntity iEntity)
+	{
+
+	}
+
+	#endregion TakeOffObject
+
+	private void OnHold()
+	{
+		mTakeObjectInteraction.Enabled = false;
+		if (!mEntity.ContainsBubbleInfoButton(mTakeOffBubbleButton.Tag))
+			mEntity.CreateBubbleInfoButton(mTakeOffBubbleButton);
+		// continue here 
+	}
+
+	private void OnUnhold()
+	{
+		mTakeObjectInteraction.Enabled = true;
+	}
+
 	private void OnHumanMove(AEntity iEntity)
 	{
 		mMovableEntity.OnMoveClick();
@@ -173,6 +205,7 @@ public class HumanInteractable : AInteraction
 
 	public void ResetWorldState()
 	{
+		OnUnhold();
 		mObjectHeld.NavMeshObjstacleEnabled = true;
 		mObjectHeld = null;
 		mAnimator.SetFloat("Forward", 0F);

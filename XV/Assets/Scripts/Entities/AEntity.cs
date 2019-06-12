@@ -137,6 +137,11 @@ public abstract class AEntity : MonoBehaviour
 		return mUIBubbleInfo.CreateButton(iButtonInfo);
 	}
 
+	public bool ContainsBubbleInfoButton(string iTag)
+	{
+		return mUIBubbleInfo.ContainsButton(iTag);
+	}
+
 	public void DestroyBubbleInfoButton(UIBubbleInfoButton iButtonInfo)
 	{
 		if (mUIBubbleInfo != null)
