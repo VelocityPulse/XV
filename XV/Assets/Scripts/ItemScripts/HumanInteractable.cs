@@ -131,6 +131,8 @@ public class HumanInteractable : AInteraction
 		if (mMovableEntity.Move(lTarget.transform.position, lParams) == false)
 			return false;
 
+		// doesnt work
+		StartCoroutine(Utils.LookAtSlerpY(gameObject, lTarget));
 		return true;
 	}
 
@@ -150,11 +152,12 @@ public class HumanInteractable : AInteraction
 		}
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("IdleWithBox")) {
-			lTarget.transform.parent = gameObject.transform;
-			lTarget.transform.localPosition = mItemPosition;
-
 			mObjectHeld = lTarget.GetComponent<AEntity>();
 			mObjectHeld.Selected = false;
+			mObjectHeld.NavMeshObjstacleEnabled = false;
+
+			lTarget.transform.parent = gameObject.transform;
+			lTarget.transform.localPosition = mItemPosition;
 			return true;
 		}
 
@@ -170,6 +173,7 @@ public class HumanInteractable : AInteraction
 
 	public void ResetWorldState()
 	{
+		mObjectHeld.NavMeshObjstacleEnabled = true;
 		mObjectHeld = null;
 		mAnimator.SetFloat("Forward", 0F);
 		mAnimator.ResetTrigger("PickUp");

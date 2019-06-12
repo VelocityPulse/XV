@@ -167,6 +167,19 @@ public static class Utils
 		return oAssets;
 	}
 
+	public static IEnumerator LookAtSlerpY(GameObject iGameObject, GameObject iTarget, float iDuration = 2F, float iSpeed = 1F)
+	{
+		float mRotationPerformed = 0F;
+
+		while (mRotationPerformed > iDuration) {
+			mRotationPerformed += Time.deltaTime * iSpeed;
+
+			iGameObject.transform.rotation = Quaternion.Slerp(iGameObject.transform.rotation, iTarget.transform.rotation, mRotationPerformed / iDuration);
+			iGameObject.transform.rotation = Quaternion.Euler(new Vector3(0f, iGameObject.transform.eulerAngles.y, 0f));
+			yield return null;
+		}
+	}
+
 	public static IEnumerator FadeToAsync(float iValue, float iTime, CanvasGroup iCanvasGroup, Action iOnEndFade = null)
 	{
 		float lAlpha = iCanvasGroup.alpha;

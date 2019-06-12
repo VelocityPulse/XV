@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public abstract class AEntity : MonoBehaviour
 {
-
 	public abstract bool Selected { get; set; }
 
 	public abstract string Name { get; set; }
@@ -30,11 +30,29 @@ public abstract class AEntity : MonoBehaviour
 
 	public static int InstantiatedEntity { get { return AllEntities.Length; } }
 
-	public EntityParameters EntityParameters { get { return mEntityParameters; }}
+	public EntityParameters EntityParameters { get { return mEntityParameters; } }
+
+	public bool NavMeshObjstacleEnabled
+	{
+		get
+		{
+			if (mNavMeshObstacle != null)
+				return mNavMeshObstacle.enabled;
+			return false;
+		}
+
+		set
+		{
+			if (mNavMeshObstacle != null)
+				mNavMeshObstacle.enabled = value;
+		}
+	}
 
 	protected UIBubbleInfo mUIBubbleInfo;
 
 	protected EntityParameters mEntityParameters;
+
+	protected NavMeshObstacle mNavMeshObstacle;
 
 	protected DataScene mDataScene;
 

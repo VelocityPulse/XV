@@ -151,17 +151,15 @@ public class ObjectEntity : AEntity
 		});
 
 		// Add a Nav Mesh obstacle on each object
-		NavMeshObstacle lObstacle;
 		GameObject lChildMesh = null;
 		if (gameObject.transform.GetChild(0) != null) {
 			lChildMesh = gameObject.transform.GetChild(0).gameObject;
 		}
 
-
-		if ((lObstacle = lChildMesh.AddComponent<NavMeshObstacle>()) != null) {
-			lObstacle.center = new Vector3(0, mSize.y / 2, 0);
-			lObstacle.size = new Vector3(mSize.x + 0.1F, mSize.y, mSize.z + 0.1F);
-			lObstacle.carving = true;
+		if ((mNavMeshObstacle = lChildMesh.AddComponent<NavMeshObstacle>()) != null) {
+			mNavMeshObstacle.center = new Vector3(0, mSize.y / 2, 0);
+			mNavMeshObstacle.size = new Vector3(mSize.x + 0.1F, mSize.y, mSize.z + 0.1F);
+			mNavMeshObstacle.carving = true;
 		}
 
 		mUIBubbleInfo.SetInteractable(false);

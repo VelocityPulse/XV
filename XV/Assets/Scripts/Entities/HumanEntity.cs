@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CapsuleCollider))]
@@ -66,6 +67,7 @@ public class HumanEntity : AEntity
 
 		mMovableEntity = GetComponent<MovableEntity>();
 		mHumanInteractable = GetComponent<HumanInteractable>();
+		mNavMeshObstacle = GetComponentInChildren<NavMeshObstacle>();
 
 		mCenter = Vector3.zero;
 
