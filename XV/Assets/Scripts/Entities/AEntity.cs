@@ -60,7 +60,7 @@ public abstract class AEntity : MonoBehaviour
 		PostPoppingAction.Add(() => {
 			if (mODS.IsColored) {
 				mODS.IsColored = false; // This will be reset to true in the followed SetColored
-				// We set it to false because if IsColored is true, it will not save the default texture
+										// We set it to false because if IsColored is true, it will not save the default texture
 				SetColored(mODS.Color);
 			}
 		});
@@ -164,7 +164,7 @@ public abstract class AEntity : MonoBehaviour
 	{
 		if (!mODS.IsColored)
 			return;
-		
+
 		Utils.BrowseChildRecursively(gameObject, (iObject) => {
 
 			Renderer lR = iObject.GetComponent<Renderer>();
@@ -191,7 +191,7 @@ public abstract class AEntity : MonoBehaviour
 	{
 		if (!mODS.IsColored)
 			mOriginalColorsMaterial.Clear();
-		
+
 		mODS.Color = iColor;
 
 		Utils.BrowseChildRecursively(gameObject, (iObject) => {

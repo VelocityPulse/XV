@@ -6,35 +6,35 @@ public sealed class ChariotPlateForme : AInteraction
 {
 
 
-    protected override void PostPoppingEntity()
-    {
-        // Exemple of an interaction creation
-        CreateInteraction(new ItemInteraction() {
-            Name = "TakeAnObject",
-            Help = "Will carry the next object you click on.",
-            InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.HEAVY_ITEM },
-            AnimationImpl = TakeAnObject,
-            Button = new UIBubbleInfoButton() {
-                Text = "TakeAnObject",
-                Tag = name + "_TAKE_OBJECT",
-                ClickAction = OnClickTakeObject,
-            },
-        });
+	protected override void PostPoppingEntity()
+	{
+		// Exemple of an interaction creation
+		CreateInteraction(new ItemInteraction() {
+			Name = "TakeAnObject",
+			Help = "Will carry the next object you click on.",
+			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.HEAVY_ITEM },
+			AnimationImpl = TakeAnObject,
+			Button = new UIBubbleInfoButton() {
+				Text = "TakeAnObject",
+				Tag = name + "_TAKE_OBJECT",
+				ClickAction = OnClickTakeObject,
+			},
+		});
 
-        CreateInteraction(new ItemInteraction() {
-            Name = "DropAnObject",
-            Help = "Will drop the carried object to the next position you click on.",
-            InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.HEAVY_ITEM },
-            AnimationImpl = DropAnObject,
-            Button = new UIBubbleInfoButton() {
-                Text = "DropObject",
-                Tag = name + "_DROP_OBJECT",
-                ClickAction = OnClickDropObject,
-            },
-        });
-    }
+		CreateInteraction(new ItemInteraction() {
+			Name = "DropAnObject",
+			Help = "Will drop the carried object to the next position you click on.",
+			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.HEAVY_ITEM },
+			AnimationImpl = DropAnObject,
+			Button = new UIBubbleInfoButton() {
+				Text = "DropObject",
+				Tag = name + "_DROP_OBJECT",
+				ClickAction = OnClickDropObject,
+			},
+		});
+	}
 
-    /*
+	/*
     *   Idées & Notes de dev
     * 
     *   1 - click sur un bouton d'animation, run OnClick

@@ -14,9 +14,9 @@ public sealed class DataScene
 
 	public const string RES_PATH = "/Resources/SavedData/";
 
-    public const string DEBUG_NAME = "debug.xml";
+	public const string DEBUG_NAME = "debug.xml";
 
-    public string SceneName { get; set; }
+	public string SceneName { get; set; }
 
 	public HumanDataScene Human { get; set; }
 
@@ -54,10 +54,10 @@ public sealed class DataScene
 
 	public void AddODS(ObjectDataScene iODS)
 	{
-        if (SceneName.ToLower() == DEBUG_NAME)
-            return;
+		if (SceneName.ToLower() == DEBUG_NAME)
+			return;
 
-        foreach (ObjectDataScene lItem in DataObjects) {
+		foreach (ObjectDataScene lItem in DataObjects) {
 
 			if (lItem.GUID == iODS.GUID) {
 				lItem.Name = iODS.Name;

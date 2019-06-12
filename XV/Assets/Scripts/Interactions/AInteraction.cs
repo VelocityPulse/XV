@@ -15,7 +15,7 @@ public class AnimationParameters
 	/// <summary>
 	/// Animation's speed
 	/// </summary>
-	public float Speed = 1F; 
+	public float Speed = 1F;
 
 	/// <summary>
 	/// Object use as target for an Animation.

@@ -27,7 +27,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			// get the third person character ( this should never be null due to require component )
 			m_Character = GetComponent<ThirdPersonCharacter>();
 		}
-		
+
 		private void Update()
 		{
 			if (!m_Jump) {
