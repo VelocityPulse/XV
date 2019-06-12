@@ -17,7 +17,7 @@ namespace RockVR.Common
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.UseShellExecute = false;
                 process.Start();
-                UnityEngine.Debug.Log(process.StandardOutput.ReadToEnd());
+                //UnityEngine.Debug.Log(process.StandardOutput.ReadToEnd());
                 process.WaitForExit();
                 process.Close();
             }

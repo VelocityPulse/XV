@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CapsuleCollider))]
 [RequireComponent(typeof(MovableEntity))]
 [RequireComponent(typeof(HumanInteractable))]
@@ -21,8 +20,6 @@ public class HumanEntity : AEntity
 	private MovableEntity mMovableEntity;
 
 	private HumanInteractable mHumanInteractable;
-
-	private Animator mAnimator;
 
 	private HumanDataScene mHDS;
 	private bool mSelected;
@@ -68,7 +65,6 @@ public class HumanEntity : AEntity
 		base.Start();
 
 		mMovableEntity = GetComponent<MovableEntity>();
-		mAnimator = GetComponent<Animator>();
 		mHumanInteractable = GetComponent<HumanInteractable>();
 
 		mCenter = Vector3.zero;

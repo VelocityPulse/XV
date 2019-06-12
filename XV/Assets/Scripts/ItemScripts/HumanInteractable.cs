@@ -14,7 +14,7 @@ public class HumanInteractable : AInteraction
 
 	private Vector3 mItemPosition;
 
-	private bool mObjectHeld;
+	private AEntity mObjectHeld;
 
 	protected override void Start()
 	{
@@ -48,6 +48,14 @@ public class HumanInteractable : AInteraction
 			ClickAction = OnHumanMove
 		});
 		mMovableEntity.SetMoveButton(lButton);
+	}
+
+	private void OnDestroy()
+	{
+		if (mObjectHeld != null) {
+			mObjectHeld.transform.parent = null;
+			mObjectHeld.Dispose();
+		}
 	}
 
 	#region TakeObject
@@ -116,6 +124,9 @@ public class HumanInteractable : AInteraction
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
+		if (lTarget == null || mObjectHeld != null)
+			return true;
+
 		if (mMovableEntity.Move(lTarget.transform.position, lParams) == false)
 			return false;
 
@@ -124,6 +135,12 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObjectAnimationTake(object iParams)
 	{
+		AnimationParameters lParams = (AnimationParameters)iParams;
+		GameObject lTarget = (GameObject)lParams.AnimationTarget;
+
+		if (lTarget == null || mObjectHeld != null)
+			return true;
+
 		mAnimator.SetTrigger("PickUp");
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("PickUp")) {
@@ -132,12 +149,11 @@ public class HumanInteractable : AInteraction
 		}
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("IdleWithBox")) {
-			AnimationParameters lParams = (AnimationParameters)iParams;
-			GameObject lTarget = (GameObject)lParams.AnimationTarget;
-
 			lTarget.transform.parent = gameObject.transform;
 			lTarget.transform.localPosition = mItemPosition;
 
+			mObjectHeld = lTarget.GetComponent<AEntity>();
+			mObjectHeld.Selected = false;
 			return true;
 		}
 
@@ -153,6 +169,7 @@ public class HumanInteractable : AInteraction
 
 	public void ResetWorldState()
 	{
+		mObjectHeld = null;
 		mAnimator.SetFloat("Forward", 0F);
 		mAnimator.ResetTrigger("PickUp");
 		mAnimator.SetBool("WalkingWithBox", false);
@@ -162,7 +179,7 @@ public class HumanInteractable : AInteraction
 
 	private void OnEndMovement()
 	{
-		if (!mObjectHeld)
+		if (mObjectHeld == null)
 			mAnimator.SetFloat("Forward", 0F);
 		else
 			mAnimator.SetBool("WalkingWithBox", true);
@@ -170,10 +187,9 @@ public class HumanInteractable : AInteraction
 
 	private void OnStartMovement()
 	{
-		if (!mObjectHeld)
+		if (mObjectHeld == null)
 			mAnimator.SetFloat("Forward", 0.8F);
 		else
 			mAnimator.SetBool("WalkingWithBox", true);
 	}
-
 }
