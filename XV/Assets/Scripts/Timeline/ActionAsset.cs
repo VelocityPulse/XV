@@ -11,6 +11,7 @@ public class ActionAsset : PlayableAsset
 	public List<AnimAction> Actions { get; set; }
 	public List<object> Parameters { get; set; }
 	public ActionTrack Track { get; set; }
+	public string Description { get; set; }
 
 	public void Awake()
 	{
@@ -25,6 +26,7 @@ public class ActionAsset : PlayableAsset
 		lBehaviour.Actions = Actions;
 		lBehaviour.Parameters = Parameters;
 		lBehaviour.Track = Track;
+		lBehaviour.Description = Description;
 		return lPlayable;
 	}
 

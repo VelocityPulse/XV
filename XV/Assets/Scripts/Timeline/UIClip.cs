@@ -75,6 +75,14 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 				Track.DeleteClip(this);
 			}
 		}
+		else if (iData.dragging == false && iData.button == PointerEventData.InputButton.Left) {
+			TimelineEvent.Data lEventData = new TimelineEvent.Data(Track.ID);
+			if (Track != null) {
+				lEventData.ClipIndex = Track.GetIndex(this);
+				lEventData.Type = Type;
+				TimelineEvent.OnGetDescription(lEventData);
+			}
+		}
 	}
 
 	public void Build(float iSize, float iPosition)

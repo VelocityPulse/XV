@@ -159,4 +159,25 @@ public sealed class TimelineData
 		GameObject lObject = (GameObject)mDirector.GetGenericBinding(lGroup);
 		return lObject;
 	}
+
+	public string GetClipDescription(TimelineEvent.Data iData)
+	{
+		ActionTrack lTrack = GetTrack(iData.TrackID, iData.Type);
+		TimelineClip lClip = lTrack.GetClips().ElementAtOrDefault(iData.ClipIndex);
+		if (lClip != null) {
+			ActionAsset lAsset = lClip.asset as ActionAsset;
+			return lAsset.Description;
+		}
+		return "";
+	}
+
+	public void SetClipDescription(TimelineEvent.Data iData, string iDescription)
+	{
+		ActionTrack lTrack = GetTrack(iData.TrackID, iData.Type);
+		TimelineClip lClip = lTrack.GetClips().ElementAtOrDefault(iData.ClipIndex);
+		if (lClip != null) {
+			ActionAsset lAsset = lClip.asset as ActionAsset;
+			lAsset.Description = iDescription;
+		}
+	}
 }

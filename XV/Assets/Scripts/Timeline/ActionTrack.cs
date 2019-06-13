@@ -12,6 +12,7 @@ public class ActionTrack : TrackAsset
 {
 	private Queue<List<AnimAction>> mActionsSets;
 	private Queue<List<object>> mParamsSets;
+	private Queue<string> mDescriptions;
 
 	private static float ACTIONS_LOOP_TIME = 0.2F;
 
@@ -33,13 +34,15 @@ public class ActionTrack : TrackAsset
 	{
 		mActionsSets = new Queue<List<AnimAction>>();
 		mParamsSets = new Queue<List<object>>();
+		mDescriptions = new Queue<string>();
 		TimelineManager.Instance.StartCoroutine(ActionQueueCallAsync());
 	}
 
-	public void QueueActions(List<AnimAction> iAction, List<object> iParams = null)
+	public void QueueActions(List<AnimAction> iAction, List<object> iParams, string iDescription)
 	{
 		mActionsSets.Enqueue(iAction);
 		mParamsSets.Enqueue(iParams);
+		mDescriptions.Enqueue(iDescription);
 	}
 
 	private IEnumerator ActionQueueCallAsync()
@@ -48,7 +51,9 @@ public class ActionTrack : TrackAsset
 			if (mActionsSets.Count > 0) {
 				List<AnimAction> lActions = mActionsSets.Dequeue();
 				List<object> lParams = mParamsSets.Count > 0 ? mParamsSets.Dequeue() : null;
+				string lDesc = mDescriptions.Dequeue();
 
+				XV_UI.Instance.Notify(2F, lDesc);
 				for (int lIndex = 0; lIndex < lActions.Count; lIndex++) {
 
 					AnimAction lAction = lActions[lIndex];

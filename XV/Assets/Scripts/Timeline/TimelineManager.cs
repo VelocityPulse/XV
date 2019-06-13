@@ -135,6 +135,16 @@ public sealed class TimelineManager : MonoBehaviour
 		return mData.GetBinding(iID);
 	}
 
+	public string GetClipDescription(TimelineEvent.Data iData)
+	{
+		return mData.GetClipDescription(iData);
+	}
+
+	public void SetClipDescription(TimelineEvent.Data iData, string iDescription)
+	{
+		mData.SetClipDescription(iData, iDescription);
+	}
+
 	private void UIResizeClip(TimelineEvent.Data iData)
 	{
 		TrackAsset lTrack = mData.GetTrack(iData.TrackID, iData.Type);

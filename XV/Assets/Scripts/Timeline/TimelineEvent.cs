@@ -36,6 +36,8 @@ public static class TimelineEvent
 	public static event TimelineAction PauseEvent;
 	public static event TimelineAction StopEvent;
 	public static event TimelineAction PlayEvent;
+	public static event TimelineAction GetDescriptionEvent;
+	public static event TimelineAction SetDescriptionEvent;
 
 	public static void OnAddTrack(Data iData)
 	{
@@ -104,6 +106,20 @@ public static class TimelineEvent
 	{
 		if (PlayEvent != null) {
 			PlayEvent(iData);
+		}
+	}
+
+	public static void OnGetDescription(Data iData)
+	{
+		if (GetDescriptionEvent != null) {
+			GetDescriptionEvent(iData);
+		}
+	}
+
+	public static void OnSetDescription(Data iData)
+	{
+		if (SetDescriptionEvent != null) {
+			SetDescriptionEvent(iData);
 		}
 	}
 }
