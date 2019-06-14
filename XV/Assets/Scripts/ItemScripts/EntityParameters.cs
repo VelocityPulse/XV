@@ -26,6 +26,15 @@ public class EntityParameters : MonoBehaviour
 		get { return TypeOf; }
 	}
 
+	[Header("Only for vehicle")]
+	[SerializeField]
+	private Vector3 SitPosition;
+
+	public Vector3 VehiculeSitPosition
+	{
+		get { return SitPosition; }
+	}
+
 	[Header("Active or not, movement & rotation animation")]
 	[SerializeField]
 	private bool CanMove;
