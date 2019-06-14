@@ -148,6 +148,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4855688443643622}
   - component: {fileID: 114080738854377050}
+  - component: {fileID: 114393965293099540}
+  - component: {fileID: 114119876397062796}
   m_Layer: 9
   m_Name: ChariotMainPlateForme
   m_TagString: ObjectEntity
@@ -1305,6 +1307,17 @@ MonoBehaviour:
   HoldPosition: {x: 0, y: 0.1951995, z: 0}
   DropPosition: {x: 0, y: 0.026, z: 1.035}
   CanMove: 1
+--- !u!114 &114119876397062796
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1489254361605708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8768852b32c434acdb235aa4598be749, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114220854995815464
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1336,6 +1349,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c60982edef406438a8a331fa9630b861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114393965293099540
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1489254361605708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13f10e74db394907a6f3d5440c40a23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114579029408804102
