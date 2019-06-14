@@ -77,7 +77,7 @@ public abstract class AEntity : MonoBehaviour
 		mEntityParameters = GetComponent<EntityParameters>();
 
 		if (mEntityParameters != null && GetComponent<AInteraction>() == null)
-			gameObject.AddComponent<GenericInteraction>();
+			gameObject.AddComponent<GenericInteractable>();
 
 		//mAInteraction = GetComponent<AInteraction>();
 

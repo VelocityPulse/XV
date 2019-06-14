@@ -13,6 +13,7 @@ public class EntityParameters : MonoBehaviour
 		FIX_ITEM,
 		TROLLEY,
 		VEHICLE,
+		CUPBOARD,
 		HUMAN,
 		COUNT,
 	}
@@ -33,6 +34,22 @@ public class EntityParameters : MonoBehaviour
 	public Vector3 VehiculeSitPosition
 	{
 		get { return SitPosition; }
+	}
+
+	[SerializeField]
+	private Vector3 HoldPosition;
+
+	public Vector3 VehiculeHoldPosition
+	{
+		get { return HoldPosition; }
+	}
+
+	[SerializeField]
+	private Vector3 DropPosition;
+
+	public Vector3 VehiculeDropPosition
+	{
+		get { return DropPosition; }
 	}
 
 	[Header("Active or not, movement & rotation animation")]
