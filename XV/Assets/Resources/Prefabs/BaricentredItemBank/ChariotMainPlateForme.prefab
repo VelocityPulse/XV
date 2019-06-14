@@ -1301,6 +1301,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TypeOf: 4
+  SitPosition: {x: 0.06287003, y: 0, z: -1.004}
+  HoldPosition: {x: 0, y: 0.1951995, z: 0}
+  DropPosition: {x: 0, y: 0.026, z: 1.035}
   CanMove: 1
 --- !u!114 &114220854995815464
 MonoBehaviour:

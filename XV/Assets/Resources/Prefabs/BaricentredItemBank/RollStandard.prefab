@@ -1369,7 +1369,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1602f39823932499b9ed7d1e04d0f1b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TypeOf: 4
+  TypeOf: 6
+  SitPosition: {x: 0, y: 0, z: -0.9853732}
+  HoldPosition: {x: 0, y: 0, z: 0}
+  DropPosition: {x: 0, y: 0, z: 0}
   CanMove: 1
 --- !u!114 &114751649304833476
 MonoBehaviour:
