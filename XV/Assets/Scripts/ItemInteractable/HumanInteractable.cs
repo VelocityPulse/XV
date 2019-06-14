@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(MovableEntity))]
 [RequireComponent(typeof(Animator))]
+
 public class HumanInteractable : AInteraction
 {
 	private MovableEntity mMovableEntity;
@@ -20,7 +21,15 @@ public class HumanInteractable : AInteraction
 
 	private ItemInteraction mTakeObjectInteraction;
 
+	private ItemInteraction mMountObjectInteraction;
+
+	private ItemInteraction mPushObjectInteraction;
+
 	private UIBubbleInfoButton mTakeOffBubbleButton;
+
+	private UIBubbleInfoButton mUnmountBubbleButton;
+
+	private UIBubbleInfoButton mReleasePushBubbleButton;
 
 	protected override void Start()
 	{
@@ -42,26 +51,53 @@ public class HumanInteractable : AInteraction
 			Name = "Take",
 			Help = "Take an object",
 			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.SMALL_ITEM, EntityParameters.EntityType.MEDIUM_ITEM },
-			AnimationImpl = TakeObjectMoveToTargetCallback,
+			AnimationImpl = MoveToTargetCallback,
 			AInteraction = this,
 			Button = new UIBubbleInfoButton() {
-				Text = "TakeObject",
+				Text = "Take",
 				Tag = name + "_TAKE_OBJECT",
 				ClickAction = OnClickTakeObject
 			}
 		});
 
-		Button lButton = mEntity.CreateBubbleInfoButton(new UIBubbleInfoButton() {
-			Text = "Move",
-			ClickAction = OnHumanMove
+		mMountObjectInteraction = CreateInteraction(new ItemInteraction() {
+			Name = "Mount",
+			Help = "Mount an object",
+			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.VEHICLE },
+			AnimationImpl = MountObjectCallback,
+			AInteraction = this,
+			Button = new UIBubbleInfoButton() {
+				Text = "Mount",
+				Tag = name + "_MOUNT_OBJECT",
+				ClickAction = OnClickMountObject
+			}
 		});
-		mMovableEntity.SetMoveButton(lButton);
+
+		//mPushObject = CreateInteraction(new ItemInteraction() {
+		//	Name = "Handle",
+		//	Help = "Handle an object",
+		//	InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.SMALL_ITEM, EntityParameters.EntityType.MEDIUM_ITEM },
+		//	AnimationImpl = HandleObjectCallback,
+		//	AInteraction = this,
+		//	Button = new UIBubbleInfoButton() {
+		//		Text = "Handle",
+		//		Tag = name + "_HANDLE_OBJECT",
+		//		ClickAction = OnClickTakeObject
+		//	}
+		//});
 
 		mTakeOffBubbleButton = new UIBubbleInfoButton() {
 			Text = "Take off",
 			Tag = "TakeOffButton",
 			ClickAction = OnClickTakeOffObject
 		};
+
+		mUnmountBubbleButton = new UIBubbleInfoButton() {
+			Text = "Unmount",
+			Tag = "UnmountButton",
+			ClickAction = OnClickUnmount
+		};
+
 	}
 
 	private void OnDestroy()
@@ -73,16 +109,19 @@ public class HumanInteractable : AInteraction
 		}
 	}
 
-	#region TakeObject
 
-	private void OnClickTakeObject(AEntity iEntity)
+	#region MountObject
+
+	private void OnClickMountObject(AEntity iEntity)
 	{
-		StartCoroutine(InteractionWaitForTargetAsync("Take"));
+		StartCoroutine(InteractionWaitForTargetMount());
 	}
 
-	private IEnumerator InteractionWaitForTargetAsync(string iInteractionName)
+	private IEnumerator InteractionWaitForTargetMount()
 	{
-		AEntity.HideNoInteractable(GetItemInteraction(iInteractionName).InteractWith, mEntity);
+		string lInteractionName = "Mount";
+
+		AEntity.HideNoInteractable(GetItemInteraction(lInteractionName).InteractWith, mEntity);
 		yield return new WaitWhile(() => {
 
 			if (Input.GetMouseButtonDown(0)) {
@@ -101,7 +140,7 @@ public class HumanInteractable : AInteraction
 					}
 
 					// If Subscribers contain the clicked Entity type use it as target and add animation to timeline
-					if (IsInteractionCanInteractType(iInteractionName, lEntityParam.Type)) {
+					if (IsInteractionCanInteractType(lInteractionName, lEntityParam.Type)) {
 						AnimationParameters lAnimationParameters = new AnimationParameters() {
 							TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 							AnimationTarget = lEntityParam.gameObject,
@@ -111,7 +150,88 @@ public class HumanInteractable : AInteraction
 
 						lInteractionSteps.Add(new InteractionStep {
 							tag = lAnimationParameters,
-							action = TakeObjectMoveToTargetCallback
+							action = MoveToTargetCallback
+						});
+
+						lInteractionSteps.Add(new InteractionStep {
+							tag = lAnimationParameters,
+							action = MountObjectCallback
+						});
+
+						TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+
+						return false;
+					}
+					Debug.LogWarning("[TARGET SELECTOR] The object you click on is not interactable with this object !");
+				}
+
+				return false;
+			}
+			return true;
+		});
+		AEntity.DisableHideNoInteractable();
+	}
+
+	private bool MountObjectCallback(object iParams)
+	{
+		AnimationParameters lParams = (AnimationParameters)iParams;
+		GameObject lTarget = (GameObject)lParams.AnimationTarget;
+
+		ManifactureInteractable lMI = lTarget.GetComponent<ManifactureInteractable>();
+
+		lMI.HoldHuman(this);
+		OnMount();
+		return true;
+	}
+
+	private void OnClickUnmount(AEntity iEntity)
+	{
+
+	}
+
+	#endregion MountObject
+
+	#region TakeObject
+
+	private void OnClickTakeObject(AEntity iEntity)
+	{
+		StartCoroutine(InteractionWaitForTargetTakeAsync());
+	}
+
+	private IEnumerator InteractionWaitForTargetTakeAsync()
+	{
+		string lInteractionName = "Take";
+
+		AEntity.HideNoInteractable(GetItemInteraction(lInteractionName).InteractWith, mEntity);
+		yield return new WaitWhile(() => {
+
+			if (Input.GetMouseButtonDown(0)) {
+
+				RaycastHit lHit;
+				Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (Physics.Raycast(lRay, out lHit, 100000, LayerMask.GetMask("dropable"))) {
+
+					Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
+
+					// If we don't found EntityParameters, stop with an error.
+					EntityParameters lEntityParam;
+					if ((lEntityParam = lHit.collider.gameObject.GetComponentInParent<EntityParameters>()) == null) {
+						Debug.LogWarning("[TARGET SELECTOR] Exit target selector !");
+						return false;
+					}
+
+					// If Subscribers contain the clicked Entity type use it as target and add animation to timeline
+					if (IsInteractionCanInteractType(lInteractionName, lEntityParam.Type)) {
+						AnimationParameters lAnimationParameters = new AnimationParameters() {
+							TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+							AnimationTarget = lEntityParam.gameObject,
+						};
+
+						List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+
+						lInteractionSteps.Add(new InteractionStep {
+							tag = lAnimationParameters,
+							action = MoveToTargetCallback
 						});
 
 						lInteractionSteps.Add(new InteractionStep {
@@ -136,22 +256,6 @@ public class HumanInteractable : AInteraction
 			return true;
 		});
 		AEntity.DisableHideNoInteractable();
-	}
-
-	private bool TakeObjectMoveToTargetCallback(object iParams)
-	{
-		AnimationParameters lParams = (AnimationParameters)iParams;
-		GameObject lTarget = (GameObject)lParams.AnimationTarget;
-
-		if (lTarget == null || mObjectHeld != null)
-			return true;
-
-		if (mMovableEntity.Move(lTarget.transform.position, lParams) == false)
-			return false;
-
-		// doesnt work
-		StartCoroutine(Utils.LookAtSlerpY(gameObject, lTarget));
-		return true;
 	}
 
 	private bool TakeObjectAnimationTakeCallback(object iParams)
@@ -191,10 +295,6 @@ public class HumanInteractable : AInteraction
 		return false;
 	}
 
-	#endregion TakeObject
-
-	#region TakeOffObject
-
 	private void OnClickTakeOffObject(AEntity iEntity)
 	{
 		AnimationParameters lAnimationParameters = new AnimationParameters() {
@@ -221,7 +321,36 @@ public class HumanInteractable : AInteraction
 		return true;
 	}
 
-	#endregion TakeOffObject
+	#endregion TakeObject
+
+	private bool MoveToTargetCallback(object iParams)
+	{
+		AnimationParameters lParams = (AnimationParameters)iParams;
+		GameObject lTarget = (GameObject)lParams.AnimationTarget;
+
+		if (lTarget == null || mObjectHeld != null)
+			return true;
+
+		if (mMovableEntity.Move(lTarget.transform.position, lParams) == false)
+			return false;
+
+		// doesnt work
+		StartCoroutine(Utils.LookAtSlerpY(gameObject, lTarget));
+		return true;
+	}
+
+
+	private void OnMount()
+	{
+		mMountObjectInteraction.Enabled = false;
+		//if ()
+		// maybe continue here 
+	}
+
+	private void OnUnmount()
+	{
+
+	}
 
 	private void OnHold()
 	{
@@ -239,11 +368,6 @@ public class HumanInteractable : AInteraction
 			mObjectHeld = null;
 		} else
 			Debug.LogWarning("[HUMAN INTERACTABLE] Object Held shouldn't be null in OnUnhold");
-	}
-
-	private void OnHumanMove(AEntity iEntity)
-	{
-		mMovableEntity.OnMoveClick();
 	}
 
 	public void ResetWorldState()

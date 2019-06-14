@@ -57,6 +57,7 @@ public abstract class AInteraction : MonoBehaviour
 		/// <summary>
 		/// interaction function, which will be called in the Timeline.
 		/// </summary>
+		[System.Obsolete("Useless")]
 		public Predicate<object> AnimationImpl;
 
 		/// <summary>
@@ -95,7 +96,7 @@ public abstract class AInteraction : MonoBehaviour
 			set
 			{
 				mEnabled = value;
-				if (value == false)
+				if (value)
 					HideUI();
 				else
 					AInteraction.UpdateAvailableInteraction();

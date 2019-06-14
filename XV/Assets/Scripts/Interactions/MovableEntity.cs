@@ -129,19 +129,13 @@ public sealed class MovableEntity : MonoBehaviour
 			StartCoroutine(Utils.WaitNextFrameAsync((iObj) => {
 				Button lButton;
 
-				// Do not add move button if it's a human 
-				if (mEntity.EntityParameters.Type != EntityParameters.EntityType.HUMAN) {
-					
-					// Add Move button & Keep track of the button image to edit color
-					lButton = iObj.CreateBubbleInfoButton(new UIBubbleInfoButton {
-						Text = "Move",
-						ClickAction = (iObject) => {
-							//Debug.LogWarning("Deplacer: " + iObject.name + " has been clicked");
-							OnMoveClick();
-						}
-					});
-					mMoveButtonColor = lButton.GetComponent<Image>();
-				}
+				// Add Move button & Keep track of the button image to edit color
+				lButton = iObj.CreateBubbleInfoButton(new UIBubbleInfoButton {
+					Text = "Move",
+					ClickAction = (iObject) => OnMoveClick()
+				});
+				mMoveButtonColor = lButton.GetComponent<Image>();
+
 
 				// Add Rotate Button & Keep track of the button image to edit color
 				lButton = iObj.CreateBubbleInfoButton(new UIBubbleInfoButton {
