@@ -32,6 +32,16 @@ public sealed class MovableEntity : MonoBehaviour
 		END
 	}
 
+    public static readonly float MAX_SPEED_COEFF = 200;
+
+    public static readonly float DEFAULT_SPEED_COEFF = 100F;
+
+    public static readonly float MIN_SPEED_COEFF = 30F;
+
+    private const float CONSTANT_SPEED_VALUE = 3.5F;
+
+    private const float CONSTANT_ACCELERATION_VALUE = 8F;
+
 	private const float LIMIT = 0.5F;
 
 	private const float ROT_SPEED = 500F;
@@ -266,12 +276,18 @@ public sealed class MovableEntity : MonoBehaviour
 		// Check the hit.point clicked is the ground
 		if ((GetHitPointFromMouseClic(ref lHitPoint, "scene"))) {
 
-			// TODO Calcul movement duration ...
+            // Get ratio of the Speed input, range: [0.3 ; 2]
+            float lSpeedRatio = mEntity.GetSpeedInput()  / DEFAULT_SPEED_COEFF;
+            // Compute speed
+            float lAgentSpeed = CONSTANT_SPEED_VALUE * lSpeedRatio;
+            float lAgentAcceleration = CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
 
-			// Add the code that do the animation in the Action timeline
-			TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
+            // TODO Calcul movement duration ...
+
+            // Add the code that do the animation in the Action timeline
+            TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 				return Move(lHitPoint, iInfo);
-			}, new AnimationParameters() { Speed = mEntity.GetSpeedInput() });
+            }, new AnimationParameters() { Speed = lAgentSpeed, Acceleration = lAgentAcceleration });
 
 		}
 	}
@@ -306,8 +322,10 @@ public sealed class MovableEntity : MonoBehaviour
 		mAgent.enabled = true;
 		// Update speed
 		mAgent.ResetPath();
-		mAgent.speed *= lAnimParams.Speed;
-		mAgent.acceleration *= lAnimParams.Speed;
+
+        mAgent.speed = lAnimParams.Speed;
+        mAgent.acceleration = lAnimParams.Acceleration;
+
 		mAgent.SetDestination(iDestination);
 
 		// Check if we have reached the destination

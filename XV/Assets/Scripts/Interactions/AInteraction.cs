@@ -17,11 +17,16 @@ public class AnimationParameters
 	/// </summary>
 	public float Speed = 1F;
 
-	/// <summary>
-	/// Object use as target for an Animation.
-	/// Use AnimationTargetType to cast it later
-	/// </summary>
-	public object AnimationTarget;
+    /// <summary>
+    /// Animation's speed acceleration
+    /// </summary>
+    public float Acceleration = 1F;
+
+    /// <summary>
+    /// Object use as target for an Animation.
+    /// Use AnimationTargetType to cast it later
+    /// </summary>
+    public object AnimationTarget;
 }
 
 /// <summary>

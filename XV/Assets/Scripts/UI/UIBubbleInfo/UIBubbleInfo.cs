@@ -32,9 +32,9 @@ public class UIBubbleInfo : MonoBehaviour
     private float mSpeed;
 
     /// <summary>
-    /// The Speed input given by the user.
+    /// The Speed coeffcient input given by the user.
     /// If the user give an invalid input, or if an error occured a default value is used.
-    /// Default Value: 1
+    /// Default Value: 100
     /// </summary>
     public float Speed { get { return mSpeed; } }
 
@@ -48,7 +48,7 @@ public class UIBubbleInfo : MonoBehaviour
 		mContentSizeFitter = GetComponentInChildren<ContentSizeFitter>();
 		mCanvasGroup.alpha = 0F;
 		mCanvasGroup.blocksRaycasts = false;
-        mSpeed = 1F;
+        mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
         if (SpeedInput == null)
             Debug.LogError("SpeedInput reference is missing in UIBubbleInfo.");
         else
@@ -86,22 +86,22 @@ public class UIBubbleInfo : MonoBehaviour
     {
         // If the user doesn't give an input, use default value.
         if (string.IsNullOrEmpty(iSpeedInput)) {
-            mSpeed = 1F;
+            mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
             return;
         }
 
         try {
             mSpeed = float.Parse(iSpeedInput);
-            if (mSpeed < 0.1F || mSpeed > 10F)
+            if (mSpeed < MovableEntity.MIN_SPEED_COEFF || mSpeed > MovableEntity.MAX_SPEED_COEFF)
                 mSpeed = -1F;
         } catch (Exception lException) {
             Debug.LogError("UIBubbleInfo - Error while retrieving float in SpeedInput:" + lException.Message);
             mSpeed = -1;
         }
         if (mSpeed < 0F) {
-            XV_UI.Instance.Notify(2.5F, "Please, enter a speed between 0.1 and 10.");
+            XV_UI.Instance.Notify(2.5F, "Enter a speed coefficient between" + MovableEntity.MIN_SPEED_COEFF + "% and " + MovableEntity.MAX_SPEED_COEFF + "%.");
             SpeedInput.text = null;
-            mSpeed = 1F;
+            mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
         }
     }
 
@@ -110,8 +110,8 @@ public class UIBubbleInfo : MonoBehaviour
     /// </summary>
     public void HideSpeedInput()
     {
-        SpeedInput.gameObject.SetActive(false);
-        mSpeed = 1F;
+        SpeedInput.gameObject.transform.parent.gameObject.SetActive(false);
+        mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
     }
 
 	public Button CreateButton(UIBubbleInfoButton iInfoButton)
