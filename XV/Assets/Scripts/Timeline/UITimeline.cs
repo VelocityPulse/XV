@@ -38,7 +38,7 @@ public class UITimeline : MonoBehaviour {
 		mAnimator = GetComponent<Animator>();
 	}
 
-	private void AddTrack(TimelineEvent.Data iData)
+	private void AddTrack(TimelineEventData iData)
 	{
 		if (!mAnimator.GetBool("IsVisible")) {
 			ToggleVisibility();
@@ -50,7 +50,7 @@ public class UITimeline : MonoBehaviour {
 		mTracks.Add(lNewTrack);
 	}
 
-	private void DeleteTrack(TimelineEvent.Data iData)
+	private void DeleteTrack(TimelineEventData iData)
 	{
 		if (!mAnimator.GetBool("IsVisible")) {
 			ToggleVisibility();
@@ -62,7 +62,7 @@ public class UITimeline : MonoBehaviour {
 		}
 	}
 	
-	private void AddClip(TimelineEvent.Data iData)
+	private void AddClip(TimelineEventData iData)
 	{
 		UITrack lTrack = mTracks.Find(iTrack => iTrack.ID == iData.TrackID);
 		if (lTrack != null) {
@@ -83,7 +83,7 @@ public class UITimeline : MonoBehaviour {
 		}
 	}
 
-	private void ResizeClip(TimelineEvent.Data iData)
+	private void ResizeClip(TimelineEventData iData)
 	{
 		UITrack lTrack = mTracks.Find(iTrack => iTrack.ID == iData.TrackID);
 		if (lTrack != null) {

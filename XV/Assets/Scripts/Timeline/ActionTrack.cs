@@ -88,17 +88,17 @@ public class ActionTrack : TrackAsset
 		TimelineManager.sGlobalState = TimelineManager.State.PLAY;
 	}
 
-	private static void Play(TimelineEvent.Data iData)
+	private static void Play(TimelineEventData iData)
 	{
 		Reset();
 	}
 
-	private static void Pause(TimelineEvent.Data iData)
+	private static void Pause(TimelineEventData iData)
 	{
 		TimelineManager.sGlobalState = TimelineManager.State.PAUSE;
 	}
 
-	private static void Stop(TimelineEvent.Data iData)
+	private static void Stop(TimelineEventData iData)
 	{
 		TimelineManager.sGlobalState = TimelineManager.State.STOP;
 		TimelineManager.Instance.StartCoroutine(Utils.WaitForAsync(ACTIONS_LOOP_TIME, Reset));

@@ -32,7 +32,7 @@ public sealed class TimelineData
 		lActionAsset.Track = lTrack;
 		lTimelineClip.duration = 0.1D;
 
-		TimelineEvent.Data lEventData = new TimelineEvent.Data(iTrackID);
+		TimelineEventData lEventData = new TimelineEventData(iTrackID);
 		lEventData.ClipStart = lTimelineClip.start;
 		lEventData.Type = iType;
 		TimelineEvent.OnAddClip(lEventData);
@@ -51,7 +51,7 @@ public sealed class TimelineData
 			lTimelineClip.duration = 0.1D;
 		}
 
-		TimelineEvent.Data lEventData = new TimelineEvent.Data(iTrackID);
+		TimelineEventData lEventData = new TimelineEventData(iTrackID);
 		lEventData.ClipStart = lTrack.GetClips().First().start;
 		lEventData.Type = EventType.INTERACTION;
 		TimelineEvent.OnAddClip(lEventData);
@@ -71,7 +71,7 @@ public sealed class TimelineData
 		mDirector.SetGenericBinding(lTrans, iObject);
 		mDirector.SetGenericBinding(lRot, iObject);
 		mDirector.SetGenericBinding(lInter, iObject);
-		TimelineEvent.OnAddTrack(new TimelineEvent.Data(lID));
+		TimelineEvent.OnAddTrack(new TimelineEventData(lID));
 		return lGroup;
 	}
 
@@ -80,7 +80,7 @@ public sealed class TimelineData
 		GroupTrack lGroup = GetGroupTrack(iID);
 		mTimeline.DeleteTrack(lGroup);
 		mBindings.Remove(iID);
-		TimelineEvent.Data lEventData = new TimelineEvent.Data(iID);
+		TimelineEventData lEventData = new TimelineEventData(iID);
 		TimelineEvent.OnDeleteTrack(lEventData);
 	}
 
@@ -90,7 +90,7 @@ public sealed class TimelineData
 		foreach (KeyValuePair<int, ActionTrack> lTrack in lTracks) {
 			List<TimelineClip> lClips = lTrack.Value.GetClips().ToList();
 			for (int lIndex = 0; lIndex < lClips.Count; lIndex++) {
-				TimelineEvent.Data lEventData = new TimelineEvent.Data(lTrack.Key);
+				TimelineEventData lEventData = new TimelineEventData(lTrack.Key);
 				lEventData.ClipIndex = lIndex;
 				lEventData.ClipStart = lClips[lIndex].start;
 				lEventData.Type = iType;
@@ -160,7 +160,7 @@ public sealed class TimelineData
 		return lObject;
 	}
 
-	public string GetClipDescription(TimelineEvent.Data iData)
+	public string GetClipDescription(TimelineEventData iData)
 	{
 		ActionTrack lTrack = GetTrack(iData.TrackID, iData.Type);
 		TimelineClip lClip = lTrack.GetClips().ElementAtOrDefault(iData.ClipIndex);
@@ -171,7 +171,7 @@ public sealed class TimelineData
 		return "";
 	}
 
-	public void SetClipDescription(TimelineEvent.Data iData, string iDescription)
+	public void SetClipDescription(TimelineEventData iData, string iDescription)
 	{
 		ActionTrack lTrack = GetTrack(iData.TrackID, iData.Type);
 		TimelineClip lClip = lTrack.GetClips().ElementAtOrDefault(iData.ClipIndex);

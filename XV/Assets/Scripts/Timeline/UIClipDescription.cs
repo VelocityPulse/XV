@@ -13,7 +13,7 @@ public class UIClipDescription : MonoBehaviour
 	[SerializeField]
 	private UnityEngine.UI.Button okButton;
 
-	private TimelineEvent.Data mCurrentData;
+	private TimelineEventData mCurrentData;
 
 	private void Start()
 	{
@@ -31,7 +31,7 @@ public class UIClipDescription : MonoBehaviour
 		TimelineEvent.GetDescriptionEvent -= GetDescription;
 	}
 
-	private void GetDescription(TimelineEvent.Data iData)
+	private void GetDescription(TimelineEventData iData)
 	{
 		if (mCurrentData == null) {
 			string lDesc = TimelineManager.Instance.GetClipDescription(iData);

@@ -76,7 +76,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 			}
 		}
 		else if (iData.dragging == false && iData.button == PointerEventData.InputButton.Left) {
-			TimelineEvent.Data lEventData = new TimelineEvent.Data(Track.ID);
+			TimelineEventData lEventData = new TimelineEventData(Track.ID);
 			if (Track != null) {
 				lEventData.ClipIndex = Track.GetIndex(this);
 				lEventData.Type = Type;
@@ -93,7 +93,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 
 	public void ResizeEvent(bool iShouldGrow = false)
 	{
-		TimelineEvent.Data lEventData = new TimelineEvent.Data(Track.ID);
+		TimelineEventData lEventData = new TimelineEventData(Track.ID);
 		lEventData.Type = Type;
 		lEventData.ClipIndex = Track.GetIndex(this);
 		lEventData.ClipLength = TimelineUtility.ClipSizeToDuration(mRectTransform.rect.size.x, Track.Size);

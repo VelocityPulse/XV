@@ -135,17 +135,17 @@ public sealed class TimelineManager : MonoBehaviour
 		return mData.GetBinding(iID);
 	}
 
-	public string GetClipDescription(TimelineEvent.Data iData)
+	public string GetClipDescription(TimelineEventData iData)
 	{
 		return mData.GetClipDescription(iData);
 	}
 
-	public void SetClipDescription(TimelineEvent.Data iData, string iDescription)
+	public void SetClipDescription(TimelineEventData iData, string iDescription)
 	{
 		mData.SetClipDescription(iData, iDescription);
 	}
 
-	private void UIResizeClip(TimelineEvent.Data iData)
+	private void UIResizeClip(TimelineEventData iData)
 	{
 		TrackAsset lTrack = mData.GetTrack(iData.TrackID, iData.Type);
 		List<TimelineClip> lClips = lTrack.GetClips().ToList();
@@ -156,7 +156,7 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 	}
 
-	private void UIDeleteClip(TimelineEvent.Data iData)
+	private void UIDeleteClip(TimelineEventData iData)
 	{
 		TrackAsset lTrack = mData.GetTrack(iData.TrackID, iData.Type);
 		List<TimelineClip> lClips = lTrack.GetClips().ToList();

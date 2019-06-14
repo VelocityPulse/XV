@@ -105,7 +105,7 @@ public class UITrack : MonoBehaviour
 	public void DeleteClip(UIClip iClip)
 	{
 		List<UIClip> lClips = GetClipList(iClip.Type);
-		TimelineEvent.Data lEventData = new TimelineEvent.Data(ID);
+		TimelineEventData lEventData = new TimelineEventData(ID);
 		lEventData.ClipIndex = GetIndex(iClip);
 		lEventData.Type = iClip.Type;
 		if (lClips.Remove(iClip)) {
@@ -114,7 +114,7 @@ public class UITrack : MonoBehaviour
 		}
 	}
 
-	public void ResizeClip(TimelineEvent.Data iData)
+	public void ResizeClip(TimelineEventData iData)
 	{
 		List<UIClip> lClips = GetClipList(iData.Type);
 		if (lClips.Count > iData.ClipIndex) {
