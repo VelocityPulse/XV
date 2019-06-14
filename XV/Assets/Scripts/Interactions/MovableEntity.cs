@@ -118,6 +118,8 @@ public sealed class MovableEntity : MonoBehaviour
 
 	public MovableEntity SetEntity(AEntity iObjectEntity)
 	{
+
+
 		mEntity = iObjectEntity;
 
 		// Add all this code to the PostPopping callback of ObjectEntity
@@ -127,8 +129,9 @@ public sealed class MovableEntity : MonoBehaviour
 			StartCoroutine(Utils.WaitNextFrameAsync((iObj) => {
 				Button lButton;
 
+				// Do not add move button if it's a human 
 				if (mEntity.EntityParameters.Type != EntityParameters.EntityType.HUMAN) {
-
+					
 					// Add Move button & Keep track of the button image to edit color
 					lButton = iObj.CreateBubbleInfoButton(new UIBubbleInfoButton {
 						Text = "Move",

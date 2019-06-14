@@ -158,7 +158,7 @@ public class ObjectEntity : AEntity
 
 		if ((mNavMeshObstacle = lChildMesh.AddComponent<NavMeshObstacle>()) != null) {
 			mNavMeshObstacle.center = new Vector3(0, mSize.y / 2, 0);
-			mNavMeshObstacle.size = new Vector3(mSize.x + 0.1F, mSize.y, mSize.z + 0.1F);
+			mNavMeshObstacle.size = new Vector3(mSize.x, mSize.y, mSize.z);
 			mNavMeshObstacle.carving = true;
 		}
 

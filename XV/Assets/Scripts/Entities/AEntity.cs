@@ -107,6 +107,20 @@ public abstract class AEntity : MonoBehaviour
 		if (sAllEntites == null)
 			sAllEntites = new List<AEntity>();
 		sAllEntites.Add(this);
+
+		// SetEntity in any movable entity
+		if (mEntityParameters.Type == EntityParameters.EntityType.CUPBOARD ||
+		    	mEntityParameters.Type == EntityParameters.EntityType.TROLLEY ||
+				mEntityParameters.Type == EntityParameters.EntityType.VEHICLE ||
+		   		mEntityParameters.Type == EntityParameters.EntityType.HUMAN) {
+
+			MovableEntity lMovableEntity = GetComponent<MovableEntity>();
+			if (lMovableEntity == null) {
+				Debug.LogError("[AENTITY] MovableEntity not found in : " + mEntityParameters.Type);
+				return;
+			}
+			lMovableEntity.SetEntity(this);
+		}
 	}
 
 	protected virtual void OnDestroy()

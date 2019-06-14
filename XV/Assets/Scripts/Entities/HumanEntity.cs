@@ -91,7 +91,6 @@ public class HumanEntity : AEntity
 			}
 		});
 
-		mMovableEntity.SetEntity(this);
 		StartCoroutine(PostPoppingAsync());
 	}
 

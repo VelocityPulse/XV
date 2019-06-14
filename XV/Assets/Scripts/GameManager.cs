@@ -191,15 +191,9 @@ public class GameManager : MonoBehaviour
 		lObjectEntity.SetUIBubbleInfo(lUIBubbleInfo.GetComponent<UIBubbleInfo>());
 		lObjectEntity.SaveEntity();
 
-
 		// If this item can move - Add MovableEntity script
-		if (lParameters != null) {
-            if (lParameters.Movable) {
-                oGameObject.AddComponent<MovableEntity>()
-                           .SetEntity(lObjectEntity);
-            } else
-                lUIBubbleInfo.GetComponent<UIBubbleInfo>().HideSpeedInput();
-        }
+		if (lParameters != null && !lParameters.Movable)
+			lUIBubbleInfo.GetComponent<UIBubbleInfo>().HideSpeedInput();
 
 		Utils.SetLayerRecursively(oGameObject, LayerMask.NameToLayer("dropable"));
 
@@ -255,7 +249,7 @@ public class GameManager : MonoBehaviour
 
 	public void UnloadScene()
 	{
-        StartCoroutine(UnloadSceneAsync());
+		StartCoroutine(UnloadSceneAsync());
 	}
 
 	public void LoadScene(DataScene iDataScene)

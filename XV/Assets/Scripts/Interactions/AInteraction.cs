@@ -180,7 +180,7 @@ public abstract class AInteraction : MonoBehaviour
 		mParameters = GetComponent<EntityParameters>();
 
 		if (mEntity == null || mParameters == null) {
-			Debug.LogError("[AInteraction] Start abort");
+			//Debug.LogError("[AInteraction] Start abort");
 			enabled = false;
 			return;
 		}
