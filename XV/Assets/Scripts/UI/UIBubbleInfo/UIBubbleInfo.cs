@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,7 +26,19 @@ public class UIBubbleInfo : MonoBehaviour
 	[SerializeField]
 	private InputField ModelName;
 
-	public AEntity Parent { get; set; }
+    [SerializeField]
+    private InputField SpeedInput;
+
+    private float mSpeed;
+
+    /// <summary>
+    /// The Speed input given by the user.
+    /// If the user give an invalid input, or if an error occured a default value is used.
+    /// Default Value: 1
+    /// </summary>
+    public float Speed { get { return mSpeed; } }
+
+    public AEntity Parent { get; set; }
 
 	// Use this for initialization
 	private void Start()
@@ -35,6 +48,11 @@ public class UIBubbleInfo : MonoBehaviour
 		mContentSizeFitter = GetComponentInChildren<ContentSizeFitter>();
 		mCanvasGroup.alpha = 0F;
 		mCanvasGroup.blocksRaycasts = false;
+        mSpeed = 1F;
+        if (SpeedInput == null)
+            Debug.LogError("SpeedInput reference is missing in UIBubbleInfo.");
+        else
+            SpeedInput.onEndEdit.AddListener(OnEndEditSpeed);
 	}
 
 	private void Awake()
@@ -52,12 +70,49 @@ public class UIBubbleInfo : MonoBehaviour
 			transform.rotation = Quaternion.Slerp(
 				transform.rotation, lLookAt, Time.deltaTime * 5);
 
-			if (ModelName.isFocused)
+			if (ModelName.isFocused || SpeedInput.isFocused)
 				GameManager.Instance.KeyboardDeplacementActive = false;
 			else
 				GameManager.Instance.KeyboardDeplacementActive = true;
 		}
 	}
+
+    /// <summary>
+    /// Try to parse the Speed InputField, if the input is not a number,
+    /// or if it's not in range [0.1;10], the user is Notify and the default speed value is used instead.
+    /// </summary>
+    /// <param name="iSpeedInput"></param>
+    private void OnEndEditSpeed(string iSpeedInput)
+    {
+        // If the user doesn't give an input, use default value.
+        if (string.IsNullOrEmpty(iSpeedInput)) {
+            mSpeed = 1F;
+            return;
+        }
+
+        try {
+            mSpeed = float.Parse(iSpeedInput);
+            if (mSpeed < 0.1F || mSpeed > 10F)
+                mSpeed = -1F;
+        } catch (Exception lException) {
+            Debug.LogError("UIBubbleInfo - Error while retrieving float in SpeedInput:" + lException.Message);
+            mSpeed = -1;
+        }
+        if (mSpeed < 0F) {
+            XV_UI.Instance.Notify(2.5F, "Please, enter a speed between 0.1 and 10.");
+            SpeedInput.text = null;
+            mSpeed = 1F;
+        }
+    }
+
+    /// <summary>
+    /// Hide the Speed Input field in the BubbleInfo.
+    /// </summary>
+    public void HideSpeedInput()
+    {
+        SpeedInput.gameObject.SetActive(false);
+        mSpeed = 1F;
+    }
 
 	public Button CreateButton(UIBubbleInfoButton iInfoButton)
 	{

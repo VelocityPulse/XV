@@ -222,4 +222,17 @@ public static class Utils
 			iAction(iObj);
 	}
 
+    /// <summary>
+    /// Logs message to the Unity console with the given color.
+    /// The message will be print in normal color if iColor is null.
+    /// </summary>
+    /// <param name="iMessage"></param>
+    /// <param name="color"></param>
+    public static void DebugColor(string iMessage, string iColor = null)
+    {
+        if (iColor == null)
+            UnityEngine.Debug.Log(iMessage);
+        else
+            UnityEngine.Debug.Log("<color=" + iColor + ">" + iMessage + "</color>");
+    }
 }
