@@ -24,6 +24,8 @@ public class AObjectDataScene
 
 	public Vector3 Rotation { get; set; }
 
+    public float Speed { get; set; }
+
 	public bool IsColored { get; set; }
 
 	public List<Color> OriginalColorsMaterial { get; set; }

@@ -29,6 +29,8 @@ public class UIBubbleInfo : MonoBehaviour
     [SerializeField]
     private InputField SpeedInput;
 
+    public List<Action<float>> OnEndEditSpeedCallback { get; private set; }
+
     private float mSpeed;
 
     /// <summary>
@@ -51,8 +53,11 @@ public class UIBubbleInfo : MonoBehaviour
         if (SpeedInput == null) {
             Debug.LogError("SpeedInput reference is missing in UIBubbleInfo.");
             mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+            FireOnEndEditSpeedCallback();
         } else {
+            // Add treatment of speed input on end edit
             SpeedInput.onEndEdit.AddListener(OnEndEditSpeed);
+            // Execute callback at start (Treatment of the default value store in the InputField)
             OnEndEditSpeed(SpeedInput.text);
         }
 	}
@@ -60,6 +65,7 @@ public class UIBubbleInfo : MonoBehaviour
 	private void Awake()
 	{
 		RefreshCanvas();
+        OnEndEditSpeedCallback = new List<Action<float>>();
 	}
 
 	// Update is called once per frame
@@ -72,7 +78,7 @@ public class UIBubbleInfo : MonoBehaviour
 			transform.rotation = Quaternion.Slerp(
 				transform.rotation, lLookAt, Time.deltaTime * 5);
 
-			if (ModelName.isFocused || SpeedInput.isFocused)
+			if (ModelName.isFocused || (SpeedInput != null && SpeedInput.isFocused))
 				GameManager.Instance.KeyboardDeplacementActive = false;
 			else
 				GameManager.Instance.KeyboardDeplacementActive = true;
@@ -87,23 +93,32 @@ public class UIBubbleInfo : MonoBehaviour
     private void OnEndEditSpeed(string iSpeedInput)
     {
         // If the user doesn't give an input, use default value.
-        if (string.IsNullOrEmpty(iSpeedInput)) {
+        if (string.IsNullOrEmpty(iSpeedInput))
             mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
-            return;
-        }
+        else {
 
-        try {
-            mSpeed = float.Parse(iSpeedInput);
-            if (mSpeed < MovableEntity.MIN_SPEED_COEFF || mSpeed > MovableEntity.MAX_SPEED_COEFF)
-                mSpeed = -1F;
-        } catch (Exception lException) {
-            Debug.LogError("UIBubbleInfo - Error while retrieving float in SpeedInput:" + lException.Message);
-            mSpeed = -1;
+            try {
+                mSpeed = float.Parse(iSpeedInput);
+                if (mSpeed < MovableEntity.MIN_SPEED_COEFF || mSpeed > MovableEntity.MAX_SPEED_COEFF)
+                    mSpeed = -1F;
+            } catch (Exception lException) {
+                Debug.LogError("UIBubbleInfo - Error while retrieving float in SpeedInput:" + lException.Message);
+                mSpeed = -1;
+            }
+            if (mSpeed < 0F) {
+                XV_UI.Instance.Notify(2.5F, "Enter a speed coefficient between" + MovableEntity.MIN_SPEED_COEFF + "% and " + MovableEntity.MAX_SPEED_COEFF + "%.");
+                SpeedInput.text = null;
+                mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+            }
         }
-        if (mSpeed < 0F) {
-            XV_UI.Instance.Notify(2.5F, "Enter a speed coefficient between" + MovableEntity.MIN_SPEED_COEFF + "% and " + MovableEntity.MAX_SPEED_COEFF + "%.");
-            SpeedInput.text = null;
-            mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+        FireOnEndEditSpeedCallback();
+    }
+
+    private void FireOnEndEditSpeedCallback()
+    {
+        // Execute all code in OnEndEditSpeedCallback
+        foreach (Action<float> lOnEndCallback in OnEndEditSpeedCallback) {
+            lOnEndCallback(mSpeed);
         }
     }
 
@@ -173,7 +188,22 @@ public class UIBubbleInfo : MonoBehaviour
 		ModelName.text = iName;
 	}
 
-	public void SetInteractable(bool iInteractable)
+    public void SetUISpeed(float iSpeed)
+    {
+        if (SpeedInput == null) {
+            mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+            return;
+        }
+        if (iSpeed < MovableEntity.MIN_SPEED_COEFF || iSpeed > MovableEntity.MAX_SPEED_COEFF) {
+            Debug.LogWarning("[SET UI SPEED] Given speed was wrong, the default value was used instead.");
+            mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+        }
+        else
+            mSpeed = iSpeed;
+        SpeedInput.text = mSpeed.ToString();
+    }
+
+    public void SetInteractable(bool iInteractable)
 	{
 		foreach (KeyValuePair<string, Button> lButton in mButtons) {
 			lButton.Value.interactable = iInteractable;

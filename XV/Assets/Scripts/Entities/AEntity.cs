@@ -120,11 +120,18 @@ public abstract class AEntity : MonoBehaviour
 		mUIBubbleInfo = iBubbleInfo;
 
 		mUIBubbleInfo.Parent = this;
-		if (mODS != null)
-			mUIBubbleInfo.SetUIName(mODS.Name);
-		else
-			Debug.LogError("[AENTITY] mODS is null when setting UIBubbleInfo");
+        if (mODS != null) {
+            mUIBubbleInfo.SetUIName(mODS.Name);
+            mUIBubbleInfo.SetUISpeed(mODS.Speed);
+        } else
+            Debug.LogError("[AENTITY] mODS is null when setting UIBubbleInfo");
 		mUIBubbleInfo.RefreshCanvas();
+
+        // Add code to OnEndEdit SpeedInput callback to serialize the value
+        mUIBubbleInfo.OnEndEditSpeedCallback.Add((iNewSpeed) => {
+            mODS.Speed = iNewSpeed;
+            mDataScene.Serialize();
+        });
 		return this;
 	}
 
