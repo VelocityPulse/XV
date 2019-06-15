@@ -48,11 +48,13 @@ public class UIBubbleInfo : MonoBehaviour
 		mContentSizeFitter = GetComponentInChildren<ContentSizeFitter>();
 		mCanvasGroup.alpha = 0F;
 		mCanvasGroup.blocksRaycasts = false;
-        mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
-        if (SpeedInput == null)
+        if (SpeedInput == null) {
             Debug.LogError("SpeedInput reference is missing in UIBubbleInfo.");
-        else
+            mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+        } else {
             SpeedInput.onEndEdit.AddListener(OnEndEditSpeed);
+            OnEndEditSpeed(SpeedInput.text);
+        }
 	}
 
 	private void Awake()
