@@ -181,6 +181,12 @@ public class ManifactureInteractable : AInteraction
 		iHuman.transform.localRotation = Quaternion.Euler(0, 0, 0);
 	}
 
+	public void DropHuman(HumanInteractable iHuman)
+	{
+		iHuman.transform.localPosition = new Vector3(0, 0, -2);
+		iHuman.transform.parent = null;
+	}
+
 
 	private void OnStartMovement()
 	{

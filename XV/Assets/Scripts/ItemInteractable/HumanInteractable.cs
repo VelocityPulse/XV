@@ -19,19 +19,19 @@ public class HumanInteractable : AInteraction
 
 	private AEntity mObjectHeld;
 
+	private ManifactureInteractable mObjectMounted;
+
 	private ItemInteraction mTakeObjectInteraction;
 
 	private ItemInteraction mMountObjectInteraction;
 
-	private ItemInteraction mPushObjectInteraction;
+	//private ItemInteraction mPushObjectInteraction;
 
 	private UIBubbleInfoButton mTakeOffBubbleButton;
 
 	private UIBubbleInfoButton mUnmountBubbleButton;
 
 	private UIBubbleInfoButton mReleasePushBubbleButton;
-
-	private bool mIsHumanHasMountedObject;
 
 	protected override void Start()
 	{
@@ -147,6 +147,7 @@ public class HumanInteractable : AInteraction
 
 		ManifactureInteractable lMI = lTarget.GetComponent<ManifactureInteractable>();
 
+		mObjectMounted = lMI;
 		lMI.HoldHuman(this);
 		OnMount();
 		return true;
@@ -154,7 +155,64 @@ public class HumanInteractable : AInteraction
 
 	private void OnClickUnmount(AEntity iEntity)
 	{
+		AnimationParameters lAnimationParameters = new AnimationParameters() {
+			TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+		};
 
+		List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+
+		lInteractionSteps.Add(new InteractionStep {
+			tag = lAnimationParameters,
+			action = UnmountObjectCallback
+		});
+
+		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+	}
+
+	private bool UnmountObjectCallback(object iParams)
+	{
+		AnimationParameters lParams = (AnimationParameters)iParams;
+		GameObject lTarget = (GameObject)lParams.AnimationTarget;
+
+		mObjectMounted.DropHuman(this);
+		OnUnmount();
+		return true;
+	}
+
+	private void OnMount()
+	{
+		ResetAnimator();
+
+		mEntity.NavMeshObjstacleEnabled = false;
+		mEntity.LockWorldEditorDeplacement = true;
+
+		mMountObjectInteraction.Enabled = false;
+		//mPushObjectInteraction.Enabled = false;
+		mTakeObjectInteraction.Enabled = false;
+
+		if (!mEntity.ContainsBubbleInfoButton(mUnmountBubbleButton))
+			mEntity.CreateBubbleInfoButton(mUnmountBubbleButton);
+
+		mEntity.StashUIBubbleButtons(mUnmountBubbleButton);
+	}
+
+	private void OnUnmount()
+	{
+		ResetAnimator();
+
+		mEntity.NavMeshObjstacleEnabled = true;
+		mEntity.LockWorldEditorDeplacement = false;
+
+		mMountObjectInteraction.Enabled = true;
+		//mPushObjectInteraction.Enabled = true;
+		mTakeObjectInteraction.Enabled = true;
+
+		if (mEntity.ContainsBubbleInfoButton(mUnmountBubbleButton))
+			mEntity.DestroyBubbleInfoButton(mUnmountBubbleButton);
+		mEntity.StashPopUIBubbleInfoButtons();
+
+		if (mObjectMounted != null)
+			mObjectMounted = null;
 	}
 
 	#endregion MountObject
@@ -192,9 +250,9 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObjectAnimationTakeCallback(object iParams)
 	{
-		if (mIsHumanHasMountedObject)
+		if (mObjectMounted != null)
 			return true;
-		
+
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
@@ -225,7 +283,7 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObjectWaitAnimationEndCallback(object iParams)
 	{
-		if (mIsHumanHasMountedObject)
+		if (mObjectMounted != null)
 			return true;
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
@@ -236,8 +294,7 @@ public class HumanInteractable : AInteraction
 	private void OnClickTakeOffObject(AEntity iEntity)
 	{
 		AnimationParameters lAnimationParameters = new AnimationParameters() {
-			TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-			AnimationTarget = mObjectHeld
+			TargetType = AnimationParameters.AnimationTargetType.ENTITY
 		};
 
 		List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
@@ -257,51 +314,6 @@ public class HumanInteractable : AInteraction
 		mObjectHeld.transform.parent = null;
 		OnUnhold();
 		return true;
-	}
-
-	#endregion TakeObject
-
-	private bool MoveToTargetCallback(object iParams)
-	{
-		if (mIsHumanHasMountedObject)
-			return true;
-
-		AnimationParameters lParams = (AnimationParameters)iParams;
-		GameObject lTarget = (GameObject)lParams.AnimationTarget;
-
-		if (lTarget == null || mObjectHeld != null)
-			return true;
-
-		if (mMovableEntity.Move(lTarget.transform.position, lParams) == false)
-			return false;
-
-		// doesnt work
-		StartCoroutine(Utils.LookAtSlerpY(gameObject, lTarget));
-		return true;
-	}
-
-
-	private void OnMount()
-	{
-		ResetAnimator();
-
-		mIsHumanHasMountedObject = true;
-		mEntity.NavMeshObjstacleEnabled = false;
-		mEntity.LockWorldEditorDeplacement = true;
-
-		mMountObjectInteraction.Enabled = false;
-		//mPushObjectInteraction.Enabled = false;
-		mTakeObjectInteraction.Enabled = false;
-
-		if (!mEntity.ContainsBubbleInfoButton(mUnmountBubbleButton))
-			mEntity.CreateBubbleInfoButton(mUnmountBubbleButton);
-
-		mEntity.StashUIBubbleButtons(mUnmountBubbleButton);
-	}
-
-	private void OnUnmount()
-	{
-
 	}
 
 	private void OnHold()
@@ -327,10 +339,33 @@ public class HumanInteractable : AInteraction
 			Debug.LogWarning("[HUMAN INTERACTABLE] Object Held shouldn't be null in OnUnhold");
 	}
 
+	#endregion TakeObject
+
+	private bool MoveToTargetCallback(object iParams)
+	{
+		if (mObjectMounted != null)
+			return true;
+
+		AnimationParameters lParams = (AnimationParameters)iParams;
+		GameObject lTarget = (GameObject)lParams.AnimationTarget;
+
+		if (lTarget == null || mObjectHeld != null)
+			return true;
+
+		if (mMovableEntity.Move(lTarget.transform.position, lParams) == false)
+			return false;
+
+		// doesnt work
+		StartCoroutine(Utils.LookAtSlerpY(gameObject, lTarget));
+		return true;
+	}
+
 	public void ResetWorldState()
 	{
 		if (mObjectHeld != null)
 			OnUnhold();
+		if (mObjectMounted != null)
+			OnUnmount();
 		ResetAnimator();
 	}
 
