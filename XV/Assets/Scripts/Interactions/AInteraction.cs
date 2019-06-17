@@ -344,6 +344,42 @@ public abstract class AInteraction : MonoBehaviour
 		}
 		return iInteraction;
 	}
+
+	protected IEnumerator InteractionWaitForTarget(string iInteractionName, Action<EntityParameters> iOnFoundTarget)
+	{
+		AEntity.HideNoInteractable(GetItemInteraction(iInteractionName).InteractWith, mEntity);
+		yield return new WaitWhile(() => {
+
+			if (Input.GetMouseButtonDown(0)) {
+
+				RaycastHit lHit;
+				Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (Physics.Raycast(lRay, out lHit, 100000, LayerMask.GetMask("dropable"))) {
+
+					Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
+
+					// If we don't found EntityParameters, stop with an error.
+					EntityParameters lEntityParam;
+					if ((lEntityParam = lHit.collider.gameObject.GetComponentInParent<EntityParameters>()) == null) {
+						Debug.LogWarning("[TARGET SELECTOR] Exit target selector !");
+						return false;
+					}
+
+					// If Subscribers contain the clicked Entity type use it as target and add animation to timeline
+					if (IsInteractionCanInteractType(iInteractionName, lEntityParam.Type)) {
+						iOnFoundTarget(lEntityParam);
+						return false;
+					}
+					Debug.LogWarning("[TARGET SELECTOR] The object you click on is not interactable with this object !");
+				}
+
+				return false;
+			}
+			return true;
+		});
+		AEntity.DisableHideNoInteractable();
+	}
+
 }
 
 

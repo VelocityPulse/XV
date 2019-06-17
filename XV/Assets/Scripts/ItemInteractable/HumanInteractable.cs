@@ -114,62 +114,28 @@ public class HumanInteractable : AInteraction
 
 	private void OnClickMountObject(AEntity iEntity)
 	{
-		StartCoroutine(InteractionWaitForTargetMount());
-	}
 
-	private IEnumerator InteractionWaitForTargetMount()
-	{
-		string lInteractionName = "Mount";
+		StartCoroutine(InteractionWaitForTarget("Mount", (iEntityParam) => {
+			AnimationParameters lAnimationParameters = new AnimationParameters() {
+				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+				AnimationTarget = iEntityParam.gameObject,
+			};
 
-		AEntity.HideNoInteractable(GetItemInteraction(lInteractionName).InteractWith, mEntity);
-		yield return new WaitWhile(() => {
+			List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 
-			if (Input.GetMouseButtonDown(0)) {
+			lInteractionSteps.Add(new InteractionStep {
+				tag = lAnimationParameters,
+				action = MoveToTargetCallback
+			});
 
-				RaycastHit lHit;
-				Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if (Physics.Raycast(lRay, out lHit, 100000, LayerMask.GetMask("dropable"))) {
+			lInteractionSteps.Add(new InteractionStep {
+				tag = lAnimationParameters,
+				action = MountObjectCallback
+			});
 
-					Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
+			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
 
-					// If we don't found EntityParameters, stop with an error.
-					EntityParameters lEntityParam;
-					if ((lEntityParam = lHit.collider.gameObject.GetComponentInParent<EntityParameters>()) == null) {
-						Debug.LogWarning("[TARGET SELECTOR] Exit target selector !");
-						return false;
-					}
-
-					// If Subscribers contain the clicked Entity type use it as target and add animation to timeline
-					if (IsInteractionCanInteractType(lInteractionName, lEntityParam.Type)) {
-						AnimationParameters lAnimationParameters = new AnimationParameters() {
-							TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-							AnimationTarget = lEntityParam.gameObject,
-						};
-
-						List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
-
-						lInteractionSteps.Add(new InteractionStep {
-							tag = lAnimationParameters,
-							action = MoveToTargetCallback
-						});
-
-						lInteractionSteps.Add(new InteractionStep {
-							tag = lAnimationParameters,
-							action = MountObjectCallback
-						});
-
-						TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
-
-						return false;
-					}
-					Debug.LogWarning("[TARGET SELECTOR] The object you click on is not interactable with this object !");
-				}
-
-				return false;
-			}
-			return true;
-		});
-		AEntity.DisableHideNoInteractable();
+		}));
 	}
 
 	private bool MountObjectCallback(object iParams)
@@ -195,67 +161,31 @@ public class HumanInteractable : AInteraction
 
 	private void OnClickTakeObject(AEntity iEntity)
 	{
-		StartCoroutine(InteractionWaitForTargetTakeAsync());
-	}
+		StartCoroutine(InteractionWaitForTarget("Take", (iEntityParameter) => {
+			AnimationParameters lAnimationParameters = new AnimationParameters() {
+				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+				AnimationTarget = iEntityParameter.gameObject,
+			};
 
-	private IEnumerator InteractionWaitForTargetTakeAsync()
-	{
-		string lInteractionName = "Take";
+			List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 
-		AEntity.HideNoInteractable(GetItemInteraction(lInteractionName).InteractWith, mEntity);
-		yield return new WaitWhile(() => {
+			lInteractionSteps.Add(new InteractionStep {
+				tag = lAnimationParameters,
+				action = MoveToTargetCallback
+			});
 
-			if (Input.GetMouseButtonDown(0)) {
+			lInteractionSteps.Add(new InteractionStep {
+				tag = lAnimationParameters,
+				action = TakeObjectAnimationTakeCallback
+			});
 
-				RaycastHit lHit;
-				Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if (Physics.Raycast(lRay, out lHit, 100000, LayerMask.GetMask("dropable"))) {
+			lInteractionSteps.Add(new InteractionStep {
+				tag = lAnimationParameters,
+				action = TakeObjectWaitAnimationEndCallback
+			});
 
-					Debug.DrawRay(lRay.origin, lRay.direction * lHit.distance, Color.red, 1);
-
-					// If we don't found EntityParameters, stop with an error.
-					EntityParameters lEntityParam;
-					if ((lEntityParam = lHit.collider.gameObject.GetComponentInParent<EntityParameters>()) == null) {
-						Debug.LogWarning("[TARGET SELECTOR] Exit target selector !");
-						return false;
-					}
-
-					// If Subscribers contain the clicked Entity type use it as target and add animation to timeline
-					if (IsInteractionCanInteractType(lInteractionName, lEntityParam.Type)) {
-						AnimationParameters lAnimationParameters = new AnimationParameters() {
-							TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-							AnimationTarget = lEntityParam.gameObject,
-						};
-
-						List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
-
-						lInteractionSteps.Add(new InteractionStep {
-							tag = lAnimationParameters,
-							action = MoveToTargetCallback
-						});
-
-						lInteractionSteps.Add(new InteractionStep {
-							tag = lAnimationParameters,
-							action = TakeObjectAnimationTakeCallback
-						});
-
-						lInteractionSteps.Add(new InteractionStep {
-							tag = lAnimationParameters,
-							action = TakeObjectWaitAnimationEndCallback
-						});
-
-						TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
-
-						return false;
-					}
-					Debug.LogWarning("[TARGET SELECTOR] The object you click on is not interactable with this object !");
-				}
-
-				return false;
-			}
-			return true;
-		});
-		AEntity.DisableHideNoInteractable();
+			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
+		}));
 	}
 
 	private bool TakeObjectAnimationTakeCallback(object iParams)
