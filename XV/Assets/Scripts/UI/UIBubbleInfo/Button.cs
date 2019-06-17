@@ -2,5 +2,7 @@
 
 public class Button : UnityEngine.UI.Button
 {
-	public object AttachedValue;
+	public object AttachedValue { get; set; }
+
+	public UIBubbleInfoButton AttachedInfoButton { get; set; }
 }

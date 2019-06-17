@@ -15,6 +15,8 @@ public class UIBubbleInfo : MonoBehaviour
 	//private List<KeyValuePair<string, Button>> mButtons;
 	private List<Button> mButtons;
 
+	private Queue<UIBubbleInfoButton> mStashedButtons;
+
 	[SerializeField]
 	private GameObject GridContainer;
 
@@ -47,6 +49,7 @@ public class UIBubbleInfo : MonoBehaviour
 	private void Start()
 	{
 		mButtons = new List<Button>();
+		mStashedButtons = new Queue<UIBubbleInfoButton>();
 		mCanvasGroup = GetComponent<CanvasGroup>();
 		mContentSizeFitter = GetComponentInChildren<ContentSizeFitter>();
 		mCanvasGroup.alpha = 0F;
@@ -142,6 +145,8 @@ public class UIBubbleInfo : MonoBehaviour
 
 		Button lButtonComponant = lNewButton.GetComponent<Button>();
 
+		lButtonComponant.AttachedInfoButton = iInfoButton;
+
 		lButtonComponant.onClick.AddListener(() => {
 			if (iInfoButton.ClickAction != null)
 				iInfoButton.ClickAction(Parent);
@@ -149,7 +154,7 @@ public class UIBubbleInfo : MonoBehaviour
 
 		//Je viens de rajouter un champ AttachedValue a la class Button de unity
 		if (string.IsNullOrEmpty(iInfoButton.Tag))
-			lButtonComponant.AttachedValue = "untagged"; 
+			lButtonComponant.AttachedValue = "untagged";
 		else
 			lButtonComponant.AttachedValue = iInfoButton.Tag;
 
@@ -212,9 +217,32 @@ public class UIBubbleInfo : MonoBehaviour
 		foreach (Button lButton in mButtons) {
 			if (iExcluded != null && iExcluded.Tag == (string)lButton.AttachedValue)
 				continue;
+
 			lButton.interactable = iInteractable;
 		}
 		ModelName.interactable = iInteractable;
+	}
+
+	public void StashButtons(UIBubbleInfoButton iExcluded = null)
+	{
+		List<UIBubbleInfoButton> lToDestroy = new List<UIBubbleInfoButton>();
+
+		foreach (Button lButton in mButtons) {
+			if (iExcluded != null && iExcluded.Tag == (string)lButton.AttachedValue)
+				continue;
+
+			mStashedButtons.Enqueue(lButton.AttachedInfoButton);
+			lToDestroy.Add(lButton.AttachedInfoButton);
+		}
+
+		foreach (UIBubbleInfoButton lButton in lToDestroy)
+			DestroyButton(lButton.Tag);
+	}
+
+	public void StashPopButtons()
+	{
+		while (mStashedButtons.Count != 0)
+			CreateButton(mStashedButtons.Dequeue());
 	}
 
 	public void OnEndEdit()

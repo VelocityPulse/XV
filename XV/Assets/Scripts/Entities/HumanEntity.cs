@@ -84,6 +84,7 @@ public class HumanEntity : AEntity
 		UIBubbleInfo.Parent = this;
 
 		UIBubbleInfo.CreateButton(new UIBubbleInfoButton {
+			Tag = "Destroy",
 			Text = "Destroy",
 			ClickAction = (iObjectEntity) => {
 				Dispose();

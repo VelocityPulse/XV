@@ -288,6 +288,8 @@ public class HumanInteractable : AInteraction
 		mIsHumanHasMountedObject = true;
 		mEntity.NavMeshObjstacleEnabled = false;
 
+		// Todo : cancel deplacement/move
+
 		mMountObjectInteraction.Enabled = false;
 		//mPushObjectInteraction.Enabled = false;
 		mTakeObjectInteraction.Enabled = false;
@@ -295,7 +297,7 @@ public class HumanInteractable : AInteraction
 		if (!mEntity.ContainsBubbleInfoButton(mUnmountBubbleButton))
 			mEntity.CreateBubbleInfoButton(mUnmountBubbleButton);
 
-		mEntity.SetUIBubbleInteractable(false, mUnmountBubbleButton);
+		mEntity.StashUIBubbleButtons(mUnmountBubbleButton);
 	}
 
 	private void OnUnmount()

@@ -131,6 +131,7 @@ public sealed class MovableEntity : MonoBehaviour
 
 				// Add Move button & Keep track of the button image to edit color
 				lButton = iObj.CreateBubbleInfoButton(new UIBubbleInfoButton {
+					Tag = "Move",
 					Text = "Move",
 					ClickAction = (iObject) => OnMoveClick()
 				});
@@ -139,6 +140,7 @@ public sealed class MovableEntity : MonoBehaviour
 
 				// Add Rotate Button & Keep track of the button image to edit color
 				lButton = iObj.CreateBubbleInfoButton(new UIBubbleInfoButton {
+					Tag = "Rotate",
 					Text = "Rotate",
 					ClickAction = (iObject) => {
 						Debug.LogWarning("Orienter: " + iObject.name + " has been clicked");

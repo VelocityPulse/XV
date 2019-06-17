@@ -190,9 +190,19 @@ public abstract class AEntity : MonoBehaviour
 			mUIBubbleInfo.DestroyButton(iTag);
 	}
 
-	public void SetUIBubbleInteractable(bool iInteractable, UIBubbleInfoButton iExcluded = null)
+	public void SetUIBubbleInteractable(bool iInteractable)
 	{
-		mUIBubbleInfo.SetInteractable(iInteractable, iExcluded);
+		mUIBubbleInfo.SetInteractable(iInteractable);
+	}
+
+	public void StashUIBubbleButtons(UIBubbleInfoButton iExcluded = null)
+	{
+		mUIBubbleInfo.StashButtons(iExcluded);
+	}
+
+	public void StashPopUIBubbleInfoButtons()
+	{
+		mUIBubbleInfo.StashPopButtons();
 	}
 
 	public static void ForEachEntities(Action<AEntity> iAction)
