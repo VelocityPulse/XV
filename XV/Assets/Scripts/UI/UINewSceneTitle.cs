@@ -17,11 +17,12 @@ public enum UISceneTitleResult
 
 public class UINewSceneTitle : MonoBehaviour
 {
+	//IMPORTANT : Do not remove the Button library prefix or it will break the prefab with our overload of Button
 	[SerializeField]
-	private Button createButton;
+	private UnityEngine.UI.Button createButton;
 
 	[SerializeField]
-	private Button cancelButton;
+	private UnityEngine.UI.Button cancelButton;
 
 	[SerializeField]
 	private InputField inputField;

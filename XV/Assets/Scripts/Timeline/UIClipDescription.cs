@@ -11,7 +11,7 @@ public class UIClipDescription : MonoBehaviour
 	private InputField input;
 
 	[SerializeField]
-	private Button okButton;
+	private UnityEngine.UI.Button okButton;
 
 	private TimelineEvent.Data mCurrentData;
 

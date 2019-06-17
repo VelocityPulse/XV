@@ -31,6 +31,8 @@ public class HumanInteractable : AInteraction
 
 	private UIBubbleInfoButton mReleasePushBubbleButton;
 
+	private bool mIsHumanHasMountedObject;
+
 	protected override void Start()
 	{
 		base.Start();
@@ -190,6 +192,9 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObjectAnimationTakeCallback(object iParams)
 	{
+		if (mIsHumanHasMountedObject)
+			return true;
+		
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
@@ -220,6 +225,9 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObjectWaitAnimationEndCallback(object iParams)
 	{
+		if (mIsHumanHasMountedObject)
+			return true;
+
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
 			return true;
 		return false;
@@ -255,6 +263,9 @@ public class HumanInteractable : AInteraction
 
 	private bool MoveToTargetCallback(object iParams)
 	{
+		if (mIsHumanHasMountedObject)
+			return true;
+
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
@@ -272,9 +283,19 @@ public class HumanInteractable : AInteraction
 
 	private void OnMount()
 	{
+		ResetAnimator();
+
+		mIsHumanHasMountedObject = true;
+		mEntity.NavMeshObjstacleEnabled = false;
+
 		mMountObjectInteraction.Enabled = false;
-		//if ()
-		// maybe continue here 
+		//mPushObjectInteraction.Enabled = false;
+		mTakeObjectInteraction.Enabled = false;
+
+		if (!mEntity.ContainsBubbleInfoButton(mUnmountBubbleButton))
+			mEntity.CreateBubbleInfoButton(mUnmountBubbleButton);
+
+		mEntity.SetUIBubbleInteractable(false, mUnmountBubbleButton);
 	}
 
 	private void OnUnmount()
@@ -284,14 +305,19 @@ public class HumanInteractable : AInteraction
 
 	private void OnHold()
 	{
+		mMountObjectInteraction.Enabled = false;
+		//mPushObjectInteraction.Enabled = false;
 		mTakeObjectInteraction.Enabled = false;
-		if (!mEntity.ContainsBubbleInfoButton(mTakeOffBubbleButton.Tag))
+
+		if (!mEntity.ContainsBubbleInfoButton(mTakeOffBubbleButton))
 			mEntity.CreateBubbleInfoButton(mTakeOffBubbleButton);
 	}
 
 	private void OnUnhold()
 	{
 		mEntity.DestroyBubbleInfoButton(mTakeOffBubbleButton);
+		mMountObjectInteraction.Enabled = true;
+		//mPushObjectInteraction.Enabled = true;
 		mTakeObjectInteraction.Enabled = true;
 		if (mObjectHeld != null) {
 			mObjectHeld.NavMeshObjstacleEnabled = true;

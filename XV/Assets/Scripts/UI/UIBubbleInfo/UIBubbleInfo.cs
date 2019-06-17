@@ -12,7 +12,8 @@ public class UIBubbleInfo : MonoBehaviour
 	private CanvasGroup mCanvasGroup;
 	private ContentSizeFitter mContentSizeFitter;
 
-	private List<KeyValuePair<string, Button>> mButtons;
+	//private List<KeyValuePair<string, Button>> mButtons;
+	private List<Button> mButtons;
 
 	[SerializeField]
 	private GameObject GridContainer;
@@ -26,46 +27,46 @@ public class UIBubbleInfo : MonoBehaviour
 	[SerializeField]
 	private InputField ModelName;
 
-    [SerializeField]
-    private InputField SpeedInput;
+	[SerializeField]
+	private InputField SpeedInput;
 
-    public List<Action<float>> OnEndEditSpeedCallback { get; private set; }
+	public List<Action<float>> OnEndEditSpeedCallback { get; private set; }
 
-    private float mSpeed;
+	private float mSpeed;
 
-    /// <summary>
-    /// The Speed coeffcient input given by the user.
-    /// If the user give an invalid input, or if an error occured a default value is used.
-    /// Default Value: 100
-    /// </summary>
-    public float Speed { get { return mSpeed; } }
+	/// <summary>
+	/// The Speed coeffcient input given by the user.
+	/// If the user give an invalid input, or if an error occured a default value is used.
+	/// Default Value: 100
+	/// </summary>
+	public float Speed { get { return mSpeed; } }
 
-    public AEntity Parent { get; set; }
+	public AEntity Parent { get; set; }
 
 	// Use this for initialization
 	private void Start()
 	{
-		mButtons = new List<KeyValuePair<string, Button>>();
+		mButtons = new List<Button>();
 		mCanvasGroup = GetComponent<CanvasGroup>();
 		mContentSizeFitter = GetComponentInChildren<ContentSizeFitter>();
 		mCanvasGroup.alpha = 0F;
 		mCanvasGroup.blocksRaycasts = false;
-        if (SpeedInput == null) {
-            Debug.LogError("SpeedInput reference is missing in UIBubbleInfo.");
-            mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
-            FireOnEndEditSpeedCallback();
-        } else {
-            // Add treatment of speed input on end edit
-            SpeedInput.onEndEdit.AddListener(OnEndEditSpeed);
-            // Execute callback at start (Treatment of the default value store in the InputField)
-            OnEndEditSpeed(SpeedInput.text);
-        }
+		if (SpeedInput == null) {
+			Debug.LogError("SpeedInput reference is missing in UIBubbleInfo.");
+			mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+			FireOnEndEditSpeedCallback();
+		} else {
+			// Add treatment of speed input on end edit
+			SpeedInput.onEndEdit.AddListener(OnEndEditSpeed);
+			// Execute callback at start (Treatment of the default value store in the InputField)
+			OnEndEditSpeed(SpeedInput.text);
+		}
 	}
 
 	private void Awake()
 	{
 		RefreshCanvas();
-        OnEndEditSpeedCallback = new List<Action<float>>();
+		OnEndEditSpeedCallback = new List<Action<float>>();
 	}
 
 	// Update is called once per frame
@@ -85,51 +86,51 @@ public class UIBubbleInfo : MonoBehaviour
 		}
 	}
 
-    /// <summary>
-    /// Try to parse the Speed InputField, if the input is not a number,
-    /// or if it's not in range [0.1;10], the user is Notify and the default speed value is used instead.
-    /// </summary>
-    /// <param name="iSpeedInput"></param>
-    private void OnEndEditSpeed(string iSpeedInput)
-    {
-        // If the user doesn't give an input, use default value.
-        if (string.IsNullOrEmpty(iSpeedInput))
-            mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
-        else {
+	/// <summary>
+	/// Try to parse the Speed InputField, if the input is not a number,
+	/// or if it's not in range [0.1;10], the user is Notify and the default speed value is used instead.
+	/// </summary>
+	/// <param name="iSpeedInput"></param>
+	private void OnEndEditSpeed(string iSpeedInput)
+	{
+		// If the user doesn't give an input, use default value.
+		if (string.IsNullOrEmpty(iSpeedInput))
+			mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+		else {
 
-            try {
-                mSpeed = float.Parse(iSpeedInput);
-                if (mSpeed < MovableEntity.MIN_SPEED_COEFF || mSpeed > MovableEntity.MAX_SPEED_COEFF)
-                    mSpeed = -1F;
-            } catch (Exception lException) {
-                Debug.LogError("UIBubbleInfo - Error while retrieving float in SpeedInput:" + lException.Message);
-                mSpeed = -1;
-            }
-            if (mSpeed < 0F) {
-                XV_UI.Instance.Notify(2.5F, "Enter a speed coefficient between" + MovableEntity.MIN_SPEED_COEFF + "% and " + MovableEntity.MAX_SPEED_COEFF + "%.");
-                SpeedInput.text = null;
-                mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
-            }
-        }
-        FireOnEndEditSpeedCallback();
-    }
+			try {
+				mSpeed = float.Parse(iSpeedInput);
+				if (mSpeed < MovableEntity.MIN_SPEED_COEFF || mSpeed > MovableEntity.MAX_SPEED_COEFF)
+					mSpeed = -1F;
+			} catch (Exception lException) {
+				Debug.LogError("UIBubbleInfo - Error while retrieving float in SpeedInput:" + lException.Message);
+				mSpeed = -1;
+			}
+			if (mSpeed < 0F) {
+				XV_UI.Instance.Notify(2.5F, "Enter a speed coefficient between" + MovableEntity.MIN_SPEED_COEFF + "% and " + MovableEntity.MAX_SPEED_COEFF + "%.");
+				SpeedInput.text = null;
+				mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+			}
+		}
+		FireOnEndEditSpeedCallback();
+	}
 
-    private void FireOnEndEditSpeedCallback()
-    {
-        // Execute all code in OnEndEditSpeedCallback
-        foreach (Action<float> lOnEndCallback in OnEndEditSpeedCallback) {
-            lOnEndCallback(mSpeed);
-        }
-    }
+	private void FireOnEndEditSpeedCallback()
+	{
+		// Execute all code in OnEndEditSpeedCallback
+		foreach (Action<float> lOnEndCallback in OnEndEditSpeedCallback) {
+			lOnEndCallback(mSpeed);
+		}
+	}
 
-    /// <summary>
-    /// Hide the Speed Input field in the BubbleInfo.
-    /// </summary>
-    public void HideSpeedInput()
-    {
-        SpeedInput.gameObject.transform.parent.gameObject.SetActive(false);
-        mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
-    }
+	/// <summary>
+	/// Hide the Speed Input field in the BubbleInfo.
+	/// </summary>
+	public void HideSpeedInput()
+	{
+		SpeedInput.gameObject.transform.parent.gameObject.SetActive(false);
+		mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+	}
 
 	public Button CreateButton(UIBubbleInfoButton iInfoButton)
 	{
@@ -140,15 +141,19 @@ public class UIBubbleInfo : MonoBehaviour
 		lNewButton.transform.SetSiblingIndex(0); // puts the buttons before the selectorColor line
 
 		Button lButtonComponant = lNewButton.GetComponent<Button>();
+
 		lButtonComponant.onClick.AddListener(() => {
 			if (iInfoButton.ClickAction != null)
 				iInfoButton.ClickAction(Parent);
 		});
 
+		//Je viens de rajouter un champ AttachedValue a la class Button de unity
 		if (string.IsNullOrEmpty(iInfoButton.Tag))
-			mButtons.Add(new KeyValuePair<string, Button>("untagged", lButtonComponant));
+			lButtonComponant.AttachedValue = "untagged"; 
 		else
-			mButtons.Add(new KeyValuePair<string, Button>(iInfoButton.Tag, lButtonComponant));
+			lButtonComponant.AttachedValue = iInfoButton.Tag;
+
+		mButtons.Add(lButtonComponant);
 
 		lNewButton.GetComponentInChildren<Text>().text = iInfoButton.Text;
 		lNewButton.name = iInfoButton.Text;
@@ -161,8 +166,8 @@ public class UIBubbleInfo : MonoBehaviour
 	{
 		if (string.IsNullOrEmpty(iTag))
 			return false;
-		foreach (KeyValuePair<string, Button> lButton in mButtons) {
-			if (lButton.Key == iTag) {
+		foreach (Button lButton in mButtons) {
+			if (iTag == (string)lButton.AttachedValue) {
 				return true;
 			}
 		}
@@ -173,10 +178,10 @@ public class UIBubbleInfo : MonoBehaviour
 	{
 		if (string.IsNullOrEmpty(iTag))
 			return;
-		foreach (KeyValuePair<string, Button> lButton in mButtons) {
-			if (lButton.Key == iTag) {
+		foreach (Button lButton in mButtons) {
+			if (iTag == (string)lButton.AttachedValue) {
 				mButtons.Remove(lButton);
-				Destroy(lButton.Value.gameObject);
+				Destroy(lButton.gameObject);
 				Canvas.ForceUpdateCanvases();
 				return;
 			}
@@ -188,25 +193,26 @@ public class UIBubbleInfo : MonoBehaviour
 		ModelName.text = iName;
 	}
 
-    public void SetUISpeed(float iSpeed)
-    {
-        if (SpeedInput == null) {
-            mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
-            return;
-        }
-        if (iSpeed < MovableEntity.MIN_SPEED_COEFF || iSpeed > MovableEntity.MAX_SPEED_COEFF) {
-            Debug.LogWarning("[SET UI SPEED] Given speed was wrong, the default value was used instead.");
-            mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
-        }
-        else
-            mSpeed = iSpeed;
-        SpeedInput.text = mSpeed.ToString();
-    }
-
-    public void SetInteractable(bool iInteractable)
+	public void SetUISpeed(float iSpeed)
 	{
-		foreach (KeyValuePair<string, Button> lButton in mButtons) {
-			lButton.Value.interactable = iInteractable;
+		if (SpeedInput == null) {
+			mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+			return;
+		}
+		if (iSpeed < MovableEntity.MIN_SPEED_COEFF || iSpeed > MovableEntity.MAX_SPEED_COEFF) {
+			Debug.LogWarning("[SET UI SPEED] Given speed was wrong, the default value was used instead.");
+			mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
+		} else
+			mSpeed = iSpeed;
+		SpeedInput.text = mSpeed.ToString();
+	}
+
+	public void SetInteractable(bool iInteractable, UIBubbleInfoButton iExcluded = null)
+	{
+		foreach (Button lButton in mButtons) {
+			if (iExcluded != null && iExcluded.Tag == (string)lButton.AttachedValue)
+				continue;
+			lButton.interactable = iInteractable;
 		}
 		ModelName.interactable = iInteractable;
 	}

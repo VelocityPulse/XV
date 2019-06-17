@@ -37,21 +37,23 @@ public sealed class UISceneBrowser : MonoBehaviour
 	[SerializeField]
 	private GameObject UIGridElement;
 
+	//IMPORTANT : Do not remove the Button library prefix or it will break the prefab with our overload of Button
+
 	[Header("SceneBrowser/Bottom/ButtonContainer1/NewScene")]
 	[SerializeField]
-	private Button NewSceneButton;
+	private UnityEngine.UI.Button NewSceneButton;
 
 	[Header("SceneBrowser/Bottom/ButtonContainer1/OpenFile")]
 	[SerializeField]
-	private Button OpenButton;
+	private UnityEngine.UI.Button OpenButton;
 
 	[Header("SceneBrowser/Bottom/ButtonContainer2/Cancel")]
 	[SerializeField]
-	private Button CancelButton;
+	private UnityEngine.UI.Button CancelButton;
 
 	[Header("SceneBrowser/Bottom/ButtonContainer2/Remove")]
 	[SerializeField]
-	private Button RemoveButton;
+	private UnityEngine.UI.Button RemoveButton;
 
 	// Use this for initialization
 	private void Start()
@@ -118,7 +120,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 				mFileUIParam.Text.text = lFileName;
 			}
 			GameObject lElement = Instantiate(mFileUITemplate, UIGridElement.transform);
-			lElement.GetComponent<Button>().onClick.AddListener(() => { OnClickElement(lElement); });
+			lElement.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => { OnClickElement(lElement); });
 		}
 
 		if (GameManager.Instance.CurrentDataScene == null)

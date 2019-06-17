@@ -54,11 +54,11 @@ public abstract class AEntity : MonoBehaviour
 
 	protected NavMeshObstacle mNavMeshObstacle;
 
-	protected DataScene mDataScene;
+	protected bool mBusy;
 
 	protected Vector3 mSize;
 
-	protected bool mBusy;
+	protected DataScene mDataScene;
 
 	private AObjectDataScene mODS;
 
@@ -110,7 +110,7 @@ public abstract class AEntity : MonoBehaviour
 
 		// SetEntity in any movable entity
 		if (mEntityParameters.Type == EntityParameters.EntityType.CUPBOARD ||
-		    	mEntityParameters.Type == EntityParameters.EntityType.TROLLEY ||
+				mEntityParameters.Type == EntityParameters.EntityType.TROLLEY ||
 				mEntityParameters.Type == EntityParameters.EntityType.VEHICLE ||
 		   		mEntityParameters.Type == EntityParameters.EntityType.HUMAN) {
 
@@ -134,38 +134,43 @@ public abstract class AEntity : MonoBehaviour
 		mUIBubbleInfo = iBubbleInfo;
 
 		mUIBubbleInfo.Parent = this;
-        if (mODS != null) {
-            mUIBubbleInfo.SetUIName(mODS.Name);
-            mUIBubbleInfo.SetUISpeed(mODS.Speed);
-        } else
-            Debug.LogError("[AENTITY] mODS is null when setting UIBubbleInfo");
+		if (mODS != null) {
+			mUIBubbleInfo.SetUIName(mODS.Name);
+			mUIBubbleInfo.SetUISpeed(mODS.Speed);
+		} else
+			Debug.LogError("[AENTITY] mODS is null when setting UIBubbleInfo");
 		mUIBubbleInfo.RefreshCanvas();
 
-        // Add code to OnEndEdit SpeedInput callback to serialize the value
-        mUIBubbleInfo.OnEndEditSpeedCallback.Add((iNewSpeed) => {
-            mODS.Speed = iNewSpeed;
-            mDataScene.Serialize();
-        });
+		// Add code to OnEndEdit SpeedInput callback to serialize the value
+		mUIBubbleInfo.OnEndEditSpeedCallback.Add((iNewSpeed) => {
+			mODS.Speed = iNewSpeed;
+			mDataScene.Serialize();
+		});
 		return this;
 	}
 
-    /// <summary>
-    /// The Speed input given by the user.
-    /// If the user give an invalid input, or if an error occured a default value is used.
-    /// Default Value: 1
-    /// </summary>
-    public float GetSpeedInput()
-    {
-        return mUIBubbleInfo.Speed;
-    }
+	/// <summary>
+	/// The Speed input given by the user.
+	/// If the user give an invalid input, or if an error occured a default value is used.
+	/// Default Value: 1
+	/// </summary>
+	public float GetSpeedInput()
+	{
+		return mUIBubbleInfo.Speed;
+	}
 
-	public Button CreateBubbleInfoButton(UIBubbleInfoButton iButtonInfo)
+	public Button CreateBubbleInfoButton(UIBubbleInfoButton iInfoButton)
 	{
 		if (mUIBubbleInfo == null) {
 			Debug.LogError("[AENTITY] mUIBubbleInfo is null when create button");
 			return null;
 		}
-		return mUIBubbleInfo.CreateButton(iButtonInfo);
+		return mUIBubbleInfo.CreateButton(iInfoButton);
+	}
+
+	public bool ContainsBubbleInfoButton(UIBubbleInfoButton iInfoButton)
+	{
+		return mUIBubbleInfo.ContainsButton(iInfoButton.Tag);
 	}
 
 	public bool ContainsBubbleInfoButton(string iTag)
@@ -173,16 +178,21 @@ public abstract class AEntity : MonoBehaviour
 		return mUIBubbleInfo.ContainsButton(iTag);
 	}
 
-	public void DestroyBubbleInfoButton(UIBubbleInfoButton iButtonInfo)
+	public void DestroyBubbleInfoButton(UIBubbleInfoButton iInfoButton)
 	{
 		if (mUIBubbleInfo != null)
-			mUIBubbleInfo.DestroyButton(iButtonInfo.Tag);
+			mUIBubbleInfo.DestroyButton(iInfoButton.Tag);
 	}
 
 	public void DestroyBubbleInfoButton(string iTag)
 	{
 		if (mUIBubbleInfo != null)
 			mUIBubbleInfo.DestroyButton(iTag);
+	}
+
+	public void SetUIBubbleInteractable(bool iInteractable, UIBubbleInfoButton iExcluded = null)
+	{
+		mUIBubbleInfo.SetInteractable(iInteractable, iExcluded);
 	}
 
 	public static void ForEachEntities(Action<AEntity> iAction)

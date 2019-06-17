@@ -41,21 +41,23 @@ public sealed class UIFileBrowser : MonoBehaviour
 	[SerializeField]
 	private GameObject UIGridElement;
 
+	//IMPORTANT : Do not remove the Button library prefix or it will break the prefab with our overload of Button
+
 	[Header("Please attach: FileBrowser/Top/ButtonContainer/GoBackPath")]
 	[SerializeField]
-	private Button GoBack;
+	private UnityEngine.UI.Button GoBack;
 
 	[Header("Please attach: FileBrowser/Top/ButtonContainer/GoToHome")]
 	[SerializeField]
-	private Button GoHome;
+	private UnityEngine.UI.Button GoHome;
 
 	[Header("Please attach: FileBrowser/Bottom/ButtonContainer/OpenFile")]
 	[SerializeField]
-	private Button OpenFile;
+	private UnityEngine.UI.Button OpenFile;
 
 	[Header("Please attach: FileBrowser/Bottom/ButtonContainer/Cancel")]
 	[SerializeField]
-	private Button Cancel;
+	private UnityEngine.UI.Button Cancel;
 
 	[Header("Please attach: FileBrowser/Top/PWD/TextField/Text")]
 	[SerializeField]

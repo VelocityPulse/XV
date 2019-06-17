@@ -19,10 +19,10 @@ public class UIConfirmPopup : MonoBehaviour
 	private Text confirmText;
 
 	[SerializeField]
-	private Button leftButton;
+	private UnityEngine.UI.Button leftButton;
 
 	[SerializeField]
-	private Button rightButton;
+	private UnityEngine.UI.Button rightButton;
 
 	private Text leftButtonText;
 
