@@ -30,9 +30,6 @@ public class Recorder : MonoBehaviour
 
 	public RecorderStatus RecorderStatus { get; private set; }
 
-	private int mWidth;
-	private int mHeight;
-
 	private VideoCapture mVideoCapture;
 
 	private void Start()

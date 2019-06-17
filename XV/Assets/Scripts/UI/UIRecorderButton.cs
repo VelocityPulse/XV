@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
+[RequireComponent(typeof(UnityEngine.UI.Button))]
 [RequireComponent(typeof(Image))]
 public class UIRecorderButton : MonoBehaviour
 {
 	private Image mImage;
-	private Button mButton;
+	private UnityEngine.UI.Button mButton;
 	private Text mText;
 
 	private Recorder Recorder { get { return GameManager.Instance.Recorder; } }
@@ -16,7 +16,7 @@ public class UIRecorderButton : MonoBehaviour
 	private void Awake()
 	{
 		mImage = GetComponent<Image>();
-		mButton = GetComponent<Button>();
+		mButton = GetComponent<UnityEngine.UI.Button>();
 		mText = GetComponentInChildren<Text>();
 	}
 
