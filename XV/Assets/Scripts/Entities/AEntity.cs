@@ -48,6 +48,12 @@ public abstract class AEntity : MonoBehaviour
 		}
 	}
 
+	public bool LockWorldEditorDeplacement
+	{
+		get { return mLockEditorDeplacement; }
+		set { mLockEditorDeplacement = value; }
+	}
+
 	protected UIBubbleInfo mUIBubbleInfo;
 
 	protected EntityParameters mEntityParameters;
@@ -55,6 +61,8 @@ public abstract class AEntity : MonoBehaviour
 	protected NavMeshObstacle mNavMeshObstacle;
 
 	protected bool mBusy;
+
+	protected bool mLockEditorDeplacement;
 
 	protected Vector3 mSize;
 

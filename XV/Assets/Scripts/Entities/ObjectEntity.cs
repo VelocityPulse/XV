@@ -65,7 +65,7 @@ public class ObjectEntity : AEntity
 
 	private void Update()
 	{
-		if (!mSelected)
+		if (!mSelected || mLockEditorDeplacement)
 			return;
 
 		// Click mouse section
@@ -289,7 +289,7 @@ public class ObjectEntity : AEntity
 
 	private void OnMouseOver()
 	{
-		if (!mSelected || mBusy || mControlPushed)
+		if (!mSelected || mBusy || mControlPushed || mLockEditorDeplacement)
 			return;
 
 		if (!mMouseOverObjectEntity && mSelected && !mMouseDragObjectEntity)
@@ -299,7 +299,7 @@ public class ObjectEntity : AEntity
 
 	private void OnMouseDrag()
 	{
-		if (!mSelected || mBusy || mControlPushed)
+		if (!mSelected || mBusy || mControlPushed || mLockEditorDeplacement)
 			return;
 
 		if (!mMouseDragObjectEntity) {
@@ -330,7 +330,7 @@ public class ObjectEntity : AEntity
 		if (EventSystem.current.IsPointerOverGameObject() || mControlPushed)
 			return;
 
-		if (!mSelected || mBusy) {
+		if (!mSelected || mBusy || mLockEditorDeplacement) {
 			GameManager.Instance.SelectedEntity = this;
 			mUIBubbleInfo.Display();
 		} else {

@@ -287,8 +287,7 @@ public class HumanInteractable : AInteraction
 
 		mIsHumanHasMountedObject = true;
 		mEntity.NavMeshObjstacleEnabled = false;
-
-		// Todo : cancel deplacement/move
+		mEntity.LockWorldEditorDeplacement = true;
 
 		mMountObjectInteraction.Enabled = false;
 		//mPushObjectInteraction.Enabled = false;
