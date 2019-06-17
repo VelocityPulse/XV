@@ -212,6 +212,8 @@ public abstract class AInteraction : MonoBehaviour
 
 	}
 
+	public abstract void ResetWorldState();
+
 	protected abstract void PostPoppingEntity();
 
 	/// <summary>

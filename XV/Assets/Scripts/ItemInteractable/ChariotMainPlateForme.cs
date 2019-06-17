@@ -4,7 +4,11 @@ using UnityEngine;
 
 public sealed class ChariotMainPlateForme : AInteraction {
 
-    protected override void PostPoppingEntity()
+	protected override void PostPoppingEntity()
     {
     }
+
+	public override void ResetWorldState()
+	{
+	}
 }

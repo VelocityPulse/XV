@@ -7,7 +7,12 @@ using UnityEngine;
 /// </summary>
 public sealed class GenericInteractable: AInteraction {
 
-    protected override void PostPoppingEntity()
+
+	protected override void PostPoppingEntity()
     {
+		
     }
+
+	public override void ResetWorldState() {}
+
 }

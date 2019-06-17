@@ -116,6 +116,10 @@ public class ObjectEntity : AEntity
 	public override void ResetWorldState()
 	{
 		base.ResetWorldState();
+
+		ManifactureInteractable lManifactureInteractable;
+		if ((lManifactureInteractable = GetComponent<ManifactureInteractable>()) != null)
+			lManifactureInteractable.ResetWorldState();
 	}
 
 	// Place all the code you want to execute only after all the mesh enable animations

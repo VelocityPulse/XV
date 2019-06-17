@@ -110,17 +110,20 @@ public class ManifactureInteractable : AInteraction
 
 		if (lTarget == null || mObjectHeld != null)
 			return true;
+		
 
 		mObjectHeld = lTarget.GetComponent<AEntity>();
 		mObjectHeld.Selected = false;
 		mObjectHeld.NavMeshObjstacleEnabled = false;
+		mObjectHeld.LockWorldEditorDeplacement = true;
+		mObjectHeld.StashUIBubbleButtons();
 
 		lTarget.transform.parent = gameObject.transform;
 		lTarget.transform.localPosition = mEntity.EntityParameters.VehiculeHoldPosition;
 		lTarget.transform.localRotation = Quaternion.Euler(0, 0, 0);
 		OnHold();
 
-		return false;
+		return true;
 	}
 
 	#endregion TakeObject
@@ -146,9 +149,10 @@ public class ManifactureInteractable : AInteraction
 
 	private bool TakeOffObjectCallback(object iParams)
 	{
-		//ResetAnimator();
 		mObjectHeld.transform.localPosition = mEntity.EntityParameters.VehiculeDropPosition;
 		mObjectHeld.transform.parent = null;
+		mObjectHeld.LockWorldEditorDeplacement = false;
+		mObjectHeld.StashPopUIBubbleInfoButtons();
 		OnUnhold();
 		return true;
 	}
@@ -173,7 +177,6 @@ public class ManifactureInteractable : AInteraction
 			Debug.LogWarning("[HUMAN INTERACTABLE] Object Held shouldn't be null in OnUnhold");
 	}
 
-
 	public void HoldHuman(HumanInteractable iHuman)
 	{
 		iHuman.transform.parent = transform;
@@ -187,6 +190,11 @@ public class ManifactureInteractable : AInteraction
 		iHuman.transform.parent = null;
 	}
 
+	public override void ResetWorldState()
+	{
+		if (mObjectHeld != null)
+			OnUnhold();
+	}
 
 	private void OnStartMovement()
 	{

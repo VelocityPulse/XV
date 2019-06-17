@@ -360,7 +360,7 @@ public class HumanInteractable : AInteraction
 		return true;
 	}
 
-	public void ResetWorldState()
+	public override void ResetWorldState()
 	{
 		if (mObjectHeld != null)
 			OnUnhold();

@@ -32,9 +32,9 @@ public sealed class MovableEntity : MonoBehaviour
 		END
 	}
 
-    public static readonly float MAX_SPEED_COEFF = 200;
+    public static readonly float MAX_SPEED_COEFF = 500F;
 
-    public static readonly float DEFAULT_SPEED_COEFF = 100F;
+    public static readonly float DEFAULT_SPEED_COEFF = 500F;
 
     public static readonly float MIN_SPEED_COEFF = 30F;
 
@@ -280,8 +280,6 @@ public sealed class MovableEntity : MonoBehaviour
             // Compute speed
             float lAgentSpeed = CONSTANT_SPEED_VALUE * lSpeedRatio;
             float lAgentAcceleration = CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
-
-            // TODO Calcul movement duration ...
 
             // Add the code that do the animation in the Action timeline
             TimelineManager.Instance.AddAnimation(gameObject, iInfo => {

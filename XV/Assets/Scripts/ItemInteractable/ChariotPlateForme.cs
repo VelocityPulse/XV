@@ -120,4 +120,9 @@ public sealed class ChariotPlateForme : AInteraction
 		Debug.Log("---- DROP AN OBJECT ANIMATIONS ----");
 		return true;
 	}
+
+	public override void ResetWorldState()
+	{
+
+	}
 }
