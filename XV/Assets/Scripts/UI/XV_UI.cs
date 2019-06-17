@@ -19,6 +19,9 @@ public sealed class XV_UI : MonoBehaviour
 	private CanvasGroup UIToolBarLockerScreen;
 
 	[SerializeField]
+	private CanvasGroup UITimelinePanelLockerScreen;
+
+	[SerializeField]
 	private UIConfirmPopup uIConfirmPopup;
 
 	[SerializeField]
@@ -71,10 +74,15 @@ public sealed class XV_UI : MonoBehaviour
 			mIsGUILocked = true;
 			UIModelManagerLockerScreen.alpha = 0F;
 			UIToolBarLockerScreen.alpha = 0F;
+			UITimelinePanelLockerScreen.alpha = 0F;
+
 			UIModelManagerLockerScreen.gameObject.SetActive(true);
 			UIToolBarLockerScreen.gameObject.SetActive(true);
+			UITimelinePanelLockerScreen.gameObject.SetActive(true);
+
 			StartCoroutine(Utils.FadeToAsync(1F, 0.5F, UIModelManagerLockerScreen));
 			StartCoroutine(Utils.FadeToAsync(1F, 0.5F, UIToolBarLockerScreen));
+			StartCoroutine(Utils.FadeToAsync(1F, 0.5F, UITimelinePanelLockerScreen));
 		}
 	}
 
@@ -82,12 +90,17 @@ public sealed class XV_UI : MonoBehaviour
 	{
 		if (mIsGUILocked) {
 			mIsGUILocked = false;
+
 			UIModelManagerLockerScreen.alpha = 1F;
 			UIToolBarLockerScreen.alpha = 1f;
+			UITimelinePanelLockerScreen.alpha = 1F;
+
 			StartCoroutine(Utils.FadeToAsync(0F, 0.5F, UIModelManagerLockerScreen,
 											 () => { UIModelManagerLockerScreen.gameObject.SetActive(false); }));
 			StartCoroutine(Utils.FadeToAsync(0F, 0.5F, UIToolBarLockerScreen,
 											 () => { UIToolBarLockerScreen.gameObject.SetActive(false); }));
+			StartCoroutine(Utils.FadeToAsync(0F, 0.5F, UITimelinePanelLockerScreen,
+			                                 () => { UITimelinePanelLockerScreen.gameObject.SetActive(false); }));
 		}
 	}
 }
