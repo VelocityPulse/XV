@@ -100,6 +100,7 @@ public class HumanInteractable : AInteraction
 			ClickAction = OnClickUnmount
 		};
 
+		CheckAndAddInteractionsSaved();
 	}
 
 	private void OnDestroy()
@@ -116,8 +117,8 @@ public class HumanInteractable : AInteraction
 
 	private void OnClickMountObject(AEntity iEntity)
 	{
-
 		StartCoroutine(InteractionWaitForTarget("Mount", (iEntityParam) => {
+
 			AnimationParameters lAnimationParameters = new AnimationParameters() {
 				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 				AnimationTarget = iEntityParam.gameObject,
@@ -136,6 +137,13 @@ public class HumanInteractable : AInteraction
 			});
 
 			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
+
+			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
+				InteractionType = HumanInteractionType.MOUNT,
+				TargetGUID = iEntity.AODS.GUID,
+				Time = TimelineManager.Instance.Time
+			});
+			GameManager.Instance.CurrentDataScene.Serialize();
 
 		}));
 	}
@@ -173,6 +181,12 @@ public class HumanInteractable : AInteraction
 		});
 
 		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+
+		GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
+			InteractionType = HumanInteractionType.UNMOUNT,
+			Time = TimelineManager.Instance.Time
+		});
+		GameManager.Instance.CurrentDataScene.Serialize();
 	}
 
 	private bool UnmountObjectCallback(object iParams)
@@ -251,6 +265,13 @@ public class HumanInteractable : AInteraction
 			});
 
 			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
+
+			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
+				InteractionType = HumanInteractionType.TAKE,
+				TargetGUID = iEntity.AODS.GUID,
+				Time = TimelineManager.Instance.Time
+			});
+			GameManager.Instance.CurrentDataScene.Serialize();
 		}));
 	}
 
@@ -325,6 +346,12 @@ public class HumanInteractable : AInteraction
 		});
 
 		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+
+		GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
+			InteractionType = HumanInteractionType.TAKEOFF,
+			Time = TimelineManager.Instance.Time
+		});
+		GameManager.Instance.CurrentDataScene.Serialize();
 	}
 
 	private bool TakeOffObjectCallback(object iParams)
@@ -412,6 +439,126 @@ public class HumanInteractable : AInteraction
 			mAnimator.SetFloat("Forward", 0F);
 		else
 			mAnimator.SetBool("WalkingWithBox", false);
+	}
+
+	private void CheckAndAddInteractionsSaved()
+	{
+		List<HumanInteraction> lMovableAnimationList = GameManager.Instance.TimeLineSerialized.HumanInteractionList;
+		string lMyGUID = mEntity.AODS.GUID;
+
+		foreach (HumanInteraction lInter in lMovableAnimationList) {
+
+			AnimationParameters lAnimationParameters;
+			List<InteractionStep> lInteractionSteps;
+
+			switch (lInter.InteractionType) {
+			case HumanInteractionType.MOUNT:
+
+				AEntity lEntity = AEntity.FindGUID(lInter.TargetGUID);
+				if (lEntity == null) {
+					Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
+					continue;
+				}
+
+				lAnimationParameters = new AnimationParameters() {
+					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+					AnimationTarget = lEntity.gameObject,
+				};
+
+				lInteractionSteps = new List<InteractionStep>();
+
+				lInteractionSteps.Add(new InteractionStep {
+					tag = lAnimationParameters,
+					action = MoveToTargetCallback
+				});
+
+				lInteractionSteps.Add(new InteractionStep {
+					tag = lAnimationParameters,
+					action = MountObjectCallback
+				});
+
+				TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
+
+				break;
+
+			case HumanInteractionType.UNMOUNT:
+
+				lAnimationParameters = new AnimationParameters() {
+					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+				};
+
+				lInteractionSteps = new List<InteractionStep>();
+
+				lInteractionSteps.Add(new InteractionStep {
+					tag = lAnimationParameters,
+					action = UnmountObjectCallback
+				});
+
+				TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
+
+				break;
+
+			case HumanInteractionType.TAKE:
+
+				lEntity = AEntity.FindGUID(lInter.TargetGUID);
+				if (lEntity == null) {
+					Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
+					continue;
+				}
+
+				lAnimationParameters = new AnimationParameters() {
+					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+					AnimationTarget = lEntity.gameObject,
+				};
+
+				lInteractionSteps = new List<InteractionStep>();
+
+				lInteractionSteps.Add(new InteractionStep {
+					tag = lAnimationParameters,
+					action = MoveToTargetCallback
+				});
+
+				lInteractionSteps.Add(new InteractionStep {
+					tag = lAnimationParameters,
+					action = TakeObjectAnimationTakeCallback
+				});
+
+				lInteractionSteps.Add(new InteractionStep {
+					tag = lAnimationParameters,
+					action = TakeObjectWaitAnimationEndCallback
+				});
+
+				TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
+
+				break;
+
+			case HumanInteractionType.TAKEOFF:
+
+				lAnimationParameters = new AnimationParameters() {
+					TargetType = AnimationParameters.AnimationTargetType.ENTITY
+				};
+
+				lInteractionSteps = new List<InteractionStep>();
+
+				lInteractionSteps.Add(new InteractionStep {
+					tag = lAnimationParameters,
+					action = TakeOffObjectCallback
+				});
+
+				TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
+
+				break;
+
+			case HumanInteractionType.PUSH:
+				// lol slt
+				break;
+
+			case HumanInteractionType.STOP_PUSH:
+				break;
+
+			}
+
+		}
 	}
 
 }

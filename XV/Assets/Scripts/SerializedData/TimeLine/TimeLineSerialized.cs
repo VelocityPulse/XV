@@ -17,11 +17,14 @@ public sealed class TimeLineSerialized
 
 	public string TimeLineName { get; set; }
 
-	public List<MovableAnimations> MovableAnimationList { get; set; }
+	public List<MovableAnimation> MovableAnimationList { get; set; }
+
+	public List<HumanInteraction> HumanInteractionList { get; set; }
 
 	public TimeLineSerialized()
 	{
-		MovableAnimationList = new List<MovableAnimations>();
+		MovableAnimationList = new List<MovableAnimation>();
+		HumanInteractionList = new List<HumanInteraction>();
 	}
 
 	public string Serialize()

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -280,7 +280,7 @@ public sealed class MovableEntity : MonoBehaviour
 			float lAgentAcceleration;
 			ProcessSpeedAndAcceleration(out lAgentSpeed, out lAgentAcceleration);
 
-			GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimations() {
+			GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimation() {
 				EntityGUID = mEntity.AODS.GUID,
 				IsMoveAnim = true,
 				TargetPosition = lHitPoint,
@@ -362,7 +362,7 @@ public sealed class MovableEntity : MonoBehaviour
 		// Reset Button & Mode
 		ResetMode();
 
-		GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimations() {
+		GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimation() {
 			EntityGUID = mEntity.AODS.GUID,
 			IsRotateAnim = true,
 			TargetRotation = iTarget.eulerAngles,
@@ -460,10 +460,10 @@ public sealed class MovableEntity : MonoBehaviour
 
 	private void CheckAndAddAnimationSaved()
 	{
-		List<MovableAnimations> lMovableAnimationList = GameManager.Instance.TimeLineSerialized.MovableAnimationList;
+		List<MovableAnimation> lMovableAnimationList = GameManager.Instance.TimeLineSerialized.MovableAnimationList;
 		string lMyGUID = mEntity.AODS.GUID;
 
-		foreach (MovableAnimations lAnim in lMovableAnimationList) {
+		foreach (MovableAnimation lAnim in lMovableAnimationList) {
 			if (lAnim.EntityGUID == lMyGUID) {
 				if (lAnim.IsMoveAnim) {
 					// Move action
@@ -474,7 +474,7 @@ public sealed class MovableEntity : MonoBehaviour
 
 					TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 						return Move(lAnim.TargetPosition, iInfo);
-					}, new AnimationParameters() { Speed = lAgentSpeed, Acceleration = lAgentAcceleration });
+					}, new AnimationParameters() { Speed = lAgentSpeed, Acceleration = lAgentAcceleration }, lAnim.Time);
 
 				} else if (lAnim.IsRotateAnim) {
 					// Rotation action
@@ -483,7 +483,7 @@ public sealed class MovableEntity : MonoBehaviour
 
 					TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
 						return Rotate(lRotation, iInfo);
-					});
+					}, new AnimationParameters(), lAnim.Time);
 				}
 			}
 		}

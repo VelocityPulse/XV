@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[SerializeField]
-public class MovableAnimations
+[Serializable]
+public class MovableAnimation
 {
 	public string EntityGUID { get; set; }
 

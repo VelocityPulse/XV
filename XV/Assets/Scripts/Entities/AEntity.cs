@@ -250,6 +250,15 @@ public abstract class AEntity : MonoBehaviour
 		});
 	}
 
+	public static AEntity FindGUID(string iGUID)
+	{
+		foreach (AEntity lEntity in sAllEntites) {
+			if (lEntity.AODS.GUID == iGUID)
+				return lEntity;
+		}
+		return null;
+	}
+
 	public void ResetColor()
 	{
 		if (!mAODS.IsColored)

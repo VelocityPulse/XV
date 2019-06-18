@@ -17,16 +17,16 @@ public class AnimationParameters
 	/// </summary>
 	public float Speed = 1F;
 
-    /// <summary>
-    /// Animation's speed acceleration
-    /// </summary>
-    public float Acceleration = 1F;
+	/// <summary>
+	/// Animation's speed acceleration
+	/// </summary>
+	public float Acceleration = 1F;
 
-    /// <summary>
-    /// Object use as target for an Animation.
-    /// Use AnimationTargetType to cast it later
-    /// </summary>
-    public object AnimationTarget;
+	/// <summary>
+	/// Object use as target for an Animation.
+	/// Use AnimationTargetType to cast it later
+	/// </summary>
+	public object AnimationTarget;
 }
 
 /// <summary>
@@ -125,7 +125,7 @@ public abstract class AInteraction : MonoBehaviour
 			// Check the Button is Hided
 			if (!mIsDisplayed && mEnabled) {
 				mIsDisplayed = true;
-				if (mBindedObjectEntity != null) {
+				if (mBindedObjectEntity != null && !mBindedObjectEntity.ContainsBubbleInfoButton(Button)) {
 					mBindedObjectEntity.CreateBubbleInfoButton(Button);
 					if (OnDisplay != null)
 						OnDisplay();
@@ -138,7 +138,7 @@ public abstract class AInteraction : MonoBehaviour
 			// Check the Button is Displayed
 			if (mIsDisplayed) {
 				mIsDisplayed = false;
-				if (mBindedObjectEntity != null) {
+				if (mBindedObjectEntity != null && mBindedObjectEntity.ContainsBubbleInfoButton(Button)) {
 					mBindedObjectEntity.DestroyBubbleInfoButton(Button);
 					if (OnHide != null)
 						OnHide();
