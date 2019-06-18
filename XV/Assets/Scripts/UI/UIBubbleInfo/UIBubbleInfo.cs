@@ -248,7 +248,7 @@ public class UIBubbleInfo : MonoBehaviour
 	public void OnEndEdit()
 	{
 		if (string.IsNullOrEmpty(ModelName.text))
-			ModelName.text = Parent.Name;
+			ModelName.text = Parent.Name.TrimEnd("_mesh".ToCharArray());
 		else if (Parent != null)
 			Parent.Name = ModelName.text;
 	}
@@ -263,6 +263,8 @@ public class UIBubbleInfo : MonoBehaviour
 
 	public void Hide()
 	{
+		OnEndEdit();
+		GameManager.Instance.KeyboardDeplacementActive = true;
 		mDisplayed = false;
 		SetInteractable(false);
 		mCanvasGroup.blocksRaycasts = false;
