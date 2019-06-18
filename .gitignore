@@ -2,8 +2,8 @@
 XV/Assets/AssetBundles/*
 XV/Assets/Resources/SavedData/Models/testassetbundle.meta
 AssetBundles.meta
-XV/Assets/Resources/SavedData/*.xml
-XV/Assets/Resources/SavedData/*.xml.meta
+XV/Assets/Resources/SavedData/*
+XV/Assets/Resources/SavedData/*
 XV/Assets/Resources/RecordedVideo/*
 XV/Assets/Resources/RecordedVideo.meta
 XV/VideoCaptureLib_Log.txt
