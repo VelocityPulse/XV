@@ -32,6 +32,8 @@ public abstract class AEntity : MonoBehaviour
 
 	public EntityParameters EntityParameters { get { return mEntityParameters; } }
 
+	public AObjectDataScene AODS { get { return mAODS; } }
+
 	public bool NavMeshObjstacleEnabled
 	{
 		get
@@ -68,7 +70,7 @@ public abstract class AEntity : MonoBehaviour
 
 	protected DataScene mDataScene;
 
-	private AObjectDataScene mODS;
+	private AObjectDataScene mAODS;
 
 	private Queue<Color> mOriginalColorsMaterial;
 
@@ -90,10 +92,10 @@ public abstract class AEntity : MonoBehaviour
 		//mAInteraction = GetComponent<AInteraction>();
 
 		PostPoppingAction.Add(() => {
-			if (mODS.IsColored) {
-				mODS.IsColored = false; // This will be reset to true in the followed SetColored
-										// We set it to false because if IsColored is true, it will not save the default texture
-				SetColored(mODS.Color);
+			if (mAODS.IsColored) {
+				mAODS.IsColored = false; // This will be reset to true in the followed SetColored
+										 // We set it to false because if IsColored is true, it will not save the default texture
+				SetColored(mAODS.Color);
 			}
 		});
 	}
@@ -106,7 +108,7 @@ public abstract class AEntity : MonoBehaviour
 
 	public virtual void SetObjectDataScene(AObjectDataScene iODS)
 	{
-		mODS = iODS;
+		mAODS = iODS;
 	}
 
 	protected virtual void Start()
@@ -142,16 +144,16 @@ public abstract class AEntity : MonoBehaviour
 		mUIBubbleInfo = iBubbleInfo;
 
 		mUIBubbleInfo.Parent = this;
-		if (mODS != null) {
-			mUIBubbleInfo.SetUIName(mODS.Name);
-			mUIBubbleInfo.SetUISpeed(mODS.Speed);
+		if (mAODS != null) {
+			mUIBubbleInfo.SetUIName(mAODS.Name);
+			mUIBubbleInfo.SetUISpeed(mAODS.Speed);
 		} else
 			Debug.LogError("[AENTITY] mODS is null when setting UIBubbleInfo");
 		mUIBubbleInfo.RefreshCanvas();
 
 		// Add code to OnEndEdit SpeedInput callback to serialize the value
 		mUIBubbleInfo.OnEndEditSpeedCallback.Add((iNewSpeed) => {
-			mODS.Speed = iNewSpeed;
+			mAODS.Speed = iNewSpeed;
 			mDataScene.Serialize();
 		});
 		return this;
@@ -250,7 +252,7 @@ public abstract class AEntity : MonoBehaviour
 
 	public void ResetColor()
 	{
-		if (!mODS.IsColored)
+		if (!mAODS.IsColored)
 			return;
 
 		Utils.BrowseChildRecursively(gameObject, (iObject) => {
@@ -260,7 +262,7 @@ public abstract class AEntity : MonoBehaviour
 
 				Material[] lMaterials = lR.materials;
 
-				if (mODS.IsColored) {
+				if (mAODS.IsColored) {
 					foreach (Material lMaterial in lMaterials) {
 						lMaterial.color = mOriginalColorsMaterial.Dequeue();
 					}
@@ -270,17 +272,17 @@ public abstract class AEntity : MonoBehaviour
 			}
 		});
 
-		mODS.IsColored = false;
-		mODS.OriginalColorsMaterial = new List<Color>(mOriginalColorsMaterial);
+		mAODS.IsColored = false;
+		mAODS.OriginalColorsMaterial = new List<Color>(mOriginalColorsMaterial);
 		mDataScene.Serialize();
 	}
 
 	public void SetColored(Color iColor)
 	{
-		if (!mODS.IsColored)
+		if (!mAODS.IsColored)
 			mOriginalColorsMaterial.Clear();
 
-		mODS.Color = iColor;
+		mAODS.Color = iColor;
 
 		Utils.BrowseChildRecursively(gameObject, (iObject) => {
 
@@ -289,11 +291,11 @@ public abstract class AEntity : MonoBehaviour
 
 				Material[] lMaterials = lR.materials;
 
-				if (mODS.IsColored) {
+				if (mAODS.IsColored) {
 					foreach (Material lMaterial in lMaterials) {
 						lMaterial.color = iColor;
 					}
-				} else if (!mODS.IsColored) {
+				} else if (!mAODS.IsColored) {
 					foreach (Material lMaterial in lMaterials) {
 
 						mOriginalColorsMaterial.Enqueue(lMaterial.color);
@@ -306,8 +308,8 @@ public abstract class AEntity : MonoBehaviour
 			}
 		});
 
-		mODS.IsColored = true;
-		mODS.OriginalColorsMaterial = new List<Color>(mOriginalColorsMaterial);
+		mAODS.IsColored = true;
+		mAODS.OriginalColorsMaterial = new List<Color>(mOriginalColorsMaterial);
 		mDataScene.Serialize();
 	}
 
@@ -324,16 +326,16 @@ public abstract class AEntity : MonoBehaviour
 			return null;
 		}
 
-		if (mODS.Type == ObjectDataSceneType.BUILT_IN) {
-			lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.PrefabName);
+		if (mAODS.Type == ObjectDataSceneType.BUILT_IN) {
+			lGameObject = ModelLoader.Instance.GetModelGameObject(mAODS.PrefabName);
 			if (lGameObject == null) {
-				Debug.LogError("[AENTITY] Load prefab " + mODS.PrefabName + " failed.");
+				Debug.LogError("[AENTITY] Load prefab " + mAODS.PrefabName + " failed.");
 				return null;
 			}
 		} else {
-			lGameObject = ModelLoader.Instance.GetModelGameObject(mODS.PrefabName);
+			lGameObject = ModelLoader.Instance.GetModelGameObject(mAODS.PrefabName);
 			if (lGameObject == null) {
-				Debug.LogError("[AENTITY] Load model " + mODS.PrefabName + " failed.");
+				Debug.LogError("[AENTITY] Load model " + mAODS.PrefabName + " failed.");
 				return null;
 			}
 		}
@@ -367,8 +369,8 @@ public abstract class AEntity : MonoBehaviour
 	{
 		transform.parent = null;
 		transform.localPosition = Vector3.zero;
-		transform.position = mODS.Position;
-		transform.transform.eulerAngles = mODS.Rotation;
+		transform.position = mAODS.Position;
+		transform.transform.eulerAngles = mAODS.Rotation;
 	}
 
 }

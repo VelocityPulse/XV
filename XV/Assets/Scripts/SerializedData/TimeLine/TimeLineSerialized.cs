@@ -9,7 +9,6 @@ using UnityEngine;
 [Serializable]
 public sealed class TimeLineSerialized
 {
-
 	public const string DEFAULT_FILE_NAME = "TimeLine.xml";
 
 	public const string RES_PATH = "/Resources/SavedData/Timeline/";
@@ -18,9 +17,11 @@ public sealed class TimeLineSerialized
 
 	public string TimeLineName { get; set; }
 
+	public List<MovableAnimations> MovableAnimationList { get; set; }
+
 	public TimeLineSerialized()
 	{
-
+		MovableAnimationList = new List<MovableAnimations>();
 	}
 
 	public string Serialize()

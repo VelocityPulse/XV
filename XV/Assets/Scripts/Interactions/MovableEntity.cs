@@ -32,15 +32,15 @@ public sealed class MovableEntity : MonoBehaviour
 		END
 	}
 
-    public static readonly float MAX_SPEED_COEFF = 500F;
+	public static readonly float MAX_SPEED_COEFF = 500F;
 
-    public static readonly float DEFAULT_SPEED_COEFF = 500F;
+	public static readonly float DEFAULT_SPEED_COEFF = 500F;
 
-    public static readonly float MIN_SPEED_COEFF = 30F;
+	public static readonly float MIN_SPEED_COEFF = 30F;
 
-    private const float CONSTANT_SPEED_VALUE = 3.5F;
+	private const float CONSTANT_SPEED_VALUE = 3.5F;
 
-    private const float CONSTANT_ACCELERATION_VALUE = 8F;
+	private const float CONSTANT_ACCELERATION_VALUE = 8F;
 
 	private const float LIMIT = 0.5F;
 
@@ -118,8 +118,6 @@ public sealed class MovableEntity : MonoBehaviour
 
 	public MovableEntity SetEntity(AEntity iObjectEntity)
 	{
-
-
 		mEntity = iObjectEntity;
 
 		// Add all this code to the PostPopping callback of ObjectEntity
@@ -275,16 +273,24 @@ public sealed class MovableEntity : MonoBehaviour
 		// Check the hit.point clicked is the ground
 		if ((GetHitPointFromMouseClic(ref lHitPoint, "scene"))) {
 
-            // Get ratio of the Speed input, range: [0.3 ; 2]
-            float lSpeedRatio = mEntity.GetSpeedInput()  / DEFAULT_SPEED_COEFF;
-            // Compute speed
-            float lAgentSpeed = CONSTANT_SPEED_VALUE * lSpeedRatio;
-            float lAgentAcceleration = CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
+			// Get ratio of the Speed input, range: [0.3 ; 2]
+			float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
+			// Compute speed
+			float lAgentSpeed = CONSTANT_SPEED_VALUE * lSpeedRatio;
+			float lAgentAcceleration = CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
 
-            // Add the code that do the animation in the Action timeline
-            TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
+			GameManager.Instance.CurrentDataScene.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimations() {
+				EntityGUID = mEntity.AODS.GUID,
+				IsMoveAnim = true,
+				TargetPosition = lHitPoint,
+				Time = TimelineManager.Instance.Time
+			});
+			GameManager.Instance.CurrentDataScene.Serialize();
+
+			// Add the code that do the animation in the Action timeline
+			TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 				return Move(lHitPoint, iInfo);
-            }, new AnimationParameters() { Speed = lAgentSpeed, Acceleration = lAgentAcceleration });
+			}, new AnimationParameters() { Speed = lAgentSpeed, Acceleration = lAgentAcceleration });
 
 		}
 	}
@@ -320,8 +326,8 @@ public sealed class MovableEntity : MonoBehaviour
 		// Update speed
 		mAgent.ResetPath();
 
-        mAgent.speed = lAnimParams.Speed;
-        mAgent.acceleration = lAnimParams.Acceleration;
+		mAgent.speed = lAnimParams.Speed;
+		mAgent.acceleration = lAnimParams.Acceleration;
 
 		mAgent.SetDestination(iDestination);
 
@@ -357,6 +363,14 @@ public sealed class MovableEntity : MonoBehaviour
 
 		// The duration is 2s by default for now
 		float lActionDuration = 2F;
+
+		GameManager.Instance.CurrentDataScene.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimations() {
+			EntityGUID = mEntity.AODS.GUID,
+			IsRotateAnim = true,
+			TargetRotation = iTarget.eulerAngles,
+			Time = TimelineManager.Instance.Time
+		});
+		GameManager.Instance.CurrentDataScene.Serialize();
 
 		// Add the code that do the animation in the following Action
 		TimelineManager.Instance.AddRotation(gameObject, iParams => {

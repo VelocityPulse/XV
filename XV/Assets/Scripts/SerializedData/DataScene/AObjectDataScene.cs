@@ -16,6 +16,9 @@ public class AObjectDataScene
 {
 	public string Name { get; set; }
 
+	// This variable shouldn't be edited manually!
+	public string GUID { get; set; }
+
 	public ObjectDataSceneType Type { get; set; }
 
 	public string PrefabName { get; set; }
@@ -34,6 +37,8 @@ public class AObjectDataScene
 
 	public AObjectDataScene() {
 		OriginalColorsMaterial = new List<Color>();
-	}
 
+		if (GUID == null)
+			GUID = Guid.NewGuid().ToString();
+	}
 }
