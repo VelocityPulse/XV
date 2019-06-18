@@ -7,10 +7,7 @@ using UnityEngine.UI;
 
 public class UITrack : MonoBehaviour
 {
-	private List<UIClip> mAnimations;
-	private List<UIClip> mInteractions;
-	private List<UIClip> mTranslations;
-	private List<UIClip> mRotations;
+	private List<UIClip> mClips;
 
 	private RectTransform mRectTransform;
 	private UIClip UIAnimationClipPrefab;
@@ -49,10 +46,7 @@ public class UITrack : MonoBehaviour
 	private void Awake()
 	{
 		mRectTransform = transform.Find("Track") as RectTransform;
-		mAnimations = new List<UIClip>();
-		mInteractions = new List<UIClip>();
-		mTranslations = new List<UIClip>();
-		mRotations = new List<UIClip>();
+		mClips = new List<UIClip>();
 		UIAnimationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIAnimationClip");
 		UIInteractionClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIInteractionClip");
 		UITranslationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UITranslationClip");
@@ -74,7 +68,7 @@ public class UITrack : MonoBehaviour
 	{
 		UIClip lClip = Instantiate(UIAnimationClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.EventType.ANIMATION;
-		mAnimations.Add(lClip);
+		mClips.Add(lClip);
 		BuildClip(lClip, iStart);
 	}
 
@@ -82,7 +76,7 @@ public class UITrack : MonoBehaviour
 	{
 		UIClip lClip = Instantiate(UIInteractionClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.EventType.INTERACTION;
-		mInteractions.Add(lClip);
+		mClips.Add(lClip);
 		BuildClip(lClip, iStart);
 	}
 
@@ -90,7 +84,7 @@ public class UITrack : MonoBehaviour
 	{
 		UIClip lClip = Instantiate(UITranslationClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.EventType.TRANSLATION;
-		mTranslations.Add(lClip);
+		mClips.Add(lClip);
 		BuildClip(lClip, iStart);
 	}
 
@@ -98,17 +92,16 @@ public class UITrack : MonoBehaviour
 	{
 		UIClip lClip = Instantiate(UIRotationClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.EventType.ROTATION;
-		mRotations.Add(lClip);
+		mClips.Add(lClip);
 		BuildClip(lClip, iStart);
 	}
 
 	public void DeleteClip(UIClip iClip)
 	{
-		List<UIClip> lClips = GetClipList(iClip.Type);
 		TimelineEventData lEventData = new TimelineEventData(ID);
 		lEventData.ClipIndex = GetIndex(iClip);
 		lEventData.Type = iClip.Type;
-		if (lClips.Remove(iClip)) {
+		if (mClips.Remove(iClip)) {
 			TimelineEvent.OnUIDeleteClip(lEventData);
 			Destroy(iClip.gameObject);
 		}
@@ -116,9 +109,8 @@ public class UITrack : MonoBehaviour
 
 	public void ResizeClip(TimelineEventData iData)
 	{
-		List<UIClip> lClips = GetClipList(iData.Type);
-		if (lClips.Count > iData.ClipIndex) {
-			BuildClip(lClips[iData.ClipIndex], iData.ClipStart);
+		if (mClips.Count > iData.ClipIndex) {
+			BuildClip(mClips[iData.ClipIndex], iData.ClipStart);
 		}
 	}
 
@@ -132,14 +124,13 @@ public class UITrack : MonoBehaviour
 
 	public int GetPreviousAtPosition(float iClipX, TimelineData.EventType iType)
 	{
-		List<UIClip> lClips = GetClipList(iType);
-		if (lClips.Count == 0) {
+		if (mClips.Count == 0) {
 			return -1;
 		}
 
 		int i;
-		for (i = 0; i < lClips.Count; i++) {
-			if (lClips[i].transform.localPosition.x >= iClipX) {
+		for (i = 0; i < mClips.Count; i++) {
+			if (mClips[i].transform.localPosition.x >= iClipX) {
 				return i - 1;
 			}
 		}
@@ -148,14 +139,13 @@ public class UITrack : MonoBehaviour
 
 	public int GetNextAtPosition(float iClipX, TimelineData.EventType iType)
 	{
-		List<UIClip> lClips = GetClipList(iType);
-		if (lClips.Count == 0) {
+		if (mClips.Count == 0) {
 			return -1;
 		}
 
 		int i;
-		for (i = 0; i < lClips.Count; i++) {
-			if (lClips[i].transform.localPosition.x > iClipX) {
+		for (i = 0; i < mClips.Count; i++) {
+			if (mClips[i].transform.localPosition.x > iClipX) {
 				return i;
 			}
 		}
@@ -164,37 +154,20 @@ public class UITrack : MonoBehaviour
 
 	public UIClip GetClip(int iIndex, TimelineData.EventType iType)
 	{
-		List<UIClip> lClips = GetClipList(iType);
-		if (iIndex >= 0 && iIndex < lClips.Count) {
-			return lClips[iIndex];
+		if (iIndex >= 0 && iIndex < mClips.Count) {
+			return mClips[iIndex];
 		}
 		return null;
 	}
 
 	public int GetIndex(UIClip iClip)
 	{
-		return GetClipList(iClip.Type).IndexOf(iClip);
+		return mClips.IndexOf(iClip);
 	}
 
 	public Vector2 GetLimits()
 	{
 		float lHalfSize = mRectTransform.rect.size.x / 2F;
 		return new Vector2(-lHalfSize, lHalfSize);
-	}
-
-	private List<UIClip> GetClipList(TimelineData.EventType iType)
-	{
-		switch (iType) {
-			case TimelineData.EventType.ANIMATION:
-				return mAnimations;
-			case TimelineData.EventType.TRANSLATION:
-				return mTranslations;
-			case TimelineData.EventType.ROTATION:
-				return mRotations;
-			case TimelineData.EventType.INTERACTION:
-				return mInteractions;
-			default:
-				return null;
-		}
 	}
 }

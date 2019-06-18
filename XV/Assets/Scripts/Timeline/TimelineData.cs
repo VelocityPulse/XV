@@ -13,18 +13,18 @@ public sealed class TimelineData
 	public enum EventType { ANIMATION, TRANSLATION, ROTATION, INTERACTION };
 	private TimelineAsset mTimeline;
 	private PlayableDirector mDirector;
-	private Dictionary<int, GroupTrack> mBindings;
+	private Dictionary<int, ActionTrack> mBindings;
 
 	public TimelineData(TimelineAsset iTimeline, PlayableDirector iDirector)
 	{
 		mTimeline = iTimeline;
 		mDirector = iDirector;
-		mBindings = new Dictionary<int, GroupTrack>();
+		mBindings = new Dictionary<int, ActionTrack>();
 	}
 
 	public void CreateEventClip(int iTrackID, AnimAction iAction, EventType iType, object iParams = null)
 	{
-		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, iType);
+		ActionTrack lTrack = GetTrack(iTrackID);
 		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
 		ActionAsset lActionAsset = lTimelineClip.asset as ActionAsset;
 		lActionAsset.Actions.Add(iAction);
@@ -40,7 +40,7 @@ public sealed class TimelineData
 
 	public void CreateInteractionEventClip(int iTrackID, List<InteractionStep> iSteps)
 	{
-		ActionTrack lTrack = (ActionTrack)GetTrack(iTrackID, EventType.INTERACTION);
+		ActionTrack lTrack = GetTrack(iTrackID);
 
 		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
 		ActionAsset lActionAsset = lTimelineClip.asset as ActionAsset;
@@ -57,79 +57,45 @@ public sealed class TimelineData
 		TimelineEvent.OnAddClip(lEventData);
 	}
 
-	public GroupTrack CreateTrack(GameObject iObject)
+	public ActionTrack CreateTrack(GameObject iObject)
 	{
 		int lID = iObject.GetInstanceID();
-		GroupTrack lGroup = (GroupTrack)mTimeline.CreateTrack(typeof(GroupTrack), null, iObject.name);
-		TrackAsset lAnim = mTimeline.CreateTrack(typeof(ActionTrack), lGroup, EventType.ANIMATION.ToString());
-		TrackAsset lTrans = mTimeline.CreateTrack(typeof(ActionTrack), lGroup, EventType.TRANSLATION.ToString());
-		TrackAsset lRot = mTimeline.CreateTrack(typeof(ActionTrack), lGroup, EventType.ROTATION.ToString());
-		TrackAsset lInter = mTimeline.CreateTrack(typeof(ActionTrack), lGroup, EventType.INTERACTION.ToString());
-		mBindings.Add(lID, lGroup);
-		mDirector.SetGenericBinding(lGroup, iObject);
-		mDirector.SetGenericBinding(lAnim, iObject);
-		mDirector.SetGenericBinding(lTrans, iObject);
-		mDirector.SetGenericBinding(lRot, iObject);
-		mDirector.SetGenericBinding(lInter, iObject);
+
+		ActionTrack lTrack = (ActionTrack)mTimeline.CreateTrack(typeof(ActionTrack), null, iObject.name);
+		mBindings.Add(lID, lTrack);
+		mDirector.SetGenericBinding(lTrack, iObject);
 		TimelineEvent.OnAddTrack(new TimelineEventData(lID));
-		return lGroup;
+		return lTrack;
 	}
 
 	public void DestroyTrack(int iID)
 	{
-		GroupTrack lGroup = GetGroupTrack(iID);
-		mTimeline.DeleteTrack(lGroup);
+		ActionTrack lTrack = GetTrack(iID);
+		mTimeline.DeleteTrack(lTrack);
 		mBindings.Remove(iID);
 		TimelineEventData lEventData = new TimelineEventData(iID);
 		TimelineEvent.OnDeleteTrack(lEventData);
 	}
 
-	public void RebuildTracksOfType(EventType iType)
+	public void RebuildAllTracks()
 	{
-		Dictionary<int, ActionTrack> lTracks = GetAllTracksOfType(iType);
-		foreach (KeyValuePair<int, ActionTrack> lTrack in lTracks) {
+		foreach (KeyValuePair<int, ActionTrack> lTrack in mBindings) {
 			List<TimelineClip> lClips = lTrack.Value.GetClips().ToList();
 			for (int lIndex = 0; lIndex < lClips.Count; lIndex++) {
 				TimelineEventData lEventData = new TimelineEventData(lTrack.Key);
 				lEventData.ClipIndex = lIndex;
 				lEventData.ClipStart = lClips[lIndex].start;
-				lEventData.Type = iType;
 				TimelineEvent.OnResizeClip(lEventData);
 			}
 		}
 	}
 
-	public ActionTrack GetTrack(int iID, EventType iType)
+	public ActionTrack GetTrack(int iID)
 	{
-		GroupTrack lGroup = GetGroupTrack(iID);
-		return GetTrackFromGroup(lGroup, iType);
-	}
-
-	public ActionTrack GetTrackFromGroup(GroupTrack iGroup, EventType iType)
-	{
-		ActionTrack lTrack = null;
-		if (iGroup != null) {
-			List<TrackAsset> lTracks = iGroup.GetChildTracks().ToList();
-			lTrack = lTracks.Find(iTrack => iTrack.name == iType.ToString()) as ActionTrack;
+		if (TrackExists(iID)) {
+			return mBindings[iID];
 		}
-		return lTrack;
-	}
-
-	public GroupTrack GetGroupTrack(int iID)
-	{
-		GroupTrack lGroup = null;
-		mBindings.TryGetValue(iID, out lGroup);
-		return lGroup;
-	}
-
-	public Dictionary<int, ActionTrack> GetAllTracksOfType(EventType iType)
-	{
-		Dictionary<int, ActionTrack> lTracks = new Dictionary<int, ActionTrack>();
-		foreach (KeyValuePair<int, GroupTrack> iBinding in mBindings) {
-			ActionTrack lTrack = GetTrackFromGroup(iBinding.Value, iType);
-			lTracks.Add(iBinding.Key, lTrack);
-		}
-		return lTracks;
+		return null;
 	}
 
 	public bool TrackExists(int iID)
@@ -139,30 +105,22 @@ public sealed class TimelineData
 
 	public void CheckEmptyTrack(int iID)
 	{
-		GroupTrack lGroup = GetGroupTrack(iID);
-		if (lGroup != null) {
-			int lEmptyTracks = 0;
-			foreach (TrackAsset lTrack in lGroup.GetChildTracks()) {
-				if (lTrack.isEmpty) {
-					lEmptyTracks++;
-				}
-			}
-			if (lEmptyTracks == lGroup.GetChildTracks().Count()) {
-				DestroyTrack(iID);
-			}
+		ActionTrack lTrack = GetTrack(iID);
+		if (lTrack != null && lTrack.GetClips().Count() == 0) {
+			DestroyTrack(iID);
 		}
 	}
 
 	public GameObject GetBinding(int iID)
 	{
-		GroupTrack lGroup = GetGroupTrack(iID);
-		GameObject lObject = (GameObject)mDirector.GetGenericBinding(lGroup);
+		ActionTrack lTrack = GetTrack(iID);
+		GameObject lObject = (GameObject)mDirector.GetGenericBinding(lTrack);
 		return lObject;
 	}
 
 	public string GetClipDescription(TimelineEventData iData)
 	{
-		ActionTrack lTrack = GetTrack(iData.TrackID, iData.Type);
+		ActionTrack lTrack = GetTrack(iData.TrackID);
 		TimelineClip lClip = lTrack.GetClips().ElementAtOrDefault(iData.ClipIndex);
 		if (lClip != null) {
 			ActionAsset lAsset = lClip.asset as ActionAsset;
@@ -173,7 +131,7 @@ public sealed class TimelineData
 
 	public void SetClipDescription(TimelineEventData iData, string iDescription)
 	{
-		ActionTrack lTrack = GetTrack(iData.TrackID, iData.Type);
+		ActionTrack lTrack = GetTrack(iData.TrackID);
 		TimelineClip lClip = lTrack.GetClips().ElementAtOrDefault(iData.ClipIndex);
 		if (lClip != null) {
 			ActionAsset lAsset = lClip.asset as ActionAsset;

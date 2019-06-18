@@ -124,10 +124,7 @@ public sealed class TimelineManager : MonoBehaviour
 
 	public void Rebuild()
 	{
-		mData.RebuildTracksOfType(TimelineData.EventType.ANIMATION);
-		mData.RebuildTracksOfType(TimelineData.EventType.TRANSLATION);
-		mData.RebuildTracksOfType(TimelineData.EventType.ROTATION);
-		mData.RebuildTracksOfType(TimelineData.EventType.INTERACTION);
+		mData.RebuildAllTracks();
 	}
 
 	public GameObject GetObjectFromID(int iID)
@@ -147,7 +144,7 @@ public sealed class TimelineManager : MonoBehaviour
 
 	private void UIResizeClip(TimelineEventData iData)
 	{
-		TrackAsset lTrack = mData.GetTrack(iData.TrackID, iData.Type);
+		TrackAsset lTrack = mData.GetTrack(iData.TrackID);
 		List<TimelineClip> lClips = lTrack.GetClips().ToList();
 		if (lClips.Count > iData.ClipIndex) {
 			TimelineClip lClip = lClips[iData.ClipIndex];
@@ -158,7 +155,7 @@ public sealed class TimelineManager : MonoBehaviour
 
 	private void UIDeleteClip(TimelineEventData iData)
 	{
-		TrackAsset lTrack = mData.GetTrack(iData.TrackID, iData.Type);
+		TrackAsset lTrack = mData.GetTrack(iData.TrackID);
 		List<TimelineClip> lClips = lTrack.GetClips().ToList();
 		if (lClips.Count > iData.ClipIndex) {
 			mTimeline.DeleteClip(lClips[iData.ClipIndex]);
