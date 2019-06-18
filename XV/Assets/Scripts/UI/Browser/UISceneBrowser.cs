@@ -139,7 +139,8 @@ public sealed class UISceneBrowser : MonoBehaviour
 	private void RemoveScene()
 	{
 		if (mLastFileUIParamSelected == null) {
-			File.Delete(mSavedScenePath + mLastFileUIParamSelected.Text.text);
+			File.Delete(Application.dataPath + TimeLineSerialized.RES_PATH + mLastFileUIParamSelected.Text.text);
+			File.Delete(Application.dataPath + DataScene.RES_PATH + mLastFileUIParamSelected.Text.text);
 
 			if (GameManager.Instance.CurrentDataScene != null) {
 				string lSelectedDataSceneName = mLastFileUIParamSelected.Text.text;
@@ -176,7 +177,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 			if (iTypeResult == UISceneTitleResult.OK_RESULT) {
 
 				DataScene lDataScene = new DataScene();
-				lDataScene.SceneName = iValue;
+				lDataScene.SetName(iValue);
 				lDataScene.Serialize();
 				DisplayBrowser();
 

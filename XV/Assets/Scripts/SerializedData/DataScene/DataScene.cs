@@ -12,11 +12,14 @@ public sealed class DataScene
 {
 	public const string DEFAULT_FILE_NAME = "DataScene.xml";
 
-	public const string RES_PATH = "/Resources/SavedData/";
+	public const string RES_PATH = "/Resources/SavedData/SceneData/";
 
 	public const string DEBUG_NAME = "debug.xml";
 
 	public string SceneName { get; set; }
+
+	[XmlIgnore]
+	public TimeLineSerialized TimeLineSerialized { get; set; }
 
 	public HumanDataScene Human { get; set; }
 
@@ -25,13 +28,8 @@ public sealed class DataScene
 	public DataScene()
 	{
 		DataObjects = new List<ObjectDataScene>();
+		TimeLineSerialized = new TimeLineSerialized();
 		SceneName = DEFAULT_FILE_NAME;
-	}
-
-	public DataScene(string iSceneName)
-	{
-		DataObjects = new List<ObjectDataScene>();
-		SceneName = iSceneName;
 	}
 
 	public bool IsDataObjectsContains(ObjectDataScene iODS)
@@ -80,6 +78,14 @@ public sealed class DataScene
 		Human = iHDS;
 	}
 
+	public void SetName(string iName)
+	{
+		if (iName != null) {
+			SceneName = iName;
+			TimeLineSerialized.TimeLineName = iName;
+		}
+	}
+
 	static public string Serialize(DataScene iDataScene)
 	{
 		string lFolderPath = Application.dataPath + RES_PATH;
@@ -90,6 +96,8 @@ public sealed class DataScene
 			serializer.Serialize(writer, iDataScene);
 			writer.Flush();
 		}
+
+		iDataScene.TimeLineSerialized.Serialize();
 
 		return lFolderPath + DEFAULT_FILE_NAME;
 	}
@@ -102,13 +110,15 @@ public sealed class DataScene
 		if (!SceneName.EndsWith(".xml"))
 			SceneName += ".xml";
 
-		using (StreamWriter writer = new StreamWriter(lFolderPath + SceneName)) {
-			XmlSerializer serializer = new XmlSerializer(typeof(DataScene));
-			serializer.Serialize(writer, this);
-			writer.Flush();
+		using (StreamWriter lWriter = new StreamWriter(lFolderPath + SceneName)) {
+			XmlSerializer lSerializer = new XmlSerializer(typeof(DataScene));
+			lSerializer.Serialize(lWriter, this);
+			lWriter.Flush();
 		}
 
-		return lFolderPath + DEFAULT_FILE_NAME;
+		TimeLineSerialized.Serialize();
+
+		return lFolderPath + SceneName;
 	}
 
 	static public DataScene Unserialize(string iSceneName)
@@ -129,6 +139,9 @@ public sealed class DataScene
 
 			if (oDataScene == null)
 				oDataScene = new DataScene();
+
+			oDataScene.TimeLineSerialized = TimeLineSerialized.Unserialize(iSceneName);
+
 			return oDataScene;
 		}
 	}

@@ -13,12 +13,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_NextId: 0
   m_Tracks:
-  - {fileID: 114319483202185842}
+  - {fileID: 114934945192320768}
   m_FixedDuration: 0
   m_EditorSettings:
     m_Framerate: 60
   m_DurationMode: 0
---- !u!114 &114319483202185842
+--- !u!114 &114076076244556806
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 442072544, guid: 6a10b2909283487f913b00d94cd3faf5, type: 3}
+  m_Name: ActivationPlayableAsset
+  m_EditorClassIdentifier: 
+--- !u!114 &114934945192320768
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -38,11 +49,11 @@ MonoBehaviour:
   m_Clips:
   - m_Start: 0
     m_ClipIn: 0
-    m_Asset: {fileID: 114957434499459502}
-    m_UnderlyingAsset: {fileID: 114957434499459502}
+    m_Asset: {fileID: 114076076244556806}
+    m_UnderlyingAsset: {fileID: 114076076244556806}
     m_Duration: 5
     m_TimeScale: 1
-    m_ParentTrack: {fileID: 114319483202185842}
+    m_ParentTrack: {fileID: 114934945192320768}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
     m_BlendInDuration: -1
@@ -95,14 +106,3 @@ MonoBehaviour:
     m_DisplayName: ActivationPlayableAsset
     m_Version: 1
   m_PostPlaybackState: 3
---- !u!114 &114957434499459502
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 442072544, guid: 6a10b2909283487f913b00d94cd3faf5, type: 3}
-  m_Name: ActivationPlayableAsset
-  m_EditorClassIdentifier: 
