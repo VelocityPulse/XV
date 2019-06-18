@@ -373,7 +373,7 @@ public sealed class MovableEntity : MonoBehaviour
 		// Add the code that do the animation in the following Action
 		TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
 			return Rotate(iTarget, iInfo);
-		});
+		}, new AnimationParameters());
 	}
 
 	private bool Rotate(Quaternion iTarget, object iParams)
@@ -391,6 +391,7 @@ public sealed class MovableEntity : MonoBehaviour
 		// The duration is 2s by default for now
 		float lActionDuration = 2F;
 
+		Debug.Log(iParams == null);
 		AnimationParameters lAnimParams = (AnimationParameters)iParams;
 
 		// Update rotation performed according to speed
@@ -478,8 +479,10 @@ public sealed class MovableEntity : MonoBehaviour
 				} else if (lAnim.IsRotateAnim) {
 					// Rotation action
 
+					Quaternion lRotation = Quaternion.Euler(lAnim.TargetRotation.x, lAnim.TargetRotation.y, lAnim.TargetRotation.z);
+
 					TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
-						return Rotate(Quaternion.Euler(lAnim.TargetRotation.x, lAnim.TargetRotation.y, lAnim.TargetRotation.z), iInfo);
+						return Rotate(lRotation, iInfo);
 					});
 				}
 			}
