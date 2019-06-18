@@ -66,47 +66,47 @@ public sealed class TimelineManager : MonoBehaviour
 		ClearTimeline();
 	}
 
-	public void AddAnimation(GameObject iObject, AnimAction iAction, object iParams)
+	public void AddAnimation(GameObject iObject, AnimAction iAction, object iParams = null, double iTime = 0D)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateEventClip(lID, iAction, TimelineData.EventType.ANIMATION, iParams);
+			mData.CreateEventClip(lID, iAction, TimelineData.EventType.ANIMATION, iParams, iTime);
 		}
 	}
 
-	public void AddInteraction(GameObject iObject, List<InteractionStep> iSteps)
+	public void AddInteraction(GameObject iObject, List<InteractionStep> iSteps, double iTime = 0D)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateInteractionEventClip(lID, iSteps);
+			mData.CreateInteractionEventClip(lID, iSteps, iTime);
 		}
 	}
 
-	public void AddTranslation(GameObject iObject, AnimAction iAction)
+	public void AddTranslation(GameObject iObject, AnimAction iAction, object iParams = null, double iTime = 0D)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateEventClip(lID, iAction, TimelineData.EventType.TRANSLATION);
+			mData.CreateEventClip(lID, iAction, TimelineData.EventType.TRANSLATION, iParams, iTime);
 		}
 	}
 
-	public void AddRotation(GameObject iObject, AnimAction iAction)
+	public void AddRotation(GameObject iObject, AnimAction iAction, object iParams = null, double iTime = 0D)
 	{
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateEventClip(lID, iAction, TimelineData.EventType.ROTATION);
+			mData.CreateEventClip(lID, iAction, TimelineData.EventType.ROTATION, iParams, iTime);
 		}
 	}
 

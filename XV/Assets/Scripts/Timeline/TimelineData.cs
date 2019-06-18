@@ -22,7 +22,7 @@ public sealed class TimelineData
 		mBindings = new Dictionary<int, ActionTrack>();
 	}
 
-	public void CreateEventClip(int iTrackID, AnimAction iAction, EventType iType, object iParams = null)
+	public void CreateEventClip(int iTrackID, AnimAction iAction, EventType iType, object iParams, double iTime)
 	{
 		ActionTrack lTrack = GetTrack(iTrackID);
 		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
@@ -31,6 +31,9 @@ public sealed class TimelineData
 		lActionAsset.Parameters.Add(iParams);
 		lActionAsset.Track = lTrack;
 		lTimelineClip.duration = 0.1D;
+		if (iTime > 0D) {
+			lTimelineClip.start = iTime;
+		}
 
 		TimelineEventData lEventData = new TimelineEventData(iTrackID);
 		lEventData.ClipStart = lTimelineClip.start;
@@ -38,7 +41,7 @@ public sealed class TimelineData
 		TimelineEvent.OnAddClip(lEventData);
 	}
 
-	public void CreateInteractionEventClip(int iTrackID, List<InteractionStep> iSteps)
+	public void CreateInteractionEventClip(int iTrackID, List<InteractionStep> iSteps, double iTime)
 	{
 		ActionTrack lTrack = GetTrack(iTrackID);
 
@@ -48,7 +51,10 @@ public sealed class TimelineData
 			lActionAsset.Actions.Add(lStep.action);
 			lActionAsset.Parameters.Add(lStep.tag);
 			lActionAsset.Track = lTrack;
-			lTimelineClip.duration = 0.1D;
+		}
+		lTimelineClip.duration = 0.1D;
+		if (iTime > 0D) {
+			lTimelineClip.start = iTime;
 		}
 
 		TimelineEventData lEventData = new TimelineEventData(iTrackID);
