@@ -142,6 +142,12 @@ public class HumanInteractable : AInteraction
 
 	private bool MountObjectCallback(object iParams)
 	{
+		if (TimelineManager.sGlobalState == TimelineManager.State.STOP)
+			return true;
+
+		if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE)
+			return false;
+
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
@@ -253,6 +259,12 @@ public class HumanInteractable : AInteraction
 		if (mObjectMounted != null)
 			return true;
 
+		if (TimelineManager.sGlobalState == TimelineManager.State.STOP)
+			return true;
+
+		if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE)
+			return false;
+
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
@@ -285,6 +297,14 @@ public class HumanInteractable : AInteraction
 	{
 		if (mObjectMounted != null)
 			return true;
+
+		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
+			ResetAnimator();
+			return true;
+		}
+
+		if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE)
+			return false;
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
 			return true;
