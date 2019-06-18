@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TimeLineSerialized xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TimeLineName>a.xml</TimeLineName>
+  <MovableAnimationList>
+    <MovableAnimations>
+      <EntityGUID>deac4f93-8ad3-4b53-b04d-f773ce0a6575</EntityGUID>
+      <IsMoveAnim>false</IsMoveAnim>
+      <IsRotateAnim>true</IsRotateAnim>
+      <TargetPosition>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </TargetPosition>
+      <TargetRotation>
+        <x>0</x>
+        <y>105.592422</y>
+        <z>0</z>
+      </TargetRotation>
+      <Time>0</Time>
+    </MovableAnimations>
+  </MovableAnimationList>
+</TimeLineSerialized>

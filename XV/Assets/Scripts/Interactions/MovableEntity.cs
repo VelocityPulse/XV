@@ -171,6 +171,9 @@ public sealed class MovableEntity : MonoBehaviour
 						Debug.LogError("NavMeshObstacle is null");
 				}
 			}, mEntity));
+
+			CheckAndAddAnimationSaved();
+
 		});
 		return this;
 	}
@@ -249,7 +252,7 @@ public sealed class MovableEntity : MonoBehaviour
 			if (Input.GetKeyDown(KeyCode.R)) {
 				Quaternion lStart = gameObject.transform.rotation;
 				// Send rotation destination to the function
-				Rotate(gameObject.transform.rotation * Quaternion.Euler(lStart.x, lStart.y + mAngle, lStart.z));
+				AddAndExecuteRotation(gameObject.transform.rotation * Quaternion.Euler(lStart.x, lStart.y + mAngle, lStart.z));
 			}
 
 			if (Input.GetMouseButtonDown(0))
@@ -273,13 +276,11 @@ public sealed class MovableEntity : MonoBehaviour
 		// Check the hit.point clicked is the ground
 		if ((GetHitPointFromMouseClic(ref lHitPoint, "scene"))) {
 
-			// Get ratio of the Speed input, range: [0.3 ; 2]
-			float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
-			// Compute speed
-			float lAgentSpeed = CONSTANT_SPEED_VALUE * lSpeedRatio;
-			float lAgentAcceleration = CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
+			float lAgentSpeed;
+			float lAgentAcceleration;
+			ProcessSpeedAndAcceleration(out lAgentSpeed, out lAgentAcceleration);
 
-			GameManager.Instance.CurrentDataScene.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimations() {
+			GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimations() {
 				EntityGUID = mEntity.AODS.GUID,
 				IsMoveAnim = true,
 				TargetPosition = lHitPoint,
@@ -356,15 +357,12 @@ public sealed class MovableEntity : MonoBehaviour
 		return false;
 	}
 
-	private void Rotate(Quaternion iTarget)
+	private void AddAndExecuteRotation(Quaternion iTarget)
 	{
 		// Reset Button & Mode
 		ResetMode();
 
-		// The duration is 2s by default for now
-		float lActionDuration = 2F;
-
-		GameManager.Instance.CurrentDataScene.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimations() {
+		GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimations() {
 			EntityGUID = mEntity.AODS.GUID,
 			IsRotateAnim = true,
 			TargetRotation = iTarget.eulerAngles,
@@ -373,35 +371,41 @@ public sealed class MovableEntity : MonoBehaviour
 		GameManager.Instance.CurrentDataScene.Serialize();
 
 		// Add the code that do the animation in the following Action
-		TimelineManager.Instance.AddRotation(gameObject, iParams => {
-
-			if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
-				mAgent.enabled = false;
-				return true;
-			}
-
-			if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE) {
-				mAgent.enabled = false;
-				return false;
-			}
-
-			AnimationParameters lAnimParams = (AnimationParameters)iParams;
-
-			// Update rotation performed according to speed
-			mRotationPerformed += Time.deltaTime * lAnimParams.Speed;
-
-			// Rotate to the correct amount
-			gameObject.transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, iTarget, mRotationPerformed / lActionDuration);
-
-			// When the counter reach the duration, the rotation is finished
-			if (mRotationPerformed > lActionDuration) {
-				// End of this Action
-				mRotationPerformed = 0F;
-				return true;
-			}
-			return false;
-
+		TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
+			return Rotate(iTarget, iInfo);
 		});
+	}
+
+	private bool Rotate(Quaternion iTarget, object iParams)
+	{
+		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
+			mAgent.enabled = false;
+			return true;
+		}
+
+		if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE) {
+			mAgent.enabled = false;
+			return false;
+		}
+
+		// The duration is 2s by default for now
+		float lActionDuration = 2F;
+
+		AnimationParameters lAnimParams = (AnimationParameters)iParams;
+
+		// Update rotation performed according to speed
+		mRotationPerformed += Time.deltaTime * lAnimParams.Speed;
+
+		// Rotate to the correct amount
+		gameObject.transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, iTarget, mRotationPerformed / lActionDuration);
+
+		// When the counter reach the duration, the rotation is finished
+		if (mRotationPerformed > lActionDuration) {
+			// End of this Action
+			mRotationPerformed = 0F;
+			return true;
+		}
+		return false;
 	}
 
 	//  Deplacement animation for all movable object
@@ -451,6 +455,46 @@ public sealed class MovableEntity : MonoBehaviour
 		} else
 			ResetMode();
 		return true;
+	}
+
+	private void CheckAndAddAnimationSaved()
+	{
+		List<MovableAnimations> lMovableAnimationList = GameManager.Instance.TimeLineSerialized.MovableAnimationList;
+		string lMyGUID = mEntity.AODS.GUID;
+
+		foreach (MovableAnimations lAnim in lMovableAnimationList) {
+			if (lAnim.EntityGUID == lMyGUID) {
+				if (lAnim.IsMoveAnim) {
+					// Move action
+
+					float lAgentSpeed;
+					float lAgentAcceleration;
+					ProcessSpeedAndAcceleration(out lAgentSpeed, out lAgentAcceleration);
+
+					TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
+						return Move(lAnim.TargetPosition, iInfo);
+					}, new AnimationParameters() { Speed = lAgentSpeed, Acceleration = lAgentAcceleration });
+
+				} else if (lAnim.IsRotateAnim) {
+					// Rotation action
+
+					TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
+						return Rotate(Quaternion.Euler(lAnim.TargetRotation.x, lAnim.TargetRotation.y, lAnim.TargetRotation.z), iInfo);
+					});
+				}
+			}
+		}
+	}
+
+	private void ProcessSpeedAndAcceleration(out float iSpeed, out float iAcceleration)
+	{
+		// Anthony fait tes modifs humain/objet ici 
+
+		// Get ratio of the Speed input, range: [0.3 ; 2]
+		float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
+		// Compute speed
+		iSpeed = CONSTANT_SPEED_VALUE * lSpeedRatio;
+		iAcceleration = CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
 	}
 
 	// Reset all variable to retrieve neutral edition mode

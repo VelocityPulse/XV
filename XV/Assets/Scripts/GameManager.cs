@@ -50,6 +50,8 @@ public class GameManager : MonoBehaviour
 
 	public DataScene CurrentDataScene { get { return mCurrentDataScene; } }
 
+	public TimeLineSerialized TimeLineSerialized { get { return mCurrentDataScene.TimeLineSerialized; }}
+
 	public Texture2D OverTexturCursor { get; private set; }
 
 	public Texture2D CatchedTexturCursor { get; private set; }
