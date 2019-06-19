@@ -124,11 +124,11 @@ public class HumanInteractable : AInteraction
 
 	private void OnClickMountObject(AEntity iEntity)
 	{
-		StartCoroutine(InteractionWaitForTarget("Mount", (iEntityParam) => {
+		StartCoroutine(InteractionWaitForTarget("Mount", (iTargetEntityParameters) => {
 
             AnimationParameters lAnimationParameters = new AnimationParameters() {
 				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-				AnimationTarget = iEntityParam.gameObject,
+				AnimationTarget = iTargetEntityParameters.gameObject,
                 Speed = mMovableEntity.ComputeSpeed(),
                 Acceleration = mMovableEntity.ComputeAcceleration(),
 			};
@@ -145,12 +145,12 @@ public class HumanInteractable : AInteraction
 				action = MountObjectCallback
 			});
 
-			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
+			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
             GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
                 InteractionType = HumanInteractionType.MOUNT,
                 TargetGUID = iEntity.AODS.GUID,
-                ObjectUseInInteractionGUID = iEntityParam.gameObject.GetComponent<AEntity>().AODS.GUID,
+                ObjectUseInInteractionGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
 				Time = TimelineManager.Instance.Time
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
@@ -192,7 +192,7 @@ public class HumanInteractable : AInteraction
 			action = UnmountObjectCallback
 		});
 
-		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 		GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 			InteractionType = HumanInteractionType.UNMOUNT,
@@ -253,10 +253,10 @@ public class HumanInteractable : AInteraction
 
 	private void OnClickTakeObject(AEntity iEntity)
 	{
-		StartCoroutine(InteractionWaitForTarget("Take", (iEntityParameter) => {
+		StartCoroutine(InteractionWaitForTarget("Take", (iTargetEntityParameters) => {
 			AnimationParameters lAnimationParameters = new AnimationParameters() {
 				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-				AnimationTarget = iEntityParameter.gameObject,
+				AnimationTarget = iTargetEntityParameters.gameObject,
                 Speed = mMovableEntity.ComputeSpeed(),
                 Acceleration = mMovableEntity.ComputeAcceleration(),
             };
@@ -278,12 +278,12 @@ public class HumanInteractable : AInteraction
 				action = TakeObjectWaitAnimationEndCallback
 			});
 
-			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
+			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 				InteractionType = HumanInteractionType.TAKE,
 				TargetGUID = iEntity.AODS.GUID,
-                ObjectUseInInteractionGUID = iEntityParameter.gameObject.GetComponent<AEntity>().AODS.GUID,
+                ObjectUseInInteractionGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
                 Time = TimelineManager.Instance.Time
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
@@ -362,7 +362,7 @@ public class HumanInteractable : AInteraction
 			action = TakeOffObjectCallback
 		});
 
-		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 		GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 			InteractionType = HumanInteractionType.TAKEOFF,
@@ -578,6 +578,9 @@ public class HumanInteractable : AInteraction
 
 	private void ResetAnimator()
 	{
+		if (mAnimator == null)
+			return;
+		
 		mAnimator.SetFloat("Forward", 0F);
 		mAnimator.ResetTrigger("PickUp");
 		mAnimator.SetBool("WalkingWithBox", false);

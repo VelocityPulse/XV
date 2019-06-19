@@ -52,6 +52,8 @@ public class ManifactureInteractable : AInteraction
 			Tag = "TakeOffButton",
 			ClickAction = OnClickTakeOffObject
 		};
+
+		CheckAndAddInteractionsSaved();
 	}
 
 
@@ -65,10 +67,10 @@ public class ManifactureInteractable : AInteraction
 
 	private void OnClickTakeObject(AEntity iEntity)
 	{
-		StartCoroutine(InteractionWaitForTarget("Take", (iEntityParameters) => {
+		StartCoroutine(InteractionWaitForTarget("Take", (iTargetEntityParameters) => {
 			AnimationParameters lAnimationParameters = new AnimationParameters() {
 				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-				AnimationTarget = iEntityParameters.gameObject,
+				AnimationTarget = iTargetEntityParameters.gameObject,
 			};
 
 			List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
@@ -83,7 +85,15 @@ public class ManifactureInteractable : AInteraction
 				action = TakeObjectPickCallback
 			});
 
-			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
+			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+
+			GameManager.Instance.TimeLineSerialized.ManifactureInteractionList.Add(new ManifactureInteraction {
+				EntityGUID = mEntity.AODS.GUID,
+				IsTakeObject = true,
+				TargetGUID = iTargetEntityParameters.GetComponent<AEntity>().AODS.GUID, //j'aime le danger
+				Time = TimelineManager.Instance.Time
+			});
+			GameManager.Instance.CurrentDataScene.Serialize();
 
 		}));
 	}
@@ -106,12 +116,17 @@ public class ManifactureInteractable : AInteraction
 
 	private bool TakeObjectPickCallback(object iParams)
 	{
+		if (TimelineManager.sGlobalState == TimelineManager.State.STOP)
+			return true;
+
+		if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE)
+			return false;
+
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
 		if (lTarget == null || mObjectHeld != null)
 			return true;
-		
 
 		mObjectHeld = lTarget.GetComponent<AEntity>();
 		mObjectHeld.Selected = false;
@@ -145,11 +160,21 @@ public class ManifactureInteractable : AInteraction
 			action = TakeOffObjectCallback
 		});
 
-		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+
+		GameManager.Instance.TimeLineSerialized.ManifactureInteractionList.Add(new ManifactureInteraction {
+			EntityGUID = mEntity.AODS.GUID,
+			IsTakeOffObject = true,
+			Time = TimelineManager.Instance.Time
+		});
+		GameManager.Instance.CurrentDataScene.Serialize();
 	}
 
 	private bool TakeOffObjectCallback(object iParams)
 	{
+		if (mObjectHeld == null)
+			return true;
+
 		mObjectHeld.transform.localPosition = mEntity.EntityParameters.VehiculeDropPosition;
 		mObjectHeld.transform.parent = null;
 		mObjectHeld.LockWorldEditorDeplacement = false;
@@ -229,6 +254,67 @@ public class ManifactureInteractable : AInteraction
 
 	private void OnEndMovement()
 	{
+
+	}
+
+	private void CheckAndAddInteractionsSaved()
+	{
+		List<ManifactureInteraction> lManifactureInteractionList = GameManager.Instance.TimeLineSerialized.ManifactureInteractionList;
+
+		string lMyGUID = mEntity.AODS.GUID;
+
+		foreach (ManifactureInteraction lInter in lManifactureInteractionList) {
+
+			if (lMyGUID == lInter.EntityGUID) {
+
+				if (lInter.IsTakeObject) {
+
+					AEntity lEntity = AEntity.FindGUID(lInter.TargetGUID);
+					if (lEntity == null) {
+						Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
+						continue;
+					}
+
+					AnimationParameters lAnimationParameters = new AnimationParameters() {
+						TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+						AnimationTarget = lEntity.gameObject,
+					};
+
+					List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+
+					lInteractionSteps.Add(new InteractionStep {
+						tag = lAnimationParameters,
+						action = TakeObjectMoveToTargetCallback
+					});
+
+					lInteractionSteps.Add(new InteractionStep {
+						tag = lAnimationParameters,
+						action = TakeObjectPickCallback
+					});
+
+					TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
+
+				} else if (lInter.IsTakeOffObject) {
+
+					AnimationParameters lAnimationParameters = new AnimationParameters() {
+						TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+						AnimationTarget = mObjectHeld
+					};
+
+					List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+
+					lInteractionSteps.Add(new InteractionStep {
+						tag = lAnimationParameters,
+						action = TakeOffObjectCallback
+					});
+
+					TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
+
+				}
+
+			}
+
+		}
 
 	}
 }

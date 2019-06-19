@@ -21,10 +21,13 @@ public sealed class TimeLineSerialized
 
 	public List<HumanInteraction> HumanInteractionList { get; set; }
 
+	public List<ManifactureInteraction> ManifactureInteractionList { get; set; }
+
 	public TimeLineSerialized()
 	{
 		MovableAnimationList = new List<MovableAnimation>();
 		HumanInteractionList = new List<HumanInteraction>();
+		ManifactureInteractionList = new List<ManifactureInteraction>();
 	}
 
 	public string Serialize()

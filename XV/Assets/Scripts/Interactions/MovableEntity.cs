@@ -289,8 +289,8 @@ public sealed class MovableEntity : MonoBehaviour
 				return Move(lHitPoint, iInfo);
 			}, new AnimationParameters() {
                 Speed = ComputeSpeed(),
-                Acceleration = ComputeAcceleration() });
-
+               Acceleration = ComputeAcceleration() }, 
+               TimelineManager.Instance.Time);
 		}
 	}
 
@@ -372,7 +372,7 @@ public sealed class MovableEntity : MonoBehaviour
 		// Add the code that do the animation in the following Action
 		TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
 			return Rotate(iTarget, iInfo);
-		}, new AnimationParameters());
+		}, new AnimationParameters(), TimelineManager.Instance.Time);
 	}
 
 	private bool Rotate(Quaternion iTarget, object iParams)
@@ -464,8 +464,8 @@ public sealed class MovableEntity : MonoBehaviour
 
 		foreach (MovableAnimation lAnim in lMovableAnimationList) {
 			if (lAnim.EntityGUID == lMyGUID) {
+				
 				if (lAnim.IsMoveAnim) {
-					// Move action
 
 					TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 						return Move(lAnim.TargetPosition, iInfo);
