@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -177,18 +178,43 @@ public class ManifactureInteractable : AInteraction
 			Debug.LogWarning("[HUMAN INTERACTABLE] Object Held shouldn't be null in OnUnhold");
 	}
 
-	public void HoldHuman(HumanInteractable iHuman)
+	public void HoldHuman(HumanInteractable iHuman, HumanInteractionType iInteractionType, Action iOnStartMovement = null, Action iOnEndMovement = null)
 	{
-		iHuman.transform.parent = transform;
-		iHuman.transform.localPosition = mEntity.EntityParameters.VehiculeSitPosition;
-		iHuman.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        if (iInteractionType == HumanInteractionType.MOUNT) {
+            iHuman.transform.parent = transform;
+            iHuman.transform.localPosition = mEntity.EntityParameters.VehiculeSitPosition;
+            iHuman.transform.localRotation = Quaternion.Euler(0, 0, 0);
+
+            // Eventually add callback
+            if (iOnStartMovement != null)
+                mMovableEntity.OnStartMovement.Add(iOnStartMovement);
+            if (iOnEndMovement != null)
+                mMovableEntity.OnStartMovement.Add(iOnEndMovement);
+        }
+        else if (iInteractionType == HumanInteractionType.PUSH) {
+            iHuman.transform.parent = transform;
+            iHuman.transform.localPosition = mEntity.EntityParameters.VehiculeSitPosition;
+            iHuman.transform.localRotation = Quaternion.Euler(0, 0, 0);
+
+            // Eventually add callback
+            if (iOnStartMovement != null)
+                mMovableEntity.OnStartMovement.Add(iOnStartMovement);
+            if (iOnEndMovement != null)
+                mMovableEntity.OnEndMovement.Add(iOnEndMovement);
+        }
 	}
 
-	public void DropHuman(HumanInteractable iHuman)
+    public void DropHuman(HumanInteractable iHuman, Action iOnStartMovement = null, Action iOnEndMovement = null)
 	{
 		iHuman.transform.localPosition = new Vector3(0, 0, -2);
 		iHuman.transform.parent = null;
-	}
+
+        // Remove given callback
+        if (iOnStartMovement != null)
+            mMovableEntity.OnStartMovement.Remove(iOnStartMovement);
+        if (iOnEndMovement != null)
+            mMovableEntity.OnEndMovement.Remove(iOnEndMovement);
+    }
 
 	public override void ResetWorldState()
 	{

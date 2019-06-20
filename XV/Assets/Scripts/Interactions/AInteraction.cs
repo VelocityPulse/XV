@@ -352,6 +352,11 @@ public abstract class AInteraction : MonoBehaviour
 		AEntity.HideNoInteractable(GetItemInteraction(iInteractionName).InteractWith, mEntity);
 		yield return new WaitWhile(() => {
 
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                Debug.LogWarning("[TARGET SELECTOR] Exit target selector !");
+                return false;
+            }
+
 			if (Input.GetMouseButtonDown(0)) {
 
 				RaycastHit lHit;

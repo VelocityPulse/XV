@@ -21,17 +21,19 @@ public class HumanInteractable : AInteraction
 
 	private ManifactureInteractable mObjectMounted;
 
-	private ItemInteraction mTakeObjectInteraction;
+    private ManifactureInteractable mObjectPushed;
+
+    private ItemInteraction mTakeObjectInteraction;
 
 	private ItemInteraction mMountObjectInteraction;
 
-	//private ItemInteraction mPushObjectInteraction;
+    private ItemInteraction mPushObjectInteraction;
 
-	private UIBubbleInfoButton mTakeOffBubbleButton;
+    private UIBubbleInfoButton mTakeOffBubbleButton;
 
 	private UIBubbleInfoButton mUnmountBubbleButton;
 
-	private UIBubbleInfoButton mReleasePushBubbleButton;
+	private UIBubbleInfoButton mReleaseBubbleButton;
 
 	protected override void Start()
 	{
@@ -72,23 +74,23 @@ public class HumanInteractable : AInteraction
 				Text = "Mount",
 				Tag = name + "_MOUNT_OBJECT",
 				ClickAction = OnClickMountObject
-			}
+			},
 		});
 
-		//mPushObject = CreateInteraction(new ItemInteraction() {
-		//	Name = "Handle",
-		//	Help = "Handle an object",
-		//	InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.SMALL_ITEM, EntityParameters.EntityType.MEDIUM_ITEM },
-		//	AnimationImpl = HandleObjectCallback,
-		//	AInteraction = this,
-		//	Button = new UIBubbleInfoButton() {
-		//		Text = "Handle",
-		//		Tag = name + "_HANDLE_OBJECT",
-		//		ClickAction = OnClickTakeObject
-		//	}
-		//});
+        mPushObjectInteraction = CreateInteraction(new ItemInteraction() {
+            Name = "Handle",
+            Help = "Handle an object",
+            InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.TROLLEY },
+            AnimationImpl = PushObjectCallback,
+            AInteraction = this,
+            Button = new UIBubbleInfoButton() {
+                Text = "Handle",
+                Tag = name + "_HANDLE_OBJECT",
+                ClickAction = OnClickPushObject
+            }
+        });
 
-		mTakeOffBubbleButton = new UIBubbleInfoButton() {
+        mTakeOffBubbleButton = new UIBubbleInfoButton() {
 			Text = "Take off",
 			Tag = "TakeOffButton",
 			ClickAction = OnClickTakeOffObject
@@ -100,7 +102,13 @@ public class HumanInteractable : AInteraction
 			ClickAction = OnClickUnmount
 		};
 
-		CheckAndAddInteractionsSaved();
+        mReleaseBubbleButton = new UIBubbleInfoButton() {
+            Text = "Release",
+            Tag = "ReleaseButton",
+            ClickAction = OnClickRelease
+        };
+
+        CheckAndAddInteractionsSaved();
 	}
 
 	private void OnDestroy()
@@ -112,16 +120,17 @@ public class HumanInteractable : AInteraction
 		}
 	}
 
-
 	#region MountObject
 
 	private void OnClickMountObject(AEntity iEntity)
 	{
 		StartCoroutine(InteractionWaitForTarget("Mount", (iEntityParam) => {
 
-			AnimationParameters lAnimationParameters = new AnimationParameters() {
+            AnimationParameters lAnimationParameters = new AnimationParameters() {
 				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 				AnimationTarget = iEntityParam.gameObject,
+                Speed = mMovableEntity.ComputeSpeed(),
+                Acceleration = mMovableEntity.ComputeAcceleration(),
 			};
 
 			List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
@@ -138,9 +147,10 @@ public class HumanInteractable : AInteraction
 
 			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
 
-			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
-				InteractionType = HumanInteractionType.MOUNT,
-				TargetGUID = iEntity.AODS.GUID,
+            GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
+                InteractionType = HumanInteractionType.MOUNT,
+                TargetGUID = iEntity.AODS.GUID,
+                ObjectUseInInteractionGUID = iEntityParam.gameObject.GetComponent<AEntity>().AODS.GUID,
 				Time = TimelineManager.Instance.Time
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
@@ -162,7 +172,7 @@ public class HumanInteractable : AInteraction
 		ManifactureInteractable lMI = lTarget.GetComponent<ManifactureInteractable>();
 
 		mObjectMounted = lMI;
-		lMI.HoldHuman(this);
+		lMI.HoldHuman(this, HumanInteractionType.MOUNT);
 		OnMount();
 		return true;
 	}
@@ -171,7 +181,9 @@ public class HumanInteractable : AInteraction
 	{
 		AnimationParameters lAnimationParameters = new AnimationParameters() {
 			TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-		};
+            Speed = mMovableEntity.ComputeSpeed(),
+            Acceleration = mMovableEntity.ComputeAcceleration(),
+        };
 
 		List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 
@@ -207,8 +219,8 @@ public class HumanInteractable : AInteraction
 		mEntity.LockWorldEditorDeplacement = true;
 
 		mMountObjectInteraction.Enabled = false;
-		//mPushObjectInteraction.Enabled = false;
-		mTakeObjectInteraction.Enabled = false;
+        mPushObjectInteraction.Enabled = false;
+        mTakeObjectInteraction.Enabled = false;
 
 		if (!mEntity.ContainsBubbleInfoButton(mUnmountBubbleButton))
 			mEntity.CreateBubbleInfoButton(mUnmountBubbleButton);
@@ -224,8 +236,8 @@ public class HumanInteractable : AInteraction
 		mEntity.LockWorldEditorDeplacement = false;
 
 		mMountObjectInteraction.Enabled = true;
-		//mPushObjectInteraction.Enabled = true;
-		mTakeObjectInteraction.Enabled = true;
+        mPushObjectInteraction.Enabled = true;
+        mTakeObjectInteraction.Enabled = true;
 
 		if (mEntity.ContainsBubbleInfoButton(mUnmountBubbleButton))
 			mEntity.DestroyBubbleInfoButton(mUnmountBubbleButton);
@@ -245,7 +257,9 @@ public class HumanInteractable : AInteraction
 			AnimationParameters lAnimationParameters = new AnimationParameters() {
 				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 				AnimationTarget = iEntityParameter.gameObject,
-			};
+                Speed = mMovableEntity.ComputeSpeed(),
+                Acceleration = mMovableEntity.ComputeAcceleration(),
+            };
 
 			List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 
@@ -269,7 +283,8 @@ public class HumanInteractable : AInteraction
 			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 				InteractionType = HumanInteractionType.TAKE,
 				TargetGUID = iEntity.AODS.GUID,
-				Time = TimelineManager.Instance.Time
+                ObjectUseInInteractionGUID = iEntityParameter.gameObject.GetComponent<AEntity>().AODS.GUID,
+                Time = TimelineManager.Instance.Time
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
 		}));
@@ -335,8 +350,10 @@ public class HumanInteractable : AInteraction
 	private void OnClickTakeOffObject(AEntity iEntity)
 	{
 		AnimationParameters lAnimationParameters = new AnimationParameters() {
-			TargetType = AnimationParameters.AnimationTargetType.ENTITY
-		};
+			TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+            Speed = mMovableEntity.ComputeSpeed(),
+            Acceleration = mMovableEntity.ComputeAcceleration(),
+        };
 
 		List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 
@@ -366,8 +383,8 @@ public class HumanInteractable : AInteraction
 	private void OnHold()
 	{
 		mMountObjectInteraction.Enabled = false;
-		//mPushObjectInteraction.Enabled = false;
-		mTakeObjectInteraction.Enabled = false;
+        mPushObjectInteraction.Enabled = false;
+        mTakeObjectInteraction.Enabled = false;
 
 		if (!mEntity.ContainsBubbleInfoButton(mTakeOffBubbleButton))
 			mEntity.CreateBubbleInfoButton(mTakeOffBubbleButton);
@@ -377,8 +394,8 @@ public class HumanInteractable : AInteraction
 	{
 		mEntity.DestroyBubbleInfoButton(mTakeOffBubbleButton);
 		mMountObjectInteraction.Enabled = true;
-		//mPushObjectInteraction.Enabled = true;
-		mTakeObjectInteraction.Enabled = true;
+        mPushObjectInteraction.Enabled = true;
+        mTakeObjectInteraction.Enabled = true;
 		if (mObjectHeld != null) {
 			mObjectHeld.NavMeshObjstacleEnabled = true;
 			mObjectHeld = null;
@@ -386,9 +403,150 @@ public class HumanInteractable : AInteraction
 			Debug.LogWarning("[HUMAN INTERACTABLE] Object Held shouldn't be null in OnUnhold");
 	}
 
-	#endregion TakeObject
+    #endregion TakeObject
 
-	private bool MoveToTargetCallback(object iParams)
+    #region PushObject
+
+    private void OnClickPushObject(AEntity iEntity)
+    {
+        StartCoroutine(InteractionWaitForTarget("Handle", (iEntityParam) => {
+
+            AnimationParameters lAnimationParameters = new AnimationParameters() {
+                TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+                AnimationTarget = iEntityParam.gameObject,
+                Speed = mMovableEntity.ComputeSpeed(),
+                Acceleration = mMovableEntity.ComputeAcceleration(),
+            };
+
+            List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+
+            lInteractionSteps.Add(new InteractionStep {
+                tag = lAnimationParameters,
+                action = MoveToTargetCallback
+            });
+
+            lInteractionSteps.Add(new InteractionStep {
+                tag = lAnimationParameters,
+                action = PushObjectCallback
+            });
+
+            TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
+
+            GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
+                InteractionType = HumanInteractionType.PUSH,
+                TargetGUID = iEntity.AODS.GUID,
+                ObjectUseInInteractionGUID = iEntityParam.gameObject.GetComponent<AEntity>().AODS.GUID,
+                Time = TimelineManager.Instance.Time
+            });
+            GameManager.Instance.CurrentDataScene.Serialize();
+
+        }));
+    }
+
+    private bool PushObjectCallback(object iParams)
+    {
+        if (TimelineManager.sGlobalState == TimelineManager.State.STOP)
+            return true;
+
+        if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE)
+            return false;
+
+        AnimationParameters lParams = (AnimationParameters)iParams;
+        GameObject lTarget = (GameObject)lParams.AnimationTarget;
+
+        ManifactureInteractable lMI = lTarget.GetComponent<ManifactureInteractable>();
+
+        mObjectPushed = lMI;
+        lMI.HoldHuman(this, HumanInteractionType.PUSH, OnManufactureStartMove, OnManufactureEndMove);
+        OnPush();
+        return true;
+    }
+
+    private void OnManufactureStartMove()
+    {
+        if (mObjectPushed != null)
+            mAnimator.SetBool("Pushing", true);
+    }
+
+    private void OnManufactureEndMove()
+    {
+        if (mObjectPushed != null)
+            mAnimator.SetBool("Pushing", false);
+    }
+
+    private void OnClickRelease(AEntity iEntity)
+    {
+        AnimationParameters lAnimationParameters = new AnimationParameters() {
+            TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+            Speed = mMovableEntity.ComputeSpeed(),
+            Acceleration = mMovableEntity.ComputeAcceleration(),
+        };
+
+        List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+
+        lInteractionSteps.Add(new InteractionStep {
+            tag = lAnimationParameters,
+            action = ReleaseObjectCallback
+        });
+
+        TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+
+        GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
+            InteractionType = HumanInteractionType.STOP_PUSH,
+            Time = TimelineManager.Instance.Time
+        });
+        GameManager.Instance.CurrentDataScene.Serialize();
+    }
+
+    private bool ReleaseObjectCallback(object iParams)
+    {
+        AnimationParameters lParams = (AnimationParameters)iParams;
+        GameObject lTarget = (GameObject)lParams.AnimationTarget;
+
+        mObjectPushed.DropHuman(this, OnManufactureStartMove, OnManufactureEndMove);
+        OnRelease();
+        return true;
+    }
+
+    private void OnPush()
+    {
+        ResetAnimator();
+
+        mEntity.NavMeshObjstacleEnabled = false;
+        mEntity.LockWorldEditorDeplacement = true;
+
+        mMountObjectInteraction.Enabled = false;
+        mPushObjectInteraction.Enabled = false;
+        mTakeObjectInteraction.Enabled = false;
+
+        if (!mEntity.ContainsBubbleInfoButton(mReleaseBubbleButton))
+            mEntity.CreateBubbleInfoButton(mReleaseBubbleButton);
+
+        mEntity.StashUIBubbleButtons(mReleaseBubbleButton);
+    }
+
+    private void OnRelease()
+    {
+        ResetAnimator();
+
+        mEntity.NavMeshObjstacleEnabled = true;
+        mEntity.LockWorldEditorDeplacement = false;
+
+        mMountObjectInteraction.Enabled = true;
+        mPushObjectInteraction.Enabled = true;
+        mTakeObjectInteraction.Enabled = true;
+
+        if (mEntity.ContainsBubbleInfoButton(mReleaseBubbleButton))
+            mEntity.DestroyBubbleInfoButton(mReleaseBubbleButton);
+        mEntity.StashPopUIBubbleInfoButtons();
+
+        if (mObjectPushed != null)
+            mObjectPushed = null;
+    }
+
+    #endregion PushObject
+
+    private bool MoveToTargetCallback(object iParams)
 	{
 		if (mObjectMounted != null)
 			return true;
@@ -413,6 +571,8 @@ public class HumanInteractable : AInteraction
 			OnUnhold();
 		if (mObjectMounted != null)
 			OnUnmount();
+        if (mObjectPushed != null)
+            OnRelease();
 		ResetAnimator();
 	}
 
@@ -454,7 +614,8 @@ public class HumanInteractable : AInteraction
 			switch (lInter.InteractionType) {
 			case HumanInteractionType.MOUNT:
 
-				AEntity lEntity = AEntity.FindGUID(lInter.TargetGUID);
+                AEntity lEntity = AEntity.FindGUID(lInter.TargetGUID);
+                AEntity lObjectToInteractWith = AEntity.FindGUID(lInter.ObjectUseInInteractionGUID);
 				if (lEntity == null) {
 					Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
 					continue;
@@ -462,7 +623,9 @@ public class HumanInteractable : AInteraction
 
 				lAnimationParameters = new AnimationParameters() {
 					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-					AnimationTarget = lEntity.gameObject,
+					AnimationTarget = lObjectToInteractWith.gameObject,
+                    Speed = mMovableEntity.ComputeSpeed(),
+                    Acceleration = mMovableEntity.ComputeAcceleration(),
 				};
 
 				lInteractionSteps = new List<InteractionStep>();
@@ -485,7 +648,9 @@ public class HumanInteractable : AInteraction
 
 				lAnimationParameters = new AnimationParameters() {
 					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-				};
+                    Speed = mMovableEntity.ComputeSpeed(),
+                    Acceleration = mMovableEntity.ComputeAcceleration(),
+                };
 
 				lInteractionSteps = new List<InteractionStep>();
 
@@ -500,7 +665,8 @@ public class HumanInteractable : AInteraction
 
 			case HumanInteractionType.TAKE:
 
-				lEntity = AEntity.FindGUID(lInter.TargetGUID);
+                lObjectToInteractWith = AEntity.FindGUID(lInter.ObjectUseInInteractionGUID);
+                lEntity = AEntity.FindGUID(lInter.TargetGUID);
 				if (lEntity == null) {
 					Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
 					continue;
@@ -508,8 +674,10 @@ public class HumanInteractable : AInteraction
 
 				lAnimationParameters = new AnimationParameters() {
 					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-					AnimationTarget = lEntity.gameObject,
-				};
+					AnimationTarget = lObjectToInteractWith.gameObject,
+                    Speed = mMovableEntity.ComputeSpeed(),
+                    Acceleration = mMovableEntity.ComputeAcceleration(),
+                };
 
 				lInteractionSteps = new List<InteractionStep>();
 
@@ -535,8 +703,10 @@ public class HumanInteractable : AInteraction
 			case HumanInteractionType.TAKEOFF:
 
 				lAnimationParameters = new AnimationParameters() {
-					TargetType = AnimationParameters.AnimationTargetType.ENTITY
-				};
+					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+                    Speed = mMovableEntity.ComputeSpeed(),
+                    Acceleration = mMovableEntity.ComputeAcceleration(),
+                };
 
 				lInteractionSteps = new List<InteractionStep>();
 
@@ -550,11 +720,54 @@ public class HumanInteractable : AInteraction
 				break;
 
 			case HumanInteractionType.PUSH:
-				// lol slt
-				break;
+
+                    lObjectToInteractWith = AEntity.FindGUID(lInter.ObjectUseInInteractionGUID);
+                    lEntity = AEntity.FindGUID(lInter.TargetGUID);
+                    if (lEntity == null) {
+                        Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
+                        continue;
+                    }
+
+                    lAnimationParameters = new AnimationParameters() {
+                        TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+                        AnimationTarget = lObjectToInteractWith.gameObject,
+                        Speed = mMovableEntity.ComputeSpeed(),
+                        Acceleration = mMovableEntity.ComputeAcceleration(),
+                    };
+
+                    lInteractionSteps = new List<InteractionStep>();
+
+                    lInteractionSteps.Add(new InteractionStep {
+                        tag = lAnimationParameters,
+                        action = MoveToTargetCallback
+                    });
+
+                    lInteractionSteps.Add(new InteractionStep {
+                        tag = lAnimationParameters,
+                        action = PushObjectCallback
+                    });
+
+                    TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
+                    break;
 
 			case HumanInteractionType.STOP_PUSH:
-				break;
+
+                    lAnimationParameters = new AnimationParameters() {
+                        TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+                        Speed = mMovableEntity.ComputeSpeed(),
+                        Acceleration = mMovableEntity.ComputeAcceleration(),
+                    };
+
+                    lInteractionSteps = new List<InteractionStep>();
+
+                    lInteractionSteps.Add(new InteractionStep {
+                        tag = lAnimationParameters,
+                        action = ReleaseObjectCallback
+                    });
+
+                    TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
+
+                    break;
 
 			}
 

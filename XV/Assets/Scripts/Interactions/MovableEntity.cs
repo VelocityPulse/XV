@@ -34,7 +34,7 @@ public sealed class MovableEntity : MonoBehaviour
 
 	public static readonly float MAX_SPEED_COEFF = 500F;
 
-	public static readonly float DEFAULT_SPEED_COEFF = 500F;
+	public static readonly float DEFAULT_SPEED_COEFF = 100F;
 
 	public static readonly float MIN_SPEED_COEFF = 30F;
 
@@ -276,9 +276,9 @@ public sealed class MovableEntity : MonoBehaviour
 		// Check the hit.point clicked is the ground
 		if ((GetHitPointFromMouseClic(ref lHitPoint, "scene"))) {
 
-			float lAgentSpeed;
-			float lAgentAcceleration;
-			ProcessSpeedAndAcceleration(out lAgentSpeed, out lAgentAcceleration);
+			//float lAgentSpeed;
+			//float lAgentAcceleration;
+			//ProcessSpeedAndAcceleration(out lAgentSpeed, out lAgentAcceleration);
 
 			GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimation() {
 				EntityGUID = mEntity.AODS.GUID,
@@ -291,7 +291,9 @@ public sealed class MovableEntity : MonoBehaviour
 			// Add the code that do the animation in the Action timeline
 			TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 				return Move(lHitPoint, iInfo);
-			}, new AnimationParameters() { Speed = lAgentSpeed, Acceleration = lAgentAcceleration });
+			}, new AnimationParameters() {
+                Speed = ComputeSpeed(),
+                Acceleration = ComputeAcceleration() });
 
 		}
 	}
@@ -322,15 +324,16 @@ public sealed class MovableEntity : MonoBehaviour
 
 		AnimationParameters lAnimParams = (AnimationParameters)iParams;
 
-		// Active Agent
-		mAgent.enabled = true;
-		// Update speed
-		mAgent.ResetPath();
-
-		mAgent.speed = lAnimParams.Speed;
-		mAgent.acceleration = lAnimParams.Acceleration;
-
-		mAgent.SetDestination(iDestination);
+        if (!mAgent.enabled) {
+            // Active Agent
+            mAgent.enabled = true;
+            // Update path and dest
+            mAgent.ResetPath();
+            mAgent.SetDestination(iDestination);
+            // Update speed
+            mAgent.speed = lAnimParams.Speed;
+            mAgent.acceleration = lAnimParams.Acceleration;
+        }
 
 		// Check if we have reached the destination
 		if (!mAgent.pathPending) {
@@ -468,13 +471,16 @@ public sealed class MovableEntity : MonoBehaviour
 				if (lAnim.IsMoveAnim) {
 					// Move action
 
-					float lAgentSpeed;
-					float lAgentAcceleration;
-					ProcessSpeedAndAcceleration(out lAgentSpeed, out lAgentAcceleration);
+					//float lAgentSpeed;
+					//float lAgentAcceleration;
+					//ProcessSpeedAndAcceleration(out lAgentSpeed, out lAgentAcceleration);
 
 					TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 						return Move(lAnim.TargetPosition, iInfo);
-					}, new AnimationParameters() { Speed = lAgentSpeed, Acceleration = lAgentAcceleration }, lAnim.Time);
+					}, new AnimationParameters() {
+                        Speed = ComputeSpeed(),
+                        Acceleration = ComputeAcceleration(),
+                    }, lAnim.Time);
 
 				} else if (lAnim.IsRotateAnim) {
 					// Rotation action
@@ -489,16 +495,30 @@ public sealed class MovableEntity : MonoBehaviour
 		}
 	}
 
-	private void ProcessSpeedAndAcceleration(out float iSpeed, out float iAcceleration)
-	{
-		// Anthony fait tes modifs humain/objet ici 
+	//public void ProcessSpeedAndAcceleration(out float iSpeed, out float iAcceleration)
+	//{
+	//	// Get ratio of the Speed input, range: [0.3 ; 2]
+	//	float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
+	//	// Compute speed
+	//	iSpeed = CONSTANT_SPEED_VALUE * lSpeedRatio;
+	//	iAcceleration = CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
+	//}
 
-		// Get ratio of the Speed input, range: [0.3 ; 2]
-		float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
-		// Compute speed
-		iSpeed = CONSTANT_SPEED_VALUE * lSpeedRatio;
-		iAcceleration = CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
-	}
+    public float ComputeSpeed()
+    {
+        // Get ratio of the Speed input, range: [0.3 ; 2]
+        float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
+        // Compute speed
+        return CONSTANT_SPEED_VALUE * lSpeedRatio;
+    }
+
+    public float ComputeAcceleration()
+    {
+        // Get ratio of the Speed input, range: [0.3 ; 2]
+        float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
+        // Compute acceleration
+        return CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
+    }
 
 	// Reset all variable to retrieve neutral edition mode
 	private void ResetMode()
