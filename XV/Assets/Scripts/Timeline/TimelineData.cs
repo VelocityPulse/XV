@@ -22,11 +22,13 @@ public sealed class TimelineData
 		mBindings = new Dictionary<int, ActionTrack>();
 	}
 
-	public void CreateEventClip(int iTrackID, AnimAction iAction, EventType iType, object iParams, double iTime)
+	public int CreateEventClip(int iTrackID, AnimAction iAction, EventType iType, object iParams, double iTime)
 	{
 		ActionTrack lTrack = GetTrack(iTrackID);
 		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
 		ActionAsset lActionAsset = lTimelineClip.asset as ActionAsset;
+		int lClipID = lActionAsset.GetInstanceID();
+
 		lActionAsset.Actions.Add(iAction);
 		lActionAsset.Parameters.Add(iParams);
 		lActionAsset.Track = lTrack;
@@ -38,15 +40,20 @@ public sealed class TimelineData
 		TimelineEventData lEventData = new TimelineEventData(iTrackID);
 		lEventData.ClipStart = lTimelineClip.start;
 		lEventData.Type = iType;
+		lEventData.ClipID = lClipID;
 		TimelineEvent.OnAddClip(lEventData);
+
+		return lClipID;
 	}
 
-	public void CreateInteractionEventClip(int iTrackID, List<InteractionStep> iSteps, double iTime)
+	public int CreateInteractionEventClip(int iTrackID, List<InteractionStep> iSteps, double iTime)
 	{
 		ActionTrack lTrack = GetTrack(iTrackID);
 
 		TimelineClip lTimelineClip = lTrack.CreateClip<ActionAsset>();
 		ActionAsset lActionAsset = lTimelineClip.asset as ActionAsset;
+		int lClipID = lActionAsset.GetInstanceID();
+
 		foreach (InteractionStep lStep in iSteps) {
 			lActionAsset.Actions.Add(lStep.action);
 			lActionAsset.Parameters.Add(lStep.tag);
@@ -60,7 +67,10 @@ public sealed class TimelineData
 		TimelineEventData lEventData = new TimelineEventData(iTrackID);
 		lEventData.ClipStart = lTrack.GetClips().First().start;
 		lEventData.Type = EventType.INTERACTION;
+		lEventData.ClipID = lClipID;
 		TimelineEvent.OnAddClip(lEventData);
+
+		return lClipID;
 	}
 
 	public ActionTrack CreateTrack(GameObject iObject)

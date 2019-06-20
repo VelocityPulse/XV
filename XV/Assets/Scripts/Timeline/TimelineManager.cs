@@ -18,6 +18,7 @@ public sealed class TimelineManager : MonoBehaviour
 	public static TimelineManager Instance { get; private set; }
 	public enum State { PLAY, PAUSE, STOP };
 	public static State sGlobalState;
+	public static readonly int BAD_CLIP_ID = 0;
 
 	public double Duration
 	{
@@ -66,48 +67,56 @@ public sealed class TimelineManager : MonoBehaviour
 		ClearTimeline();
 	}
 
-	public void AddAnimation(GameObject iObject, AnimAction iAction, object iParams = null, double iTime = 0D)
+	public int AddAnimation(GameObject iObject, AnimAction iAction, object iParams = null, double iTime = 0D)
 	{
+		int lClipID = BAD_CLIP_ID;
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateEventClip(lID, iAction, TimelineData.EventType.ANIMATION, iParams, iTime);
+			lClipID = mData.CreateEventClip(lID, iAction, TimelineData.EventType.ANIMATION, iParams, iTime);
 		}
+		return lClipID;
 	}
 
-	public void AddInteraction(GameObject iObject, List<InteractionStep> iSteps, double iTime = 0D)
+	public int AddInteraction(GameObject iObject, List<InteractionStep> iSteps, double iTime = 0D)
 	{
+		int lClipID = BAD_CLIP_ID;
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateInteractionEventClip(lID, iSteps, iTime);
+			lClipID = mData.CreateInteractionEventClip(lID, iSteps, iTime);
 		}
+		return lClipID;
 	}
 
-	public void AddTranslation(GameObject iObject, AnimAction iAction, object iParams = null, double iTime = 0D)
+	public int AddTranslation(GameObject iObject, AnimAction iAction, object iParams = null, double iTime = 0D)
 	{
+		int lClipID = BAD_CLIP_ID;
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateEventClip(lID, iAction, TimelineData.EventType.TRANSLATION, iParams, iTime);
+			lClipID = mData.CreateEventClip(lID, iAction, TimelineData.EventType.TRANSLATION, iParams, iTime);
 		}
+		return lClipID;
 	}
 
-	public void AddRotation(GameObject iObject, AnimAction iAction, object iParams = null, double iTime = 0D)
+	public int AddRotation(GameObject iObject, AnimAction iAction, object iParams = null, double iTime = 0D)
 	{
+		int lClipID = BAD_CLIP_ID;
 		if (iObject != null) {
 			int lID = iObject.GetInstanceID();
 			if (!mData.TrackExists(lID)) {
 				mData.CreateTrack(iObject);
 			}
-			mData.CreateEventClip(lID, iAction, TimelineData.EventType.ROTATION, iParams, iTime);
+			lClipID = mData.CreateEventClip(lID, iAction, TimelineData.EventType.ROTATION, iParams, iTime);
 		}
+		return lClipID;
 	}
 
 	public void DeleteTrack(int iID)

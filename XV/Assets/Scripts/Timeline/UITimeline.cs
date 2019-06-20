@@ -68,16 +68,16 @@ public class UITimeline : MonoBehaviour {
 		if (lTrack != null) {
 			switch (iData.Type) {
 				case TimelineData.EventType.ANIMATION:
-					lTrack.AddAnimationClip(iData.ClipStart);
+					lTrack.AddAnimationClip(iData.ClipID, iData.ClipStart);
 					break;
 				case TimelineData.EventType.TRANSLATION:
-					lTrack.AddTranslationClip(iData.ClipStart);
+					lTrack.AddTranslationClip(iData.ClipID, iData.ClipStart);
 					break;
 				case TimelineData.EventType.ROTATION:
-					lTrack.AddRotationClip(iData.ClipStart);
+					lTrack.AddRotationClip(iData.ClipID, iData.ClipStart);
 					break;
 				case TimelineData.EventType.INTERACTION:
-					lTrack.AddInteractionClip(iData.ClipStart);
+					lTrack.AddInteractionClip(iData.ClipID, iData.ClipStart);
 					break;
 			}
 		}

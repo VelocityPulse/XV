@@ -64,34 +64,38 @@ public class UITrack : MonoBehaviour
 		}
 	}
 
-	public void AddAnimationClip(double iStart)
+	public void AddAnimationClip(int iClipID, double iStart)
 	{
 		UIClip lClip = Instantiate(UIAnimationClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.EventType.ANIMATION;
+		lClip.ID = iClipID;
 		mClips.Add(lClip);
 		BuildClip(lClip, iStart);
 	}
 
-	public void AddInteractionClip(double iStart)
+	public void AddInteractionClip(int iClipID, double iStart)
 	{
 		UIClip lClip = Instantiate(UIInteractionClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.EventType.INTERACTION;
+		lClip.ID = iClipID;
 		mClips.Add(lClip);
 		BuildClip(lClip, iStart);
 	}
 
-	public void AddTranslationClip(double iStart)
+	public void AddTranslationClip(int iClipID, double iStart)
 	{
 		UIClip lClip = Instantiate(UITranslationClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.EventType.TRANSLATION;
+		lClip.ID = iClipID;
 		mClips.Add(lClip);
 		BuildClip(lClip, iStart);
 	}
 
-	public void AddRotationClip(double iStart)
+	public void AddRotationClip(int iClipID, double iStart)
 	{
 		UIClip lClip = Instantiate(UIRotationClipPrefab, mRectTransform);
 		lClip.Type = TimelineData.EventType.ROTATION;
+		lClip.ID = iClipID;
 		mClips.Add(lClip);
 		BuildClip(lClip, iStart);
 	}
@@ -100,6 +104,7 @@ public class UITrack : MonoBehaviour
 	{
 		TimelineEventData lEventData = new TimelineEventData(ID);
 		lEventData.ClipIndex = GetIndex(iClip);
+		lEventData.ClipID = iClip.ID;
 		lEventData.Type = iClip.Type;
 		if (mClips.Remove(iClip)) {
 			TimelineEvent.OnUIDeleteClip(lEventData);

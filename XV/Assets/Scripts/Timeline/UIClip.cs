@@ -34,6 +34,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 
 	public UITrack Track { get; private set; }
 	public TimelineData.EventType Type { get; set; }
+	public int ID { get; set; }
 
     private void Awake() {
         mTrackRectTransform = transform.parent as RectTransform;
@@ -96,6 +97,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 		TimelineEventData lEventData = new TimelineEventData(Track.ID);
 		lEventData.Type = Type;
 		lEventData.ClipIndex = Track.GetIndex(this);
+		lEventData.ClipID = ID;
 		lEventData.ClipLength = TimelineUtility.ClipSizeToDuration(mRectTransform.rect.size.x, Track.Size);
 		lEventData.ClipStart = TimelineUtility.ClipPositionToStart(mRectTransform.localPosition.x, Track.GetLimits()) - lEventData.ClipLength / 2F;
 
