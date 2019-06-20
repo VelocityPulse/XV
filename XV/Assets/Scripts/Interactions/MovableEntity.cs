@@ -276,10 +276,6 @@ public sealed class MovableEntity : MonoBehaviour
 		// Check the hit.point clicked is the ground
 		if ((GetHitPointFromMouseClic(ref lHitPoint, "scene"))) {
 
-			//float lAgentSpeed;
-			//float lAgentAcceleration;
-			//ProcessSpeedAndAcceleration(out lAgentSpeed, out lAgentAcceleration);
-
 			GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimation() {
 				EntityGUID = mEntity.AODS.GUID,
 				IsMoveAnim = true,
@@ -471,10 +467,6 @@ public sealed class MovableEntity : MonoBehaviour
 				if (lAnim.IsMoveAnim) {
 					// Move action
 
-					//float lAgentSpeed;
-					//float lAgentAcceleration;
-					//ProcessSpeedAndAcceleration(out lAgentSpeed, out lAgentAcceleration);
-
 					TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 						return Move(lAnim.TargetPosition, iInfo);
 					}, new AnimationParameters() {
@@ -495,26 +487,27 @@ public sealed class MovableEntity : MonoBehaviour
 		}
 	}
 
-	//public void ProcessSpeedAndAcceleration(out float iSpeed, out float iAcceleration)
-	//{
-	//	// Get ratio of the Speed input, range: [0.3 ; 2]
-	//	float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
-	//	// Compute speed
-	//	iSpeed = CONSTANT_SPEED_VALUE * lSpeedRatio;
-	//	iAcceleration = CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
-	//}
-
+    /// <summary>
+    /// Return the speed of this MovableEntity according to the Speed Input.
+    /// The speed goes from 30% of the CONSTANT_SPEED_VALUE to 500% of the CONSTANT_SPEED_VALUE
+    /// </summary>
+    /// <returns>The compute speed according to speed input in GUI</returns>
     public float ComputeSpeed()
     {
-        // Get ratio of the Speed input, range: [0.3 ; 2]
+        // Get ratio of the Speed input, range: [0.3 ; 5]
         float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
         // Compute speed
         return CONSTANT_SPEED_VALUE * lSpeedRatio;
     }
 
+    /// <summary>
+    /// Return the acceleration of this MovableEntity according to the Speed Input.
+    /// The acceleration goes from 30% of the CONSTANT_ACCELERATION_VALUE to 500% of the CONSTANT_ACCELERATION_VALUE
+    /// </summary>
+    /// <returns>The compute acceleration according to speed input in GUI</returns>
     public float ComputeAcceleration()
     {
-        // Get ratio of the Speed input, range: [0.3 ; 2]
+        // Get ratio of the Speed input, range: [0.3 ; 5]
         float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
         // Compute acceleration
         return CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
