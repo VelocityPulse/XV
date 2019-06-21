@@ -190,8 +190,6 @@ public class ObjectEntity : AEntity
 
 	public override void SaveEntity()
 	{
-		Debug.Log("save");
-
 		if (mODS != null) {
 			mODS.Position = transform.position; ;
 			mODS.Rotation = transform.rotation.eulerAngles;

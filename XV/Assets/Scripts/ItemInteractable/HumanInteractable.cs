@@ -149,8 +149,7 @@ public class HumanInteractable : AInteraction
 
             GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
                 InteractionType = HumanInteractionType.MOUNT,
-                TargetGUID = iEntity.AODS.GUID,
-                ObjectUseInInteractionGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
+				TargetGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
 				Time = TimelineManager.Instance.Time
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
@@ -282,8 +281,7 @@ public class HumanInteractable : AInteraction
 
 			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 				InteractionType = HumanInteractionType.TAKE,
-				TargetGUID = iEntity.AODS.GUID,
-                ObjectUseInInteractionGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
+				TargetGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
                 Time = TimelineManager.Instance.Time
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
@@ -434,8 +432,7 @@ public class HumanInteractable : AInteraction
 
             GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
                 InteractionType = HumanInteractionType.PUSH,
-                TargetGUID = iEntity.AODS.GUID,
-                ObjectUseInInteractionGUID = iEntityParam.gameObject.GetComponent<AEntity>().AODS.GUID,
+				TargetGUID = iEntityParam.gameObject.GetComponent<AEntity>().AODS.GUID,
                 Time = TimelineManager.Instance.Time
             });
             GameManager.Instance.CurrentDataScene.Serialize();
@@ -618,7 +615,7 @@ public class HumanInteractable : AInteraction
 			case HumanInteractionType.MOUNT:
 
                 AEntity lEntity = AEntity.FindGUID(lInter.TargetGUID);
-                AEntity lObjectToInteractWith = AEntity.FindGUID(lInter.ObjectUseInInteractionGUID);
+                AEntity lObjectToInteractWith = AEntity.FindGUID(lInter.TargetGUID);
 				if (lEntity == null) {
 					Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
 					continue;
@@ -668,7 +665,7 @@ public class HumanInteractable : AInteraction
 
 			case HumanInteractionType.TAKE:
 
-                lObjectToInteractWith = AEntity.FindGUID(lInter.ObjectUseInInteractionGUID);
+                lObjectToInteractWith = AEntity.FindGUID(lInter.TargetGUID);
                 lEntity = AEntity.FindGUID(lInter.TargetGUID);
 				if (lEntity == null) {
 					Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
@@ -724,7 +721,7 @@ public class HumanInteractable : AInteraction
 
 			case HumanInteractionType.PUSH:
 
-                    lObjectToInteractWith = AEntity.FindGUID(lInter.ObjectUseInInteractionGUID);
+                    lObjectToInteractWith = AEntity.FindGUID(lInter.TargetGUID);
                     lEntity = AEntity.FindGUID(lInter.TargetGUID);
                     if (lEntity == null) {
                         Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
