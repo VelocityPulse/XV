@@ -64,6 +64,10 @@ public sealed class TimelineManager : MonoBehaviour
 		mDirector = GetComponent<PlayableDirector>();
 		mTimeline = (TimelineAsset)mDirector.playableAsset;
 		mData = new TimelineData(mTimeline, mDirector);
+	}
+
+	private void OnApplicationQuit()
+	{
 		ClearTimeline();
 	}
 

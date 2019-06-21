@@ -112,14 +112,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 	{
 		float lLeftLimit = 0F;
 		if (Track != null) {
-			int lClipIndex = Track.GetPreviousAtPosition(transform.localPosition.x, Type);
-			UIClip lPreviousClip = Track.GetClip(lClipIndex, Type);
-			if (lPreviousClip != null) {
-				lLeftLimit = lPreviousClip.transform.localPosition.x + lPreviousClip.Size / 2.0F;
-			}
-			else {
-				lLeftLimit = Track.GetLimits().x;
-			}
+			lLeftLimit = Track.GetLimits().x;
 		}
 		return lLeftLimit;
 	}
@@ -128,14 +121,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 	{
 		float lRightLimit = 0F;
 		if (Track != null) {
-			int lClipIndex = Track.GetNextAtPosition(transform.localPosition.x, Type);
-			UIClip lNextClip = Track.GetClip(lClipIndex, Type);
-			if (lNextClip != null) {
-				lRightLimit = lNextClip.transform.localPosition.x - lNextClip.Size / 2.0F;
-			}
-			else {
-				lRightLimit = Track.GetLimits().y;
-			}
+			lRightLimit = Track.GetLimits().y;
 		}
 		return lRightLimit;
 	}

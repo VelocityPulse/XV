@@ -35,7 +35,9 @@ public class ActionTrack : TrackAsset
 		mActionsSets = new Queue<List<AnimAction>>();
 		mParamsSets = new Queue<List<object>>();
 		mDescriptions = new Queue<string>();
-		TimelineManager.Instance.StartCoroutine(ActionQueueCallAsync());
+		if (TimelineManager.Instance != null) {
+			TimelineManager.Instance.StartCoroutine(ActionQueueCallAsync());
+		}
 	}
 
 	public void QueueActions(List<AnimAction> iAction, List<object> iParams, string iDescription)
