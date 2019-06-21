@@ -74,9 +74,9 @@ public abstract class AEntity : MonoBehaviour
 
 	private Queue<Color> mOriginalColorsMaterial;
 
-	public abstract void Dispose();
-
 	public abstract void RemoveEntity();
+
+	public abstract void Dispose();
 
 	public abstract void SaveEntity();
 
@@ -137,6 +137,30 @@ public abstract class AEntity : MonoBehaviour
 	{
 		if (sAllEntites != null)
 			sAllEntites.Remove(this);
+
+		if (mDataScene == null || mAODS == null)
+			return;
+		
+		TimeLineSerialized lTimeLineSerialized = mDataScene.TimeLineSerialized;
+
+		if (mEntityParameters.Type == EntityParameters.EntityType.HUMAN)
+			lTimeLineSerialized.HumanInteractionList.Clear();
+
+		ManifactureInteraction[] lManifacturableInterBuffer = lTimeLineSerialized.ManifactureInteractionList.ToArray();
+		MovableAnimation[] lMovableAnimBuffer = lTimeLineSerialized.MovableAnimationList.ToArray();
+
+		foreach (ManifactureInteraction lInter in lManifacturableInterBuffer) {
+			if (lInter.EntityGUID == mAODS.GUID || lInter.TargetGUID == mAODS.GUID)
+				lTimeLineSerialized.ManifactureInteractionList.Remove(lInter);
+		}
+		foreach (MovableAnimation lAnim in lMovableAnimBuffer) {
+			if (lAnim.EntityGUID == mAODS.GUID)
+				lTimeLineSerialized.MovableAnimationList.Remove(lAnim);
+		}
+
+		lTimeLineSerialized.Serialize();
+
+		RemoveEntity();
 	}
 
 	public AEntity SetUIBubbleInfo(UIBubbleInfo iBubbleInfo)

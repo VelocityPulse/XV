@@ -86,10 +86,7 @@ public class HumanEntity : AEntity
 		UIBubbleInfo.CreateButton(new UIBubbleInfoButton {
 			Tag = "Destroy",
 			Text = "Destroy",
-			ClickAction = (iObjectEntity) => {
-				Dispose();
-				RemoveEntity();
-			}
+			ClickAction = (iObjectEntity) => Dispose()
 		});
 
 		StartCoroutine(PostPoppingAsync());

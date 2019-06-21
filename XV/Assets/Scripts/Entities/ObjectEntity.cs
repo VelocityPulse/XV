@@ -149,10 +149,7 @@ public class ObjectEntity : AEntity
 		mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
 			Tag = "Destroy",
 			Text = "Destroy",
-			ClickAction = (iObjectEntity) => {
-				Dispose();
-				RemoveEntity();
-			}
+			ClickAction = (iObjectEntity) => Dispose()
 		});
 
 		// Add a Nav Mesh obstacle on each object

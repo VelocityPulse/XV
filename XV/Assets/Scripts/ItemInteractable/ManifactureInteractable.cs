@@ -136,7 +136,7 @@ public class ManifactureInteractable : AInteraction
 		if (lTarget == null || mObjectHeld != null)
 			return true;
 
-		if (mMovableEntity.Move(lTarget.transform.position, lParams) == false)
+		if (mMovableEntity.MoveCallback(lTarget.transform.position, lParams) == false)
 			return false;
 
 		// doesnt work

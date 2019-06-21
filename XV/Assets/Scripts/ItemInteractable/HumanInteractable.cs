@@ -134,7 +134,7 @@ public class HumanInteractable : AInteraction
 		}
 	}
 
-	protected  void OnDestroy()
+	protected override void OnDestroy()
 	{
 		base.OnDestroy();
 		if (mObjectHeld != null) {
@@ -170,7 +170,6 @@ public class HumanInteractable : AInteraction
 				tag = lAnimationParameters,
 				action = MountObjectCallback
 			});
-
 
 			int lId = TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
@@ -587,7 +586,7 @@ public class HumanInteractable : AInteraction
 		if (lTarget == null || mObjectHeld != null)
 			return true;
 
-		if (mMovableEntity.Move(lTarget.transform.position, lParams) == false)
+		if (mMovableEntity.MoveCallback(lTarget.transform.position, lParams) == false)
 			return false;
 
 		// doesnt work

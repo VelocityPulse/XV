@@ -312,7 +312,7 @@ public sealed class MovableEntity : MonoBehaviour
 
 			// Add the code that do the animation in the Action timeline
 			int lId = TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
-				return Move(lHitPoint, iInfo);
+				return MoveCallback(lHitPoint, iInfo);
 			}, new AnimationParameters() {
 				Speed = ComputeSpeed(),
 				Acceleration = ComputeAcceleration()
@@ -330,8 +330,14 @@ public sealed class MovableEntity : MonoBehaviour
 		}
 	}
 
-	public bool Move(Vector3 iDestination, object iParams, Action iOnEndMovement = null)
+	public bool MoveCallback(Vector3 iDestination, object iParams, Action iOnEndMovement = null)
 	{
+		// Check NavMesh component are present
+		if (mEntityObstacle == null || mAgent == null) {
+			Debug.LogError("NavMeshAgent or NavMeshObstacle are missing.");
+			return true;
+		}
+
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
 			mAgent.enabled = false;
 			return true;
@@ -340,12 +346,6 @@ public sealed class MovableEntity : MonoBehaviour
 		if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE) {
 			mAgent.enabled = false;
 			return false;
-		}
-
-		// Check NavMesh component are present
-		if (mEntityObstacle == null || mAgent == null) {
-			Debug.LogError("NavMeshAgent or NavMeshObstacle are missing.");
-			return true;
 		}
 
 		// Disable Obstacle
@@ -399,7 +399,7 @@ public sealed class MovableEntity : MonoBehaviour
 
 		// Add the code that do the animation in the following Action
 		int lId = TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
-			return Rotate(iTarget, iInfo);
+			return RotateCallback(iTarget, iInfo);
 		}, new AnimationParameters(), TimelineManager.Instance.Time);
 
 		GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimation() {
@@ -412,7 +412,7 @@ public sealed class MovableEntity : MonoBehaviour
 		GameManager.Instance.CurrentDataScene.Serialize();
 	}
 
-	private bool Rotate(Quaternion iTarget, object iParams)
+	private bool RotateCallback(Quaternion iTarget, object iParams)
 	{
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
 			mAgent.enabled = false;
@@ -505,7 +505,7 @@ public sealed class MovableEntity : MonoBehaviour
 				if (lAnim.IsMoveAnim) {
 
 					lAnim.TimeLineId = TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
-						return Move(lAnim.TargetPosition, iInfo);
+						return MoveCallback(lAnim.TargetPosition, iInfo);
 					}, new AnimationParameters() {
 						Speed = ComputeSpeed(),
 						Acceleration = ComputeAcceleration(),
@@ -517,7 +517,7 @@ public sealed class MovableEntity : MonoBehaviour
 					Quaternion lRotation = Quaternion.Euler(lAnim.TargetRotation.x, lAnim.TargetRotation.y, lAnim.TargetRotation.z);
 
 					lAnim.TimeLineId = TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
-						return Rotate(lRotation, iInfo);
+						return RotateCallback(lRotation, iInfo);
 					}, new AnimationParameters(), lAnim.Time);
 				}
 			}
