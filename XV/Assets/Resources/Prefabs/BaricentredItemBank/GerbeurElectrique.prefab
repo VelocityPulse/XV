@@ -2404,7 +2404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1602f39823932499b9ed7d1e04d0f1b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TypeOf: 5
+  TypeOf: 4
   SitPosition: {x: 0, y: 0, z: -1.20818}
   HoldPosition: {x: 0, y: 0, z: 0.331269}
   DropPosition: {x: 0, y: 0, z: 1.468}

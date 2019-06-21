@@ -171,7 +171,7 @@ public class HumanInteractable : AInteraction
 				action = MountObjectCallback
 			});
 
-			int lId = TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+			int lId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 				InteractionType = HumanInteractionType.MOUNT,
@@ -186,6 +186,9 @@ public class HumanInteractable : AInteraction
 
 	private bool MountObjectCallback(object iParams)
 	{
+        if (gameObject == null || iParams == null)
+            return true;
+
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP)
 			return true;
 
@@ -195,8 +198,18 @@ public class HumanInteractable : AInteraction
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
+        if (lTarget == null || mObjectMounted != null || mObjectHeld != null || mObjectPushed != null) {
+            XV_UI.Instance.Notify(2F, "Human can't mount the object.");
+            return true;
+        }
+
 		ManifactureInteractable lMI = lTarget.GetComponent<ManifactureInteractable>();
 
+        if (lMI == null) {
+            XV_UI.Instance.Notify(2F, "An error occured when using target!");
+            return true;
+        }
+        
 		mObjectMounted = lMI;
 		lMI.HoldHuman(this, HumanInteractionType.MOUNT);
 		OnMount();
@@ -230,9 +243,15 @@ public class HumanInteractable : AInteraction
 
 	private bool UnmountObjectCallback(object iParams)
 	{
+        if (gameObject == null || iParams == null)
+            return true;
+        
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
+        if (mObjectMounted == null)
+            return true;
+        
 		mObjectMounted.DropHuman(this);
 		OnUnmount();
 		return true;
@@ -305,7 +324,7 @@ public class HumanInteractable : AInteraction
 				action = TakeObjectWaitAnimationEndCallback
 			});
 
-			int lId = TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+			int lId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 				InteractionType = HumanInteractionType.TAKE,
@@ -319,7 +338,10 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObjectAnimationTakeCallback(object iParams)
 	{
-		if (mObjectMounted != null)
+        if (gameObject == null || iParams == null)
+            return true;
+        
+        if (mObjectMounted != null || mObjectPushed != null)
 			return true;
 
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP)
@@ -331,8 +353,10 @@ public class HumanInteractable : AInteraction
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
-		if (lTarget == null || mObjectHeld != null)
-			return true;
+        if (lTarget == null || mObjectMounted != null || mObjectHeld != null || mObjectPushed != null) {
+            XV_UI.Instance.Notify(2F, "Human can't take the object.");
+            return true;
+        }
 
 		mAnimator.SetTrigger("PickUp");
 
@@ -358,8 +382,8 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObjectWaitAnimationEndCallback(object iParams)
 	{
-		if (mObjectMounted != null)
-			return true;
+        if (gameObject == null)
+            return true;
 
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
 			ResetAnimator();
@@ -401,6 +425,14 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeOffObjectCallback(object iParams)
 	{
+        if (gameObject == null || iParams == null)
+            return true;
+
+        if (mObjectHeld == null) {
+            XV_UI.Instance.Notify(2F, "Human can't drop the object.");
+            return true;
+        }
+        
 		ResetAnimator();
 		mObjectHeld.transform.localPosition = mItemPutPosition;
 		mObjectHeld.transform.parent = null;
@@ -437,11 +469,11 @@ public class HumanInteractable : AInteraction
 
 	private void OnClickPushObject(AEntity iEntity)
 	{
-		StartCoroutine(InteractionWaitForTarget("Handle", (iEntityParam) => {
+        StartCoroutine(InteractionWaitForTarget("Handle", (iTargetEntityParameters) => {
 
 			AnimationParameters lAnimationParameters = new AnimationParameters() {
 				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-				AnimationTarget = iEntityParam.gameObject,
+                AnimationTarget = iTargetEntityParameters.gameObject,
 				Speed = mMovableEntity.ComputeSpeed(),
 				Acceleration = mMovableEntity.ComputeAcceleration(),
 			};
@@ -458,11 +490,11 @@ public class HumanInteractable : AInteraction
 				action = PushObjectCallback
 			});
 
-			int lId = TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
+			int lId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
 
 			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 				InteractionType = HumanInteractionType.PUSH,
-				TargetGUID = iEntityParam.gameObject.GetComponent<AEntity>().AODS.GUID,
+                TargetGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
 				Time = TimelineManager.Instance.Time,
 				TimeLineId = lId
 			});
@@ -473,6 +505,9 @@ public class HumanInteractable : AInteraction
 
 	private bool PushObjectCallback(object iParams)
 	{
+        if (gameObject == null || iParams == null)
+            return true;
+        
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP)
 			return true;
 
@@ -481,9 +516,18 @@ public class HumanInteractable : AInteraction
 
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
+        if (lTarget == null || mObjectMounted != null || mObjectHeld != null || mObjectPushed != null) {
+            XV_UI.Instance.Notify(2F, "Human can't mount the object.");
+            return true;
+        }
 
 		ManifactureInteractable lMI = lTarget.GetComponent<ManifactureInteractable>();
 
+        if (lMI == null) {
+            XV_UI.Instance.Notify(2F, "An error occured when using target!");
+            return true;
+        }
+        
 		mObjectPushed = lMI;
 		lMI.HoldHuman(this, HumanInteractionType.PUSH, OnManufactureStartMove, OnManufactureEndMove);
 		OnPush();
@@ -529,6 +573,9 @@ public class HumanInteractable : AInteraction
 
 	private bool ReleaseObjectCallback(object iParams)
 	{
+        if (gameObject == null || iParams == null)
+            return true;
+        
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
@@ -577,14 +624,19 @@ public class HumanInteractable : AInteraction
 
 	private bool MoveToTargetCallback(object iParams)
 	{
-		if (mObjectMounted != null)
+        if (gameObject == null || iParams == null)
+            return true;
+        
+        if (mObjectMounted != null || mObjectPushed != null || mObjectHeld != null)
 			return true;
 
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
-		if (lTarget == null || mObjectHeld != null)
-			return true;
+        if (lTarget == null) {
+            XV_UI.Instance.Notify(2F, "Human can't move to the object.");
+            return true;
+        }
 
 		if (mMovableEntity.MoveCallback(lTarget.transform.position, lParams) == false)
 			return false;
@@ -670,7 +722,7 @@ public class HumanInteractable : AInteraction
 					action = MountObjectCallback
 				});
 
-				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
+				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
 
 				break;
 
@@ -725,7 +777,7 @@ public class HumanInteractable : AInteraction
 					action = TakeObjectWaitAnimationEndCallback
 				});
 
-				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
+				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
 
 				break;
 
@@ -775,7 +827,7 @@ public class HumanInteractable : AInteraction
 					action = PushObjectCallback
 				});
 
-				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
+				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
 				break;
 
 			case HumanInteractionType.STOP_PUSH:

@@ -332,12 +332,15 @@ public sealed class MovableEntity : MonoBehaviour
 
 	public bool MoveCallback(Vector3 iDestination, object iParams, Action iOnEndMovement = null)
 	{
-		// Check NavMesh component are present
-		if (mEntityObstacle == null || mAgent == null) {
-			Debug.LogError("NavMeshAgent or NavMeshObstacle are missing.");
-			return true;
-		}
+        // Check NavMesh component are present
+        if (mEntityObstacle == null || mAgent == null) {
+            Debug.LogError("NavMeshAgent or NavMeshObstacle are missing.");
+            return true;
+        }
 
+        if (gameObject == null || iParams == null)
+            return true;
+        
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
 			mAgent.enabled = false;
 			return true;
@@ -414,6 +417,9 @@ public sealed class MovableEntity : MonoBehaviour
 
 	private bool RotateCallback(Quaternion iTarget, object iParams)
 	{
+        if (gameObject == null || iParams == null)
+            return true;
+        
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
 			mAgent.enabled = false;
 			return true;
@@ -427,7 +433,6 @@ public sealed class MovableEntity : MonoBehaviour
 		// The duration is 2s by default for now
 		float lActionDuration = 2F;
 
-		Debug.Log(iParams == null);
 		AnimationParameters lAnimParams = (AnimationParameters)iParams;
 
 		// Update rotation performed according to speed

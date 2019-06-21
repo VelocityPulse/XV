@@ -97,9 +97,9 @@ public abstract class AInteraction : MonoBehaviour
 			{
 				mEnabled = value;
 				if (value)
-					HideUI();
-				else
 					AInteraction.UpdateAvailableInteraction();
+                else
+                    HideUI();
 			}
 		}
 

@@ -97,9 +97,11 @@ public class ManifactureInteractable : AInteraction
 	private void OnClickTakeObject(AEntity iEntity)
 	{
 		StartCoroutine(InteractionWaitForTarget("Take", (iTargetEntityParameters) => {
-			AnimationParameters lAnimationParameters = new AnimationParameters() {
-				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-				AnimationTarget = iTargetEntityParameters.gameObject,
+            AnimationParameters lAnimationParameters = new AnimationParameters() {
+                TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+                AnimationTarget = iTargetEntityParameters.gameObject,
+                Speed = mMovableEntity.ComputeSpeed(),
+                Acceleration = mMovableEntity.ComputeAcceleration(),
 			};
 
 			List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
@@ -114,7 +116,7 @@ public class ManifactureInteractable : AInteraction
 				action = TakeObjectPickCallback
 			});
 
-			int lId = TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+			int lId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 			GameManager.Instance.TimeLineSerialized.ManifactureInteractionList.Add(new ManifactureInteraction {
 				EntityGUID = mEntity.AODS.GUID,
