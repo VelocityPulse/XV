@@ -604,7 +604,6 @@ public class HumanInteractable : AInteraction
 	private void CheckAndAddInteractionsSaved()
 	{
 		List<HumanInteraction> lMovableAnimationList = GameManager.Instance.TimeLineSerialized.HumanInteractionList;
-		string lMyGUID = mEntity.AODS.GUID;
 
 		foreach (HumanInteraction lInter in lMovableAnimationList) {
 
@@ -615,7 +614,6 @@ public class HumanInteractable : AInteraction
 			case HumanInteractionType.MOUNT:
 
                 AEntity lEntity = AEntity.FindGUID(lInter.TargetGUID);
-                AEntity lObjectToInteractWith = AEntity.FindGUID(lInter.TargetGUID);
 				if (lEntity == null) {
 					Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
 					continue;
@@ -623,7 +621,7 @@ public class HumanInteractable : AInteraction
 
 				lAnimationParameters = new AnimationParameters() {
 					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-					AnimationTarget = lObjectToInteractWith.gameObject,
+					AnimationTarget = lEntity.gameObject,
                     Speed = mMovableEntity.ComputeSpeed(),
                     Acceleration = mMovableEntity.ComputeAcceleration(),
 				};
@@ -665,7 +663,6 @@ public class HumanInteractable : AInteraction
 
 			case HumanInteractionType.TAKE:
 
-                lObjectToInteractWith = AEntity.FindGUID(lInter.TargetGUID);
                 lEntity = AEntity.FindGUID(lInter.TargetGUID);
 				if (lEntity == null) {
 					Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
@@ -674,7 +671,7 @@ public class HumanInteractable : AInteraction
 
 				lAnimationParameters = new AnimationParameters() {
 					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-					AnimationTarget = lObjectToInteractWith.gameObject,
+					AnimationTarget = lEntity.gameObject,
                     Speed = mMovableEntity.ComputeSpeed(),
                     Acceleration = mMovableEntity.ComputeAcceleration(),
                 };
@@ -721,7 +718,6 @@ public class HumanInteractable : AInteraction
 
 			case HumanInteractionType.PUSH:
 
-                    lObjectToInteractWith = AEntity.FindGUID(lInter.TargetGUID);
                     lEntity = AEntity.FindGUID(lInter.TargetGUID);
                     if (lEntity == null) {
                         Debug.LogError("[HUMAN INTERACTABLE] TargetGUID not found!");
@@ -730,7 +726,7 @@ public class HumanInteractable : AInteraction
 
                     lAnimationParameters = new AnimationParameters() {
                         TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-                        AnimationTarget = lObjectToInteractWith.gameObject,
+                        AnimationTarget = lEntity.gameObject,
                         Speed = mMovableEntity.ComputeSpeed(),
                         Acceleration = mMovableEntity.ComputeAcceleration(),
                     };
