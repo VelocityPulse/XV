@@ -54,14 +54,43 @@ public class ManifactureInteractable : AInteraction
 		};
 
 		CheckAndAddInteractionsSaved();
+
+		TimelineEvent.UIResizeClipEvent += OnDragClipEvent;
+		TimelineEvent.UIDeleteClipEvent += OnDeleteClipEvent;
 	}
 
-
-	private void OnManifactureMove(AEntity iEntity)
+	private void OnDragClipEvent(TimelineEventData iEvent)
 	{
+		if (iEvent.Type == TimelineData.EventType.INTERACTION) {
+			TimeLineSerialized lTimeLineSerialized = GameManager.Instance.TimeLineSerialized;
 
+			ManifactureInteraction lInter = lTimeLineSerialized.FindManifactureInteraction(iEvent.ClipID);
+			if (lInter != null) {
+				lInter.Time = iEvent.ClipStart;
+				lTimeLineSerialized.Serialize();
+			}
+		}
 	}
 
+	private void OnDeleteClipEvent(TimelineEventData iEvent)
+	{
+		if (iEvent.Type == TimelineData.EventType.INTERACTION) {
+			TimeLineSerialized lTimeLineSerialized = GameManager.Instance.TimeLineSerialized;
+
+			ManifactureInteraction lInter = lTimeLineSerialized.FindManifactureInteraction(iEvent.ClipID);
+			if (lInter != null) {
+				lTimeLineSerialized.ManifactureInteractionList.Remove(lInter);
+				lTimeLineSerialized.Serialize();
+			}
+		}
+	}
+
+	protected override void OnDestroy()
+	{
+		base.OnDestroy();
+		TimelineEvent.AddClipEvent -= OnDragClipEvent;
+		TimelineEvent.DeleteClipEvent -= OnDeleteClipEvent;
+	}
 
 	#region TakeObject
 
@@ -85,13 +114,14 @@ public class ManifactureInteractable : AInteraction
 				action = TakeObjectPickCallback
 			});
 
-			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+			int lId = TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 			GameManager.Instance.TimeLineSerialized.ManifactureInteractionList.Add(new ManifactureInteraction {
 				EntityGUID = mEntity.AODS.GUID,
 				IsTakeObject = true,
 				TargetGUID = iTargetEntityParameters.GetComponent<AEntity>().AODS.GUID, //j'aime le danger
-				Time = TimelineManager.Instance.Time
+				Time = TimelineManager.Instance.Time,
+				TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
 
@@ -160,12 +190,13 @@ public class ManifactureInteractable : AInteraction
 			action = TakeOffObjectCallback
 		});
 
-		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+		int lId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 		GameManager.Instance.TimeLineSerialized.ManifactureInteractionList.Add(new ManifactureInteraction {
 			EntityGUID = mEntity.AODS.GUID,
 			IsTakeOffObject = true,
-			Time = TimelineManager.Instance.Time
+			Time = TimelineManager.Instance.Time,
+			TimeLineId = lId
 		});
 		GameManager.Instance.CurrentDataScene.Serialize();
 	}
@@ -291,7 +322,7 @@ public class ManifactureInteractable : AInteraction
 						action = TakeObjectPickCallback
 					});
 
-					TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
+					lInter.TimeLineId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
 
 				} else if (lInter.IsTakeOffObject) {
 
@@ -307,13 +338,10 @@ public class ManifactureInteractable : AInteraction
 						action = TakeOffObjectCallback
 					});
 
-					TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
-
+					lInter.TimeLineId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
 				}
-
 			}
-
 		}
-
+		GameManager.Instance.TimeLineSerialized.Serialize();
 	}
 }

@@ -309,7 +309,7 @@ public abstract class AInteraction : MonoBehaviour
 		return false;
 	}
 
-	private void OnDestroy()
+	protected virtual void OnDestroy()
 	{
 		RemoveType();
 	}

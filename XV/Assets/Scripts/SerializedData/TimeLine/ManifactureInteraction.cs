@@ -15,4 +15,6 @@ public class ManifactureInteraction
 	public string TargetGUID { get; set; }
 
 	public double Time { get; set; }
+
+	public int TimeLineId { get; set; }
 }

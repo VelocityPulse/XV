@@ -30,6 +30,33 @@ public sealed class TimeLineSerialized
 		ManifactureInteractionList = new List<ManifactureInteraction>();
 	}
 
+	public MovableAnimation FindMovableAnimation(int iTimeLineId)
+	{
+		foreach (MovableAnimation lAnim in MovableAnimationList) {
+			if (lAnim.TimeLineId == iTimeLineId)
+				return lAnim;
+		}
+		return null;
+	}
+
+	public HumanInteraction FindHumanInteraction(int iTimeLineId)
+	{
+		foreach (HumanInteraction lInter in HumanInteractionList) {
+			if (lInter.TimeLineId == iTimeLineId)
+				return lInter;
+		}
+		return null;
+	}
+
+	public ManifactureInteraction FindManifactureInteraction(int iTimeLineId)
+	{
+		foreach (ManifactureInteraction lInter in ManifactureInteractionList) {
+			if (lInter.TimeLineId == iTimeLineId)
+				return lInter;
+		}
+		return null;
+	}
+
 	public string Serialize()
 	{
 		string lFolderPath = Application.dataPath + RES_PATH;

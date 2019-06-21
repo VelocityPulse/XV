@@ -17,4 +17,6 @@ public class MovableAnimation
 	public Vector3 TargetRotation { get; set; }
 
 	public double Time { get; set; }
+
+	public int TimeLineId { get; set; }
 }

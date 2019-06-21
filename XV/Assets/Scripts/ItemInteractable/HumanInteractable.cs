@@ -14,25 +14,19 @@ public class HumanInteractable : AInteraction
 	private Animator mAnimator;
 
 	private Vector3 mItemTakenPosition;
-
 	private Vector3 mItemPutPosition;
 
 	private AEntity mObjectHeld;
 
 	private ManifactureInteractable mObjectMounted;
-
 	private ManifactureInteractable mObjectPushed;
 
 	private ItemInteraction mTakeObjectInteraction;
-
 	private ItemInteraction mMountObjectInteraction;
-
 	private ItemInteraction mPushObjectInteraction;
 
 	private UIBubbleInfoButton mTakeOffBubbleButton;
-
 	private UIBubbleInfoButton mUnmountBubbleButton;
-
 	private UIBubbleInfoButton mReleaseBubbleButton;
 
 	protected override void Start()
@@ -109,15 +103,47 @@ public class HumanInteractable : AInteraction
 		};
 
 		CheckAndAddInteractionsSaved();
+
+		TimelineEvent.UIResizeClipEvent += OnDragClipEvent;
+		TimelineEvent.UIDeleteClipEvent += OnDeleteClipEvent;
 	}
 
-	private void OnDestroy()
+	private void OnDragClipEvent(TimelineEventData iEvent)
 	{
+		if (iEvent.Type == TimelineData.EventType.INTERACTION) {
+			TimeLineSerialized lTimeLineSerialized = GameManager.Instance.TimeLineSerialized;
+
+			HumanInteraction lInter = lTimeLineSerialized.FindHumanInteraction(iEvent.ClipID);
+			if (lInter != null) {
+				lInter.Time = iEvent.ClipStart;
+				lTimeLineSerialized.Serialize();
+			}
+		}
+	}
+
+	private void OnDeleteClipEvent(TimelineEventData iEvent)
+	{
+		if (iEvent.Type == TimelineData.EventType.INTERACTION) {
+			TimeLineSerialized lTimeLineSerialized = GameManager.Instance.TimeLineSerialized;
+
+			HumanInteraction lInter = lTimeLineSerialized.FindHumanInteraction(iEvent.ClipID);
+			if (lInter != null) {
+				lTimeLineSerialized.HumanInteractionList.Remove(lInter);
+				lTimeLineSerialized.Serialize();
+			}
+		}
+	}
+
+	protected  void OnDestroy()
+	{
+		base.OnDestroy();
 		if (mObjectHeld != null) {
 			mObjectHeld.transform.parent = null;
 			mObjectHeld.RemoveEntity();
 			mObjectHeld.Dispose();
 		}
+		TimelineEvent.AddClipEvent -= OnDragClipEvent;
+		TimelineEvent.DeleteClipEvent -= OnDeleteClipEvent;
 	}
 
 	#region MountObject
@@ -145,12 +171,14 @@ public class HumanInteractable : AInteraction
 				action = MountObjectCallback
 			});
 
-			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+
+			int lId = TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 				InteractionType = HumanInteractionType.MOUNT,
 				TargetGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
-				Time = TimelineManager.Instance.Time
+				Time = TimelineManager.Instance.Time,
+				TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
 
@@ -191,11 +219,12 @@ public class HumanInteractable : AInteraction
 			action = UnmountObjectCallback
 		});
 
-		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+		int lId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 		GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 			InteractionType = HumanInteractionType.UNMOUNT,
-			Time = TimelineManager.Instance.Time
+			Time = TimelineManager.Instance.Time,
+			TimeLineId = lId
 		});
 		GameManager.Instance.CurrentDataScene.Serialize();
 	}
@@ -277,12 +306,13 @@ public class HumanInteractable : AInteraction
 				action = TakeObjectWaitAnimationEndCallback
 			});
 
-			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+			int lId = TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 				InteractionType = HumanInteractionType.TAKE,
 				TargetGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
-				Time = TimelineManager.Instance.Time
+				Time = TimelineManager.Instance.Time,
+				TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
 		}));
@@ -360,11 +390,12 @@ public class HumanInteractable : AInteraction
 			action = TakeOffObjectCallback
 		});
 
-		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
+		int lId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
 		GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 			InteractionType = HumanInteractionType.TAKEOFF,
-			Time = TimelineManager.Instance.Time
+			Time = TimelineManager.Instance.Time,
+			TimeLineId = lId
 		});
 		GameManager.Instance.CurrentDataScene.Serialize();
 	}
@@ -428,12 +459,13 @@ public class HumanInteractable : AInteraction
 				action = PushObjectCallback
 			});
 
-			TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
+			int lId = TimelineManager.Instance.AddInteraction(iEntity.gameObject, lInteractionSteps);
 
 			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 				InteractionType = HumanInteractionType.PUSH,
 				TargetGUID = iEntityParam.gameObject.GetComponent<AEntity>().AODS.GUID,
-				Time = TimelineManager.Instance.Time
+				Time = TimelineManager.Instance.Time,
+				TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
 
@@ -486,11 +518,12 @@ public class HumanInteractable : AInteraction
 			action = ReleaseObjectCallback
 		});
 
-		TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
+		int lId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps);
 
 		GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 			InteractionType = HumanInteractionType.STOP_PUSH,
-			Time = TimelineManager.Instance.Time
+			Time = TimelineManager.Instance.Time,
+			TimeLineId = lId
 		});
 		GameManager.Instance.CurrentDataScene.Serialize();
 	}
@@ -638,7 +671,7 @@ public class HumanInteractable : AInteraction
 					action = MountObjectCallback
 				});
 
-				TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
+				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
 
 				break;
 
@@ -657,7 +690,7 @@ public class HumanInteractable : AInteraction
 					action = UnmountObjectCallback
 				});
 
-				TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
+				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
 
 				break;
 
@@ -693,7 +726,7 @@ public class HumanInteractable : AInteraction
 					action = TakeObjectWaitAnimationEndCallback
 				});
 
-				TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
+				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
 
 				break;
 
@@ -712,7 +745,7 @@ public class HumanInteractable : AInteraction
 					action = TakeOffObjectCallback
 				});
 
-				TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
+				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
 
 				break;
 
@@ -743,7 +776,7 @@ public class HumanInteractable : AInteraction
 					action = PushObjectCallback
 				});
 
-				TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
+				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(lEntity.gameObject, lInteractionSteps, lInter.Time);
 				break;
 
 			case HumanInteractionType.STOP_PUSH:
@@ -761,13 +794,12 @@ public class HumanInteractable : AInteraction
 					action = ReleaseObjectCallback
 				});
 
-				TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
+				lInter.TimeLineId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, lInter.Time);
 
 				break;
-
 			}
-
 		}
+		GameManager.Instance.TimeLineSerialized.Serialize();
 	}
 
 }

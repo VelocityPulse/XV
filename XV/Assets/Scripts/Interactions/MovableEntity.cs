@@ -174,8 +174,36 @@ public sealed class MovableEntity : MonoBehaviour
 
 			CheckAndAddAnimationSaved();
 
+			TimelineEvent.UIResizeClipEvent += OnDragClipEvent;
+			TimelineEvent.UIDeleteClipEvent += OnDeleteClipEvent;
 		});
 		return this;
+	}
+
+	private void OnDragClipEvent(TimelineEventData iEvent)
+	{
+		if (iEvent.Type != TimelineData.EventType.INTERACTION) {
+			TimeLineSerialized lTimeLineSerialized = GameManager.Instance.TimeLineSerialized;
+
+			MovableAnimation lAnim = lTimeLineSerialized.FindMovableAnimation(iEvent.ClipID);
+			if (lAnim != null) {
+				lAnim.Time = iEvent.ClipStart;
+				lTimeLineSerialized.Serialize();
+			}
+		}
+	}
+
+	private void OnDeleteClipEvent(TimelineEventData iEvent)
+	{
+		if (iEvent.Type != TimelineData.EventType.INTERACTION) {
+			TimeLineSerialized lTimeLineSerialized = GameManager.Instance.TimeLineSerialized;
+
+			MovableAnimation lAnim = lTimeLineSerialized.FindMovableAnimation(iEvent.ClipID);
+			if (lAnim != null) {
+				lTimeLineSerialized.MovableAnimationList.Remove(lAnim);
+				lTimeLineSerialized.Serialize();
+			}
+		}
 	}
 
 	private void Start()
@@ -260,6 +288,12 @@ public sealed class MovableEntity : MonoBehaviour
 		}
 	}
 
+	private void OnDestroy()
+	{
+		TimelineEvent.AddClipEvent -= OnDragClipEvent;
+		TimelineEvent.DeleteClipEvent -= OnDeleteClipEvent;
+	}
+
 	public void SetMoveButton(Button iButton)
 	{
 		if (iButton != null)
@@ -276,21 +310,23 @@ public sealed class MovableEntity : MonoBehaviour
 		// Check the hit.point clicked is the ground
 		if ((GetHitPointFromMouseClic(ref lHitPoint, "scene"))) {
 
+			// Add the code that do the animation in the Action timeline
+			int lId = TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
+				return Move(lHitPoint, iInfo);
+			}, new AnimationParameters() {
+				Speed = ComputeSpeed(),
+				Acceleration = ComputeAcceleration()
+			},
+			   TimelineManager.Instance.Time);
+
 			GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimation() {
 				EntityGUID = mEntity.AODS.GUID,
 				IsMoveAnim = true,
 				TargetPosition = lHitPoint,
-				Time = TimelineManager.Instance.Time
+				Time = TimelineManager.Instance.Time,
+				TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
-
-			// Add the code that do the animation in the Action timeline
-			TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
-				return Move(lHitPoint, iInfo);
-			}, new AnimationParameters() {
-                Speed = ComputeSpeed(),
-               Acceleration = ComputeAcceleration() }, 
-               TimelineManager.Instance.Time);
 		}
 	}
 
@@ -320,16 +356,16 @@ public sealed class MovableEntity : MonoBehaviour
 
 		AnimationParameters lAnimParams = (AnimationParameters)iParams;
 
-        if (!mAgent.enabled) {
-            // Active Agent
-            mAgent.enabled = true;
-            // Update path and dest
-            mAgent.ResetPath();
-            mAgent.SetDestination(iDestination);
-            // Update speed
-            mAgent.speed = lAnimParams.Speed;
-            mAgent.acceleration = lAnimParams.Acceleration;
-        }
+		if (!mAgent.enabled) {
+			// Active Agent
+			mAgent.enabled = true;
+			// Update path and dest
+			mAgent.ResetPath();
+			mAgent.SetDestination(iDestination);
+			// Update speed
+			mAgent.speed = lAnimParams.Speed;
+			mAgent.acceleration = lAnimParams.Acceleration;
+		}
 
 		// Check if we have reached the destination
 		if (!mAgent.pathPending) {
@@ -361,18 +397,19 @@ public sealed class MovableEntity : MonoBehaviour
 		// Reset Button & Mode
 		ResetMode();
 
+		// Add the code that do the animation in the following Action
+		int lId = TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
+			return Rotate(iTarget, iInfo);
+		}, new AnimationParameters(), TimelineManager.Instance.Time);
+
 		GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimation() {
 			EntityGUID = mEntity.AODS.GUID,
 			IsRotateAnim = true,
 			TargetRotation = iTarget.eulerAngles,
-			Time = TimelineManager.Instance.Time
+			Time = TimelineManager.Instance.Time,
+			TimeLineId = lId
 		});
 		GameManager.Instance.CurrentDataScene.Serialize();
-
-		// Add the code that do the animation in the following Action
-		TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
-			return Rotate(iTarget, iInfo);
-		}, new AnimationParameters(), TimelineManager.Instance.Time);
 	}
 
 	private bool Rotate(Quaternion iTarget, object iParams)
@@ -464,54 +501,55 @@ public sealed class MovableEntity : MonoBehaviour
 
 		foreach (MovableAnimation lAnim in lMovableAnimationList) {
 			if (lAnim.EntityGUID == lMyGUID) {
-				
+
 				if (lAnim.IsMoveAnim) {
 
-					TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
+					lAnim.TimeLineId = TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 						return Move(lAnim.TargetPosition, iInfo);
 					}, new AnimationParameters() {
-                        Speed = ComputeSpeed(),
-                        Acceleration = ComputeAcceleration(),
-                    }, lAnim.Time);
+						Speed = ComputeSpeed(),
+						Acceleration = ComputeAcceleration(),
+					}, lAnim.Time);
 
 				} else if (lAnim.IsRotateAnim) {
 					// Rotation action
 
 					Quaternion lRotation = Quaternion.Euler(lAnim.TargetRotation.x, lAnim.TargetRotation.y, lAnim.TargetRotation.z);
 
-					TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
+					lAnim.TimeLineId = TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
 						return Rotate(lRotation, iInfo);
 					}, new AnimationParameters(), lAnim.Time);
 				}
 			}
 		}
+		GameManager.Instance.TimeLineSerialized.Serialize();
 	}
 
-    /// <summary>
-    /// Return the speed of this MovableEntity according to the Speed Input.
-    /// The speed goes from 30% of the CONSTANT_SPEED_VALUE to 500% of the CONSTANT_SPEED_VALUE
-    /// </summary>
-    /// <returns>The compute speed according to speed input in GUI</returns>
-    public float ComputeSpeed()
-    {
-        // Get ratio of the Speed input, range: [0.3 ; 5]
-        float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
-        // Compute speed
-        return CONSTANT_SPEED_VALUE * lSpeedRatio;
-    }
+	/// <summary>
+	/// Return the speed of this MovableEntity according to the Speed Input.
+	/// The speed goes from 30% of the CONSTANT_SPEED_VALUE to 500% of the CONSTANT_SPEED_VALUE
+	/// </summary>
+	/// <returns>The compute speed according to speed input in GUI</returns>
+	public float ComputeSpeed()
+	{
+		// Get ratio of the Speed input, range: [0.3 ; 5]
+		float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
+		// Compute speed
+		return CONSTANT_SPEED_VALUE * lSpeedRatio;
+	}
 
-    /// <summary>
-    /// Return the acceleration of this MovableEntity according to the Speed Input.
-    /// The acceleration goes from 30% of the CONSTANT_ACCELERATION_VALUE to 500% of the CONSTANT_ACCELERATION_VALUE
-    /// </summary>
-    /// <returns>The compute acceleration according to speed input in GUI</returns>
-    public float ComputeAcceleration()
-    {
-        // Get ratio of the Speed input, range: [0.3 ; 5]
-        float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
-        // Compute acceleration
-        return CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
-    }
+	/// <summary>
+	/// Return the acceleration of this MovableEntity according to the Speed Input.
+	/// The acceleration goes from 30% of the CONSTANT_ACCELERATION_VALUE to 500% of the CONSTANT_ACCELERATION_VALUE
+	/// </summary>
+	/// <returns>The compute acceleration according to speed input in GUI</returns>
+	public float ComputeAcceleration()
+	{
+		// Get ratio of the Speed input, range: [0.3 ; 5]
+		float lSpeedRatio = mEntity.GetSpeedInput() / DEFAULT_SPEED_COEFF;
+		// Compute acceleration
+		return CONSTANT_ACCELERATION_VALUE * lSpeedRatio;
+	}
 
 	// Reset all variable to retrieve neutral edition mode
 	private void ResetMode()

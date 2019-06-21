@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
 
 public enum HumanInteractionType
@@ -26,4 +27,6 @@ public class HumanInteraction
 	public string TargetGUID { get; set; }
 
 	public double Time { get; set; }
+
+	public int TimeLineId { get; set; }
 }
