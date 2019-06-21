@@ -25,5 +25,5 @@ public class HumanInteraction
 
 	public string TargetGUID { get; set; }
 
-    public double Time { get; set; }
+	public double Time { get; set; }
 }
