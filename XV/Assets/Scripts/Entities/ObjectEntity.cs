@@ -187,8 +187,8 @@ public class ObjectEntity : AEntity
 
 	public override void SaveEntity()
 	{
-		if (mODS != null) {
-			mODS.Position = transform.position; ;
+        if (mODS != null && TimelineManager.Instance.Time == 0F) {
+			mODS.Position = transform.position;
 			mODS.Rotation = transform.rotation.eulerAngles;
 			mODS.Scale = transform.localScale;
 			mDataScene.Serialize();
@@ -322,7 +322,7 @@ public class ObjectEntity : AEntity
 			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("dropable"));
 		}
 
-		SaveEntity();
+  		SaveEntity();
 	}
 
 	private void OnMouseDown()

@@ -114,10 +114,20 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-        if (TimelineManager.Instance.Time != 0F)
+        if (!XV_UI.Instance.isGUITimelineTrackLocked &&
+            TimelineManager.Instance.Time != 0F)
+        {
             XV_UI.Instance.LockTimelineTracks();
-        else if (XV_UI.Instance.isGUITimelineTrackLocked)
+            AEntity.ForEachEntities(
+                (iEntity) => iEntity.LockWorldEditorDeplacement = true);
+        }
+        else if (XV_UI.Instance.isGUITimelineTrackLocked &&
+            TimelineManager.Instance.Time == 0F)
+        {
             XV_UI.Instance.UnlockTimelineTracks();
+            AEntity.ForEachEntities(
+                (iEntity) => iEntity.LockWorldEditorDeplacement = false);
+        }
     }
 
 	public GameObject BuildObject(ObjectDataScene iODS, bool iAnimatedPopping = false)

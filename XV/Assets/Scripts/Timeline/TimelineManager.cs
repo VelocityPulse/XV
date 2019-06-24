@@ -178,6 +178,8 @@ public sealed class TimelineManager : MonoBehaviour
 
 	public void Play()
 	{
+        if (Time != 0F)
+            Stop();
 		mDirector.Play();
 		TimelineEvent.OnPlay(null);
 	}

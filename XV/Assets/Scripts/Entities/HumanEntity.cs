@@ -164,7 +164,7 @@ public class HumanEntity : AEntity
 
 	public override void SaveEntity()
 	{
-		if (mHDS != null) {
+		if (mHDS != null && TimelineManager.Instance.Time == 0F) {
 			Vector3 lPosition = new Vector3(
 				transform.position.x,
 				transform.position.y,
