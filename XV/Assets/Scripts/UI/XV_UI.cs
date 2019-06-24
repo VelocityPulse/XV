@@ -9,6 +9,8 @@ public sealed class XV_UI : MonoBehaviour
 
 	public bool isGUILocked { get { return mIsGUILocked; } }
 
+    public bool isGUITimelineTrackLocked { get { return mIsTimelineTrackLocked; } }
+
 	[SerializeField]
 	private UINotifier notifier;
 
@@ -21,6 +23,9 @@ public sealed class XV_UI : MonoBehaviour
 	[SerializeField]
 	private CanvasGroup UITimelinePanelLockerScreen;
 
+    [SerializeField]
+    private CanvasGroup UITimelinePanelLockerScreenTrack;
+
 	[SerializeField]
 	private UIConfirmPopup uIConfirmPopup;
 
@@ -32,6 +37,7 @@ public sealed class XV_UI : MonoBehaviour
 	private static XV_UI sInstance;
 
 	private bool mIsGUILocked;
+    private bool mIsTimelineTrackLocked;
 
 	static public XV_UI Instance
 	{
@@ -103,4 +109,28 @@ public sealed class XV_UI : MonoBehaviour
 			                                 () => { UITimelinePanelLockerScreen.gameObject.SetActive(false); }));
 		}
 	}
+
+    public void LockTimelineTracks()
+    {
+        if (!mIsTimelineTrackLocked)
+        {
+            mIsTimelineTrackLocked = true;
+
+            UITimelinePanelLockerScreenTrack.alpha = 0F;
+            UITimelinePanelLockerScreenTrack.gameObject.SetActive(true);
+            StartCoroutine(Utils.FadeToAsync(1F, 0.5F, UITimelinePanelLockerScreenTrack));
+        }
+    }
+
+
+    public void UnlockTimelineTracks()
+    {
+        if (mIsTimelineTrackLocked)
+        {
+            mIsTimelineTrackLocked = false;
+
+            StartCoroutine(Utils.FadeToAsync(0F, 0.5F, UITimelinePanelLockerScreenTrack,
+                                             () => { UITimelinePanelLockerScreenTrack.gameObject.SetActive(false); }));
+        }
+    }
 }

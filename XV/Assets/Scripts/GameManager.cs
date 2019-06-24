@@ -90,17 +90,7 @@ public class GameManager : MonoBehaviour
 		CatchedTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_catch");
 		RotationTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_rotate");
 
-		Recorder = GetComponent<Recorder>();
-
-
-		// //Record on wake up
-		//StartCoroutine(Utils.WaitForAsync(1F, () => {
-
-		//	Recorder.StartRecord();
-		//	StartCoroutine(Utils.WaitForAsync(5F, () => {
-		//		Recorder.ReleaseRecord();
-		//	}));
-		//}));
+		Recorder = GetComponent<Recorder>(); 
 	}
 
 	void Update()
@@ -123,7 +113,12 @@ public class GameManager : MonoBehaviour
 					SelectedEntity = null;
 			}
 		}
-	}
+
+        if (TimelineManager.Instance.Time != 0F)
+            XV_UI.Instance.LockTimelineTracks();
+        else if (XV_UI.Instance.isGUITimelineTrackLocked)
+            XV_UI.Instance.UnlockTimelineTracks();
+    }
 
 	public GameObject BuildObject(ObjectDataScene iODS, bool iAnimatedPopping = false)
 	{

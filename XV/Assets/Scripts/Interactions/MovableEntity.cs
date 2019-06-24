@@ -368,7 +368,6 @@ public sealed class MovableEntity : MonoBehaviour
 			mAgent.ResetPath();
 			mAgent.SetDestination(iDestination);
             // Update speed
-            Debug.Log(lAnimParams.Speed);
 			mAgent.speed = lAnimParams.Speed;
 			mAgent.acceleration = lAnimParams.Acceleration;
 		}
