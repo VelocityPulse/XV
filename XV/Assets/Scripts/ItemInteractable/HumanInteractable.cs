@@ -173,10 +173,12 @@ public class HumanInteractable : AInteraction
 
 			int lId = TimelineManager.Instance.AddInteraction(gameObject, lInteractionSteps, TimelineManager.Instance.Time);
 
-			GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
-				InteractionType = HumanInteractionType.MOUNT,
-				TargetGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
-				Time = TimelineManager.Instance.Time,
+            GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
+                InteractionType = HumanInteractionType.MOUNT,
+                TargetGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
+                Time = TimelineManager.Instance.Time,
+                Speed = lAnimationParameters.Speed,
+                Acceleration = lAnimationParameters.Acceleration,
 				TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
@@ -220,8 +222,6 @@ public class HumanInteractable : AInteraction
 	{
 		AnimationParameters lAnimationParameters = new AnimationParameters() {
 			TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-			Speed = mMovableEntity.ComputeSpeed(),
-			Acceleration = mMovableEntity.ComputeAcceleration(),
 		};
 
 		List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
@@ -236,7 +236,7 @@ public class HumanInteractable : AInteraction
 		GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 			InteractionType = HumanInteractionType.UNMOUNT,
 			Time = TimelineManager.Instance.Time,
-			TimeLineId = lId
+            TimeLineId = lId
 		});
 		GameManager.Instance.CurrentDataScene.Serialize();
 	}
@@ -330,7 +330,9 @@ public class HumanInteractable : AInteraction
 				InteractionType = HumanInteractionType.TAKE,
 				TargetGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
 				Time = TimelineManager.Instance.Time,
-				TimeLineId = lId
+                Speed = lAnimationParameters.Speed,
+                Acceleration = lAnimationParameters.Acceleration,
+                TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
 		}));
@@ -402,8 +404,6 @@ public class HumanInteractable : AInteraction
 	{
 		AnimationParameters lAnimationParameters = new AnimationParameters() {
 			TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-			Speed = mMovableEntity.ComputeSpeed(),
-			Acceleration = mMovableEntity.ComputeAcceleration(),
 		};
 
 		List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
@@ -418,7 +418,7 @@ public class HumanInteractable : AInteraction
 		GameManager.Instance.TimeLineSerialized.HumanInteractionList.Add(new HumanInteraction() {
 			InteractionType = HumanInteractionType.TAKEOFF,
 			Time = TimelineManager.Instance.Time,
-			TimeLineId = lId
+            TimeLineId = lId
 		});
 		GameManager.Instance.CurrentDataScene.Serialize();
 	}
@@ -496,7 +496,9 @@ public class HumanInteractable : AInteraction
 				InteractionType = HumanInteractionType.PUSH,
                 TargetGUID = iTargetEntityParameters.gameObject.GetComponent<AEntity>().AODS.GUID,
 				Time = TimelineManager.Instance.Time,
-				TimeLineId = lId
+                Speed = lAnimationParameters.Speed,
+                Acceleration = lAnimationParameters.Acceleration,
+                TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
 
@@ -550,8 +552,6 @@ public class HumanInteractable : AInteraction
 	{
 		AnimationParameters lAnimationParameters = new AnimationParameters() {
 			TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-			Speed = mMovableEntity.ComputeSpeed(),
-			Acceleration = mMovableEntity.ComputeAcceleration(),
 		};
 
 		List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
@@ -706,8 +706,8 @@ public class HumanInteractable : AInteraction
 				lAnimationParameters = new AnimationParameters() {
 					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 					AnimationTarget = lEntity.gameObject,
-					Speed = mMovableEntity.ComputeSpeed(),
-					Acceleration = mMovableEntity.ComputeAcceleration(),
+					Speed = lInter.Speed,
+					Acceleration = lInter.Acceleration
 				};
 
 				lInteractionSteps = new List<InteractionStep>();
@@ -756,9 +756,9 @@ public class HumanInteractable : AInteraction
 				lAnimationParameters = new AnimationParameters() {
 					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 					AnimationTarget = lEntity.gameObject,
-					Speed = mMovableEntity.ComputeSpeed(),
-					Acceleration = mMovableEntity.ComputeAcceleration(),
-				};
+                    Speed = lInter.Speed,
+                    Acceleration = lInter.Acceleration
+                };
 
 				lInteractionSteps = new List<InteractionStep>();
 
@@ -785,8 +785,6 @@ public class HumanInteractable : AInteraction
 
 				lAnimationParameters = new AnimationParameters() {
 					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-					Speed = mMovableEntity.ComputeSpeed(),
-					Acceleration = mMovableEntity.ComputeAcceleration(),
 				};
 
 				lInteractionSteps = new List<InteractionStep>();
@@ -811,9 +809,9 @@ public class HumanInteractable : AInteraction
 				lAnimationParameters = new AnimationParameters() {
 					TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 					AnimationTarget = lEntity.gameObject,
-					Speed = mMovableEntity.ComputeSpeed(),
-					Acceleration = mMovableEntity.ComputeAcceleration(),
-				};
+                    Speed = lInter.Speed,
+                    Acceleration = lInter.Acceleration
+                };
 
 				lInteractionSteps = new List<InteractionStep>();
 

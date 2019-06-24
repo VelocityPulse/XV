@@ -150,8 +150,8 @@ public abstract class AEntity : MonoBehaviour
 		MovableAnimation[] lMovableAnimBuffer = lTimeLineSerialized.MovableAnimationList.ToArray();
 
 		foreach (ManifactureInteraction lInter in lManifacturableInterBuffer) {
-			if (lInter.EntityGUID == mAODS.GUID || lInter.TargetGUID == mAODS.GUID)
-				lTimeLineSerialized.ManifactureInteractionList.Remove(lInter);
+            if (lInter.EntityGUID == mAODS.GUID || lInter.TargetGUID == mAODS.GUID)
+                lTimeLineSerialized.ManifactureInteractionList.Remove(lInter);
 		}
 		foreach (MovableAnimation lAnim in lMovableAnimBuffer) {
 			if (lAnim.EntityGUID == mAODS.GUID)

@@ -28,9 +28,6 @@ public class ManifactureInteractable : AInteraction
 
 	protected override void PostPoppingEntity()
 	{
-		mMovableEntity.OnStartMovement.Add(OnStartMovement);
-		mMovableEntity.OnEndMovement.Add(OnEndMovement);
-
 		if (mEntity.EntityParameters.Type == EntityParameters.EntityType.CUPBOARD)
 			return;
 
@@ -122,7 +119,9 @@ public class ManifactureInteractable : AInteraction
 				EntityGUID = mEntity.AODS.GUID,
 				IsTakeObject = true,
 				TargetGUID = iTargetEntityParameters.GetComponent<AEntity>().AODS.GUID, //j'aime le danger
-				Time = TimelineManager.Instance.Time,
+                Speed = lAnimationParameters.Speed,
+                Acceleration = lAnimationParameters.Acceleration,
+                Time = TimelineManager.Instance.Time,
 				TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
@@ -279,17 +278,7 @@ public class ManifactureInteractable : AInteraction
 			OnUnhold();
 	}
 
-	private void OnStartMovement()
-	{
-
-	}
-
-	private void OnEndMovement()
-	{
-
-	}
-
-	private void CheckAndAddInteractionsSaved()
+    private void CheckAndAddInteractionsSaved()
 	{
 		List<ManifactureInteraction> lManifactureInteractionList = GameManager.Instance.TimeLineSerialized.ManifactureInteractionList;
 
@@ -310,7 +299,9 @@ public class ManifactureInteractable : AInteraction
 					AnimationParameters lAnimationParameters = new AnimationParameters() {
 						TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 						AnimationTarget = lEntity.gameObject,
-					};
+                        Speed = lInter.Speed,
+                        Acceleration = lInter.Acceleration
+                    };
 
 					List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 

@@ -324,6 +324,8 @@ public sealed class MovableEntity : MonoBehaviour
 				IsMoveAnim = true,
 				TargetPosition = lHitPoint,
 				Time = TimelineManager.Instance.Time,
+                Speed = ComputeSpeed(),
+                Acceleration = ComputeAcceleration(),
 				TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
@@ -365,7 +367,8 @@ public sealed class MovableEntity : MonoBehaviour
 			// Update path and dest
 			mAgent.ResetPath();
 			mAgent.SetDestination(iDestination);
-			// Update speed
+            // Update speed
+            Debug.Log(lAnimParams.Speed);
 			mAgent.speed = lAnimParams.Speed;
 			mAgent.acceleration = lAnimParams.Acceleration;
 		}
@@ -512,8 +515,8 @@ public sealed class MovableEntity : MonoBehaviour
 					lAnim.TimeLineId = TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 						return MoveCallback(lAnim.TargetPosition, iInfo);
 					}, new AnimationParameters() {
-						Speed = ComputeSpeed(),
-						Acceleration = ComputeAcceleration(),
+						Speed = lAnim.Speed,
+						Acceleration = lAnim.Acceleration,
 					}, lAnim.Time);
 
 				} else if (lAnim.IsRotateAnim) {
