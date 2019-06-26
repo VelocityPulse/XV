@@ -44,8 +44,8 @@ public class Recorder : MonoBehaviour
         mVideoCapture = Camera.main.GetComponent<VideoCapture>();
 		if (mVideoCapture == null)
 			Debug.Log("[RECORDER] Main camera doesn't have VideoCapture component");
-
-		mVideoCapture.captureGUI = false;
+        else
+    		mVideoCapture.captureGUI = false;
 	}
 
 	public void StartRecord(string iPath = null)

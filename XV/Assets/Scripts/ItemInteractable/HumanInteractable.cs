@@ -106,9 +106,23 @@ public class HumanInteractable : AInteraction
 
 		TimelineEvent.UIResizeClipEvent += OnDragClipEvent;
 		TimelineEvent.UIDeleteClipEvent += OnDeleteClipEvent;
-	}
+        TimelineEvent.PauseEvent += OnPauseEvent;
+        TimelineEvent.PlayEvent += OnPlayEvent;
+    }
 
-	private void OnDragClipEvent(TimelineEventData iEvent)
+    private void OnPauseEvent(TimelineEventData iEvent)
+    {
+        if (mAnimator != null)
+            mAnimator.SetFloat("GlobalSpeed", 0F);
+    }
+
+    private void OnPlayEvent(TimelineEventData iEvent)
+    {
+        if (mAnimator != null)
+            mAnimator.SetFloat("GlobalSpeed", 1F);
+    }
+
+    private void OnDragClipEvent(TimelineEventData iEvent)
 	{
 		if (iEvent.Type == TimelineData.EventType.INTERACTION) {
 			TimeLineSerialized lTimeLineSerialized = GameManager.Instance.TimeLineSerialized;
@@ -144,7 +158,9 @@ public class HumanInteractable : AInteraction
 		}
 		TimelineEvent.AddClipEvent -= OnDragClipEvent;
 		TimelineEvent.DeleteClipEvent -= OnDeleteClipEvent;
-	}
+        TimelineEvent.PauseEvent -= OnPauseEvent;
+        TimelineEvent.PlayEvent -= OnPlayEvent;
+    }
 
 	#region MountObject
 
