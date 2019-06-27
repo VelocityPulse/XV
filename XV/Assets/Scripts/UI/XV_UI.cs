@@ -78,17 +78,12 @@ public sealed class XV_UI : MonoBehaviour
 	{
 		if (!mIsGUILocked) {
 			mIsGUILocked = true;
-			UIModelManagerLockerScreen.alpha = 0F;
-			UIToolBarLockerScreen.alpha = 0F;
-			UITimelinePanelLockerScreen.alpha = 0F;
 
-			UIModelManagerLockerScreen.gameObject.SetActive(true);
-			UIToolBarLockerScreen.gameObject.SetActive(true);
-			UITimelinePanelLockerScreen.gameObject.SetActive(true);
+            if (mIsTimelineTrackLocked)
+                LockCanvas(UIModelManagerLockerScreen);
 
-			StartCoroutine(Utils.FadeToAsync(1F, 0.5F, UIModelManagerLockerScreen));
-			StartCoroutine(Utils.FadeToAsync(1F, 0.5F, UIToolBarLockerScreen));
-			StartCoroutine(Utils.FadeToAsync(1F, 0.5F, UITimelinePanelLockerScreen));
+            LockCanvas(UIToolBarLockerScreen);
+            LockCanvas(UITimelinePanelLockerScreen);
 		}
 	}
 
@@ -97,16 +92,11 @@ public sealed class XV_UI : MonoBehaviour
 		if (mIsGUILocked) {
 			mIsGUILocked = false;
 
-			UIModelManagerLockerScreen.alpha = 1F;
-			UIToolBarLockerScreen.alpha = 1f;
-			UITimelinePanelLockerScreen.alpha = 1F;
+            if (!mIsTimelineTrackLocked)
+                UnlockCanvas(UIModelManagerLockerScreen);
 
-			StartCoroutine(Utils.FadeToAsync(0F, 0.5F, UIModelManagerLockerScreen,
-											 () => { UIModelManagerLockerScreen.gameObject.SetActive(false); }));
-			StartCoroutine(Utils.FadeToAsync(0F, 0.5F, UIToolBarLockerScreen,
-											 () => { UIToolBarLockerScreen.gameObject.SetActive(false); }));
-			StartCoroutine(Utils.FadeToAsync(0F, 0.5F, UITimelinePanelLockerScreen,
-			                                 () => { UITimelinePanelLockerScreen.gameObject.SetActive(false); }));
+            UnlockCanvas(UIToolBarLockerScreen);
+            UnlockCanvas(UITimelinePanelLockerScreen);
 		}
 	}
 
@@ -116,9 +106,8 @@ public sealed class XV_UI : MonoBehaviour
         {
             mIsTimelineTrackLocked = true;
 
-            UITimelinePanelLockerScreenTrack.alpha = 0F;
-            UITimelinePanelLockerScreenTrack.gameObject.SetActive(true);
-            StartCoroutine(Utils.FadeToAsync(1F, 0.5F, UITimelinePanelLockerScreenTrack));
+            LockCanvas(UITimelinePanelLockerScreenTrack);
+            LockCanvas(UIModelManagerLockerScreen);
         }
     }
 
@@ -129,8 +118,21 @@ public sealed class XV_UI : MonoBehaviour
         {
             mIsTimelineTrackLocked = false;
 
-            StartCoroutine(Utils.FadeToAsync(0F, 0.5F, UITimelinePanelLockerScreenTrack,
-                                             () => { UITimelinePanelLockerScreenTrack.gameObject.SetActive(false); }));
+            UnlockCanvas(UIModelManagerLockerScreen);
+            UnlockCanvas(UITimelinePanelLockerScreenTrack);
         }
+    }
+    
+    private void LockCanvas(CanvasGroup iCanvasGroup)
+    {
+        iCanvasGroup.alpha = 0F;
+        iCanvasGroup.gameObject.SetActive(true);
+        StartCoroutine(Utils.FadeToAsync(1F, 0.5F, iCanvasGroup));
+    }
+
+    private void UnlockCanvas(CanvasGroup iCanvasGroup)
+    {
+        StartCoroutine(Utils.FadeToAsync(0F, 0.5F, iCanvasGroup,
+                             () => { iCanvasGroup.gameObject.SetActive(false); }));
     }
 }
