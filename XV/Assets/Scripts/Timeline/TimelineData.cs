@@ -65,7 +65,7 @@ public sealed class TimelineData
 		}
 
 		TimelineEventData lEventData = new TimelineEventData(iTrackID);
-		lEventData.ClipStart = lTrack.GetClips().First().start;
+		lEventData.ClipStart = lTimelineClip.start;
 		lEventData.Type = EventType.INTERACTION;
 		lEventData.ClipID = lClipID;
 		TimelineEvent.OnAddClip(lEventData);

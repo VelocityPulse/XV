@@ -178,7 +178,7 @@ public sealed class TimelineManager : MonoBehaviour
 
 	public void Play()
 	{
-        if (Time != 0F)
+        if (Time != 0F && TimelineManager.sGlobalState != State.PAUSE)
             Stop();
 		mDirector.Play();
 		TimelineEvent.OnPlay(null);
