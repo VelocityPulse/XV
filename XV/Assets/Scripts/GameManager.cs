@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
 		CatchedTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_catch");
 		RotationTexturCursor = Resources.Load<Texture2D>("Sprites/UI/Icons/Cursor/cursor_rotate");
 
-		Recorder = GetComponent<Recorder>(); 
+		Recorder = GetComponent<Recorder>();
 	}
 
 	void Update()
@@ -114,19 +114,27 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
+        // If timeline played on
         if (!XV_UI.Instance.isGUITimelineTrackLocked &&
             TimelineManager.Instance.Time != 0F)
         {
             XV_UI.Instance.LockTimelineTracks();
             AEntity.ForEachEntities(
-                (iEntity) => iEntity.LockWorldEditorDeplacement = true);
+                (iEntity) => {
+                    iEntity.LockWorldEditorDeplacement = true;
+                    iEntity.LockDestroy = true;
+                });
         }
+        // If timeline turned off 
         else if (XV_UI.Instance.isGUITimelineTrackLocked &&
             TimelineManager.Instance.Time == 0F)
         {
             XV_UI.Instance.UnlockTimelineTracks();
             AEntity.ForEachEntities(
-                (iEntity) => iEntity.LockWorldEditorDeplacement = false);
+                (iEntity) => {
+                    iEntity.LockWorldEditorDeplacement = false;
+                    iEntity.LockDestroy = false;
+                });
         }
     }
 
@@ -234,6 +242,7 @@ public class GameManager : MonoBehaviour
 
 		lHumanEntity.InitDataScene(CurrentDataScene);
 		lHumanEntity.SetObjectDataScene(iHDS);
+        lHumanEntity.SaveEntity();
 
 		return oGameObject;
 	}

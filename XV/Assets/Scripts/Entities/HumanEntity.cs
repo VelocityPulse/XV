@@ -84,9 +84,14 @@ public class HumanEntity : AEntity
 		UIBubbleInfo.Parent = this;
 
 		UIBubbleInfo.CreateButton(new UIBubbleInfoButton {
-			Tag = "Destroy",
-			Text = "Destroy",
-			ClickAction = (iObjectEntity) => Dispose()
+			Tag = UIBubbleInfo.DESTROY_TAG,
+            Text = "Destroy",
+			ClickAction = (iObjectEntity) => {
+                Dispose();
+                // RemoveEntity cannot be in dispose and Destroy because
+                // Dispose() is called on a scene unload
+                RemoveEntity();
+            }
 		});
 
 		StartCoroutine(PostPoppingAsync());
@@ -164,7 +169,7 @@ public class HumanEntity : AEntity
 
 	public override void SaveEntity()
 	{
-		if (mHDS != null && TimelineManager.Instance.Time == 0F) {
+        if (mHDS != null && TimelineManager.Instance.Time == 0F) {
 			Vector3 lPosition = new Vector3(
 				transform.position.x,
 				transform.position.y,
@@ -179,6 +184,8 @@ public class HumanEntity : AEntity
 
 	public override void RemoveEntity()
 	{
+        base.RemoveEntity();
+
 		if (mHDS != null && mDataScene.Human != null) {
 			mDataScene.SetHDS(null);
 			mDataScene.Serialize();

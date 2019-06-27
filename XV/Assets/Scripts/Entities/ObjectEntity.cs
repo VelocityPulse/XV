@@ -147,9 +147,14 @@ public class ObjectEntity : AEntity
 		}
 
 		mUIBubbleInfo.CreateButton(new UIBubbleInfoButton {
-			Tag = "Destroy",
+			Tag = UIBubbleInfo.DESTROY_TAG,
 			Text = "Destroy",
-			ClickAction = (iObjectEntity) => Dispose()
+			ClickAction = (iObjectEntity) => {
+                Dispose();
+                // RemoveEntity cannot be in dispose and Destroy because
+                // Dispose() is called on a scene unload
+                RemoveEntity();
+            }
 		});
 
 		// Add a Nav Mesh obstacle on each object
@@ -187,6 +192,7 @@ public class ObjectEntity : AEntity
 
 	public override void SaveEntity()
 	{
+        Debug.Log(TimelineManager.Instance.Time);
         if (mODS != null && TimelineManager.Instance.Time == 0F) {
 			mODS.Position = transform.position;
 			mODS.Rotation = transform.rotation.eulerAngles;
@@ -197,6 +203,8 @@ public class ObjectEntity : AEntity
 
 	public override void RemoveEntity()
 	{
+        base.RemoveEntity();
+
 		if (mODS != null) {
 			if (mDataScene.IsDataObjectsContains(mODS)) {
 				mDataScene.RemoveODS(mODS);

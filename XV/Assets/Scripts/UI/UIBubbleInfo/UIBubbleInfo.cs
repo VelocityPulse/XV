@@ -8,6 +8,8 @@ public class UIBubbleInfo : MonoBehaviour
 {
 	public static string TAG = "BubbleInfo";
 
+    public static string DESTROY_TAG = "_DESTROY";
+
 	private bool mDisplayed;
 	private CanvasGroup mCanvasGroup;
 	private ContentSizeFitter mContentSizeFitter;
@@ -36,12 +38,30 @@ public class UIBubbleInfo : MonoBehaviour
 
 	private float mSpeed;
 
+    private bool mDestroyLocked;
+
 	/// <summary>
 	/// The Speed coeffcient input given by the user.
 	/// If the user give an invalid input, or if an error occured a default value is used.
 	/// Default Value: 100
 	/// </summary>
 	public float Speed { get { return mSpeed; } }
+
+    public bool DestroyLocked
+    {
+        get { return mDestroyLocked; }
+
+        set
+        {
+            if (mDestroyLocked == value)
+                return;
+            if (value)
+                LockDestroy();
+            else
+                UnlockDestroy();
+            mDestroyLocked = value;
+        }
+    }
 
 	public AEntity Parent { get; set; }
 
@@ -152,7 +172,6 @@ public class UIBubbleInfo : MonoBehaviour
 				iInfoButton.ClickAction(Parent);
 		});
 
-		//Je viens de rajouter un champ AttachedValue a la class Button de unity
 		if (string.IsNullOrEmpty(iInfoButton.Tag))
 			lButtonComponant.AttachedValue = "untagged";
 		else
@@ -164,10 +183,36 @@ public class UIBubbleInfo : MonoBehaviour
 		lNewButton.name = iInfoButton.Text;
 		lNewButton.SetActive(true);
 		Canvas.ForceUpdateCanvases();
+
+        if (lButtonComponant.tag == DESTROY_TAG && mDestroyLocked)
+            lButtonComponant.interactable = false;
 		return lButtonComponant;
 	}
 
-	public bool ContainsButton(string iTag)
+    private void LockDestroy()
+    {
+        Debug.Log("Locking Destroy : " + mButtons.Count);
+        foreach (Button lButton in mButtons) {
+            if (lButton.AttachedInfoButton.Tag == DESTROY_TAG)
+            {
+                Debug.Log("Lock");
+                lButton.interactable = false;
+            }
+        }
+    }
+
+    private void UnlockDestroy()
+    {
+        foreach (Button lButton in mButtons) {
+            if (lButton.AttachedInfoButton.Tag == DESTROY_TAG)
+            {
+                Debug.Log("unLock");
+                lButton.interactable = true;
+            }
+        }
+    }
+
+    public bool ContainsButton(string iTag)
 	{
 		if (string.IsNullOrEmpty(iTag))
 			return false;
@@ -218,7 +263,10 @@ public class UIBubbleInfo : MonoBehaviour
 			if (iExcluded != null && iExcluded.Tag == (string)lButton.AttachedValue)
 				continue;
 
-			lButton.interactable = iInteractable;
+            if (lButton.tag == DESTROY_TAG && mDestroyLocked)
+                continue;
+
+            lButton.interactable = iInteractable;
 		}
 		ModelName.interactable = iInteractable;
 	}
@@ -256,9 +304,9 @@ public class UIBubbleInfo : MonoBehaviour
 	public void Display()
 	{
 		mDisplayed = true;
-		SetInteractable(true);
 		mCanvasGroup.blocksRaycasts = true;
 		StartCoroutine(FadeToAsync(1F, 0.4F));
+        //Dont call interactable here because it reset the preset of interactable buttons
 	}
 
 	public void Hide()
@@ -266,12 +314,12 @@ public class UIBubbleInfo : MonoBehaviour
 		OnEndEdit();
 		GameManager.Instance.KeyboardDeplacementActive = true;
 		mDisplayed = false;
-		SetInteractable(false);
 		mCanvasGroup.blocksRaycasts = false;
 		StartCoroutine(FadeToAsync(0F, 0.4F));
-	}
+        //Dont call interactable here because it reset the preset of interactable buttons
+    }
 
-	public void RefreshCanvas()
+    public void RefreshCanvas()
 	{
 		if (mContentSizeFitter == null)
 			return;
