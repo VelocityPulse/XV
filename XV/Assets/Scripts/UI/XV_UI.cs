@@ -79,7 +79,7 @@ public sealed class XV_UI : MonoBehaviour
 		if (!mIsGUILocked) {
 			mIsGUILocked = true;
 
-            if (mIsTimelineTrackLocked)
+            if (!mIsTimelineTrackLocked)
                 LockCanvas(UIModelManagerLockerScreen);
 
             LockCanvas(UIToolBarLockerScreen);

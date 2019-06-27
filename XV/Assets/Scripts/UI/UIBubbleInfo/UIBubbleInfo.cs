@@ -191,13 +191,9 @@ public class UIBubbleInfo : MonoBehaviour
 
     private void LockDestroy()
     {
-        Debug.Log("Locking Destroy : " + mButtons.Count);
         foreach (Button lButton in mButtons) {
             if (lButton.AttachedInfoButton.Tag == DESTROY_TAG)
-            {
-                Debug.Log("Lock");
                 lButton.interactable = false;
-            }
         }
     }
 
@@ -205,10 +201,7 @@ public class UIBubbleInfo : MonoBehaviour
     {
         foreach (Button lButton in mButtons) {
             if (lButton.AttachedInfoButton.Tag == DESTROY_TAG)
-            {
-                Debug.Log("unLock");
                 lButton.interactable = true;
-            }
         }
     }
 

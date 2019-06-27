@@ -121,7 +121,7 @@ public abstract class AEntity : MonoBehaviour
 		// Adding this to all ObjectEntities
 		if (sAllEntites == null)
 			sAllEntites = new List<AEntity>();
-        Debug.Log("AEntity Start");
+
 		sAllEntites.Add(this);
 
 		// SetEntity in any movable entity
