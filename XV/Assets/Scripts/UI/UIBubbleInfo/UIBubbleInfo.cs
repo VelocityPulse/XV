@@ -243,7 +243,7 @@ public class UIBubbleInfo : MonoBehaviour
 			return;
 		}
 		if (iSpeed < MovableEntity.MIN_SPEED_COEFF || iSpeed > MovableEntity.MAX_SPEED_COEFF) {
-			Debug.LogWarning("[SET UI SPEED] Given speed was wrong, the default value was used instead.");
+			//Debug.LogWarning("[SET UI SPEED] Given speed was wrong, the default value was used instead.");
 			mSpeed = MovableEntity.DEFAULT_SPEED_COEFF;
 		} else
 			mSpeed = iSpeed;

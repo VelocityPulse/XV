@@ -414,7 +414,6 @@ public class HumanInteractable : AInteraction
             return true;
         }
 
-
         mAnimator.SetTrigger("PickUp");
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("PickUp")) {
@@ -692,7 +691,6 @@ public class HumanInteractable : AInteraction
 	}
 
 	#endregion PushObject
-
 
     private bool MoveToTargetCallback(object iParams)
 	{

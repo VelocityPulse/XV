@@ -169,8 +169,6 @@ public class ObjectEntity : AEntity
 			mNavMeshObstacle.carving = true;
 		}
 
-		mUIBubbleInfo.SetInteractable(false);
-
 		foreach (Action lAction in PostPoppingAction) {
 			if (lAction != null)
 				lAction();
@@ -192,9 +190,8 @@ public class ObjectEntity : AEntity
 
 	public override void SaveEntity()
 	{
-        Debug.Log(TimelineManager.Instance.Time);
         if (mODS != null && TimelineManager.Instance.Time == 0F) {
-			mODS.Position = transform.position;
+            mODS.Position = transform.position;
 			mODS.Rotation = transform.rotation.eulerAngles;
 			mODS.Scale = transform.localScale;
 			mDataScene.Serialize();

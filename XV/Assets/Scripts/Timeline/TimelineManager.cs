@@ -176,9 +176,9 @@ public sealed class TimelineManager : MonoBehaviour
 		mData.CheckEmptyTrack(iData.TrackID);
 	}
 
-	public void Play()
-	{
-        if (Time != 0F && TimelineManager.sGlobalState != State.PAUSE)
+    public void Play()
+    {
+        if (Time != 0F && TimelineManager.sGlobalState != State.PAUSE) 
             Stop();
 		mDirector.Play();
 		TimelineEvent.OnPlay(null);
