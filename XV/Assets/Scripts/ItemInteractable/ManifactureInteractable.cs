@@ -216,20 +216,16 @@ public class ManifactureInteractable : AInteraction
         mObjectHeld = lTarget.GetComponent<AEntity>();
 		mObjectHeld.Selected = false;
 		mObjectHeld.NavMeshObjstacleEnabled = false;
-		mObjectHeld.LockWorldEditorDeplacement = true;
-		mObjectHeld.StashUIBubbleButtons();
+        mObjectHeld.LockWorldEditorDeplacement = true;
+        mObjectHeld.StashUIBubbleButtons();
 
-		lTarget.transform.parent = gameObject.transform;
+        lTarget.transform.parent = gameObject.transform;
 		lTarget.transform.localPosition = mEntity.EntityParameters.VehiculeHoldPosition;
-		lTarget.transform.localRotation = Quaternion.Euler(0, 0, 0);
+		//lTarget.transform.localRotation = Quaternion.Euler(0, 0, 0);
 		OnHold();
 
 		return true;
 	}
-
-	#endregion TakeObject
-
-	#region TakeOffObject
 
 	private void OnClickTakeOffObject(AEntity iEntity)
 	{
@@ -271,13 +267,10 @@ public class ManifactureInteractable : AInteraction
 
         mObjectHeld.transform.localPosition = mEntity.EntityParameters.VehiculeDropPosition;
 		mObjectHeld.transform.parent = null;
-		mObjectHeld.LockWorldEditorDeplacement = false;
-		mObjectHeld.StashPopUIBubbleInfoButtons();
+
 		OnUnhold();
 		return true;
 	}
-
-	#endregion TakeOffObject
 
 	private void OnHold()
 	{
@@ -291,13 +284,17 @@ public class ManifactureInteractable : AInteraction
 		mEntity.DestroyBubbleInfoButton(mTakeOffBubbleButton);
 		mTakeObjectInteraction.Enabled = true;
 		if (mObjectHeld != null) {
-			mObjectHeld.NavMeshObjstacleEnabled = true;
+            mObjectHeld.LockWorldEditorDeplacement = false;
+            mObjectHeld.StashPopUIBubbleInfoButtons();
+            mObjectHeld.NavMeshObjstacleEnabled = true;
 			mObjectHeld = null;
 		} else
 			Debug.LogWarning("[HUMAN INTERACTABLE] Object Held shouldn't be null in OnUnhold");
 	}
 
-	public void HoldHuman(HumanInteractable iHuman, HumanInteractionType iInteractionType, Action iOnStartMovement = null, Action iOnEndMovement = null)
+    #endregion TakeObject
+
+    public void HoldHuman(HumanInteractable iHuman, HumanInteractionType iInteractionType, Action iOnStartMovement = null, Action iOnEndMovement = null)
 	{
 		if (iInteractionType == HumanInteractionType.MOUNT) {
 			iHuman.transform.parent = transform;
