@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -29,6 +30,10 @@ public class HumanInteractable : AInteraction
 	private UIBubbleInfoButton mUnmountBubbleButton;
 	private UIBubbleInfoButton mReleaseBubbleButton;
 
+    private Action mReleaseTargetObject;
+
+    private bool mTargetIsAvailable;
+
 	protected override void Start()
 	{
 		base.Start();
@@ -38,7 +43,9 @@ public class HumanInteractable : AInteraction
 
 		mItemTakenPosition = new Vector3(0F, 0.813F, 0.308F);
 		mItemPutPosition = new Vector3(0F, 0.039F, 0.7F);
-	}
+        mReleaseTargetObject = null;
+        mTargetIsAvailable = true;
+    }
 
 	protected override void PostPoppingEntity()
 	{
@@ -108,6 +115,13 @@ public class HumanInteractable : AInteraction
 		TimelineEvent.UIDeleteClipEvent += OnDeleteClipEvent;
         TimelineEvent.PauseEvent += OnPauseEvent;
         TimelineEvent.PlayEvent += OnPlayEvent;
+        TimelineEvent.StopEvent += OnStopEvent;
+    }
+
+    private void OnStopEvent(TimelineEventData iEvent)
+    {
+        if (mReleaseTargetObject != null)
+            mReleaseTargetObject();
     }
 
     private void OnPauseEvent(TimelineEventData iEvent)
@@ -148,6 +162,13 @@ public class HumanInteractable : AInteraction
 		}
 	}
 
+    private void ReleaseTargetInteractionOnDestroy(AInteraction iTarget)
+    {
+        if (iTarget != null)
+            iTarget.ReleaseForInteraction();
+        mReleaseTargetObject = null;
+    }
+
 	protected override void OnDestroy()
 	{
 		base.OnDestroy();
@@ -160,6 +181,10 @@ public class HumanInteractable : AInteraction
 		TimelineEvent.DeleteClipEvent -= OnDeleteClipEvent;
         TimelineEvent.PauseEvent -= OnPauseEvent;
         TimelineEvent.PlayEvent -= OnPlayEvent;
+        TimelineEvent.StopEvent -= OnStopEvent;
+
+        if (mReleaseTargetObject != null)
+            mReleaseTargetObject();
     }
 
 	#region MountObject
@@ -168,14 +193,22 @@ public class HumanInteractable : AInteraction
 	{
 		StartCoroutine(InteractionWaitForTarget("Mount", (iTargetEntityParameters) => {
 
-			AnimationParameters lAnimationParameters = new AnimationParameters() {
+            AnimationParameters lAnimationParameters = null;
+            if (iTargetEntityParameters == null)
+                return;
+			lAnimationParameters = new AnimationParameters() {
 				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 				AnimationTarget = iTargetEntityParameters.gameObject,
 				Speed = mMovableEntity.ComputeSpeed(),
 				Acceleration = mMovableEntity.ComputeAcceleration(),
 			};
 
-			List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+            if (lAnimationParameters == null) {
+                XV_UI.Instance.Notify(2F, "An error occured when retrieving targeted object.");
+                return;
+            }
+
+            List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 
 			lInteractionSteps.Add(new InteractionStep {
 				tag = lAnimationParameters,
@@ -316,16 +349,24 @@ public class HumanInteractable : AInteraction
 	private void OnClickTakeObject(AEntity iEntity)
 	{
 		StartCoroutine(InteractionWaitForTarget("Take", (iTargetEntityParameters) => {
-			AnimationParameters lAnimationParameters = new AnimationParameters() {
+            AnimationParameters lAnimationParameters = null;
+            if (iTargetEntityParameters == null)
+                return;
+			lAnimationParameters = new AnimationParameters() {
 				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 				AnimationTarget = iTargetEntityParameters.gameObject,
 				Speed = mMovableEntity.ComputeSpeed(),
 				Acceleration = mMovableEntity.ComputeAcceleration(),
 			};
 
+            if (lAnimationParameters == null) {
+                XV_UI.Instance.Notify(2F, "An error occured when retrieving targeted object.");
+                return;
+            }
+
 			List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 
-			lInteractionSteps.Add(new InteractionStep {
+            lInteractionSteps.Add(new InteractionStep {
 				tag = lAnimationParameters,
 				action = MoveToTargetCallback
 			});
@@ -356,11 +397,8 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObjectAnimationTakeCallback(object iParams)
 	{
-        if (gameObject == null || iParams == null)
+        if (gameObject == null || iParams == null || !mTargetIsAvailable)
             return true;
-        
-        if (mObjectMounted != null || mObjectPushed != null)
-			return true;
 
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP)
 			return true;
@@ -376,7 +414,8 @@ public class HumanInteractable : AInteraction
             return true;
         }
 
-		mAnimator.SetTrigger("PickUp");
+
+        mAnimator.SetTrigger("PickUp");
 
 		if (mAnimator.GetCurrentAnimatorStateInfo(0).IsName("PickUp")) {
 			mAnimator.SetBool("IdleWithBox", true);
@@ -400,7 +439,7 @@ public class HumanInteractable : AInteraction
 
 	private bool TakeObjectWaitAnimationEndCallback(object iParams)
 	{
-        if (gameObject == null)
+        if (gameObject == null || !mTargetIsAvailable)
             return true;
 
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
@@ -448,8 +487,16 @@ public class HumanInteractable : AInteraction
             XV_UI.Instance.Notify(2F, "Human can't drop the object.");
             return true;
         }
-        
-		ResetAnimator();
+
+        AInteraction lTargetBaseInteraction;
+        if ((lTargetBaseInteraction = mObjectHeld.GetComponent<AInteraction>()) == null) {
+            XV_UI.Instance.Notify(2F, "Can't check the object is available.");
+            return true;
+        }
+        lTargetBaseInteraction.ReleaseForInteraction();
+        mReleaseTargetObject = null;
+
+        ResetAnimator();
 		mObjectHeld.transform.localPosition = mItemPutPosition;
 		mObjectHeld.transform.parent = null;
 		OnUnhold();
@@ -487,14 +534,22 @@ public class HumanInteractable : AInteraction
 	{
         StartCoroutine(InteractionWaitForTarget("Handle", (iTargetEntityParameters) => {
 
-			AnimationParameters lAnimationParameters = new AnimationParameters() {
+            AnimationParameters lAnimationParameters = null;
+            if (iTargetEntityParameters == null)
+                return;
+            lAnimationParameters = new AnimationParameters() {
 				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
                 AnimationTarget = iTargetEntityParameters.gameObject,
 				Speed = mMovableEntity.ComputeSpeed(),
 				Acceleration = mMovableEntity.ComputeAcceleration(),
 			};
 
-			List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+            if (lAnimationParameters == null) {
+                XV_UI.Instance.Notify(2F, "An error occured when retrieving targeted object.");
+                return;
+            }
+
+            List <InteractionStep> lInteractionSteps = new List<InteractionStep>();
 
 			lInteractionSteps.Add(new InteractionStep {
 				tag = lAnimationParameters,
@@ -535,7 +590,7 @@ public class HumanInteractable : AInteraction
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
         if (lTarget == null || mObjectMounted != null || mObjectHeld != null || mObjectPushed != null) {
-            XV_UI.Instance.Notify(2F, "Human can't mount the object.");
+            XV_UI.Instance.Notify(2F, "Human can't handle the object.");
             return true;
         }
 
@@ -638,23 +693,36 @@ public class HumanInteractable : AInteraction
 
 	#endregion PushObject
 
-	private bool MoveToTargetCallback(object iParams)
+
+    private bool MoveToTargetCallback(object iParams)
 	{
         if (gameObject == null || iParams == null)
             return true;
-        
-        if (mObjectMounted != null || mObjectPushed != null || mObjectHeld != null)
-			return true;
 
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
-        if (lTarget == null) {
+        if (lTarget == null || mObjectMounted != null || mObjectPushed != null || mObjectHeld != null) {
             XV_UI.Instance.Notify(2F, "Human can't move to the object.");
             return true;
         }
 
-		if (mMovableEntity.MoveCallback(lTarget.transform.position, lParams) == false)
+        AInteraction lTargetBaseInteraction;
+        if ((lTargetBaseInteraction = lTarget.GetComponent<AInteraction>()) == null) {
+            XV_UI.Instance.Notify(2F, "Can't check the object is available.");
+            mTargetIsAvailable = false;
+            return true;
+        }
+
+        if (!(lTargetBaseInteraction.ReserveForInteraction(gameObject.GetHashCode()))) {
+            mTargetIsAvailable = false;
+            return true;
+        }
+        mTargetIsAvailable = true;
+
+        mReleaseTargetObject = () => ReleaseTargetInteractionOnDestroy(lTargetBaseInteraction);
+
+        if (mMovableEntity.MoveCallback(lTarget.transform.position, lParams) == false)
 			return false;
 
 		// doesnt work
