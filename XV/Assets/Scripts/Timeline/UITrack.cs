@@ -18,6 +18,7 @@ public class UITrack : MonoBehaviour
 
 	[SerializeField]
 	private Text nameText;
+	public static UITrack sSampleTrack;
 
 	public int ID { get; set; }
 
@@ -52,6 +53,9 @@ public class UITrack : MonoBehaviour
 		UIInteractionClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIInteractionClip");
 		UITranslationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UITranslationClip");
 		UIRotationClipPrefab = Resources.Load<UIClip>(GameManager.UI_TEMPLATE_PATH + "Timeline/UIRotationClip");
+		if (sSampleTrack == null) {
+			sSampleTrack = this;
+		}
 	}
 
 	private IEnumerator CheckIntegrityAsync()
@@ -115,8 +119,9 @@ public class UITrack : MonoBehaviour
 
 	public void ResizeClip(TimelineEventData iData)
 	{
-		if (mClips.Count > iData.ClipIndex) {
-			BuildClip(mClips[iData.ClipIndex], iData.ClipStart);
+		UIClip lClip = mClips.Find(i => i.ID == iData.ClipID);
+		if (lClip != null) {
+			BuildClip(lClip, iData.ClipStart);
 		}
 	}
 

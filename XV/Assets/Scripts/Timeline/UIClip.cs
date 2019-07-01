@@ -79,7 +79,7 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 		else if (iData.dragging == false && iData.button == PointerEventData.InputButton.Left) {
 			TimelineEventData lEventData = new TimelineEventData(Track.ID);
 			if (Track != null) {
-				lEventData.ClipIndex = Track.GetIndex(this);
+				lEventData.ClipID = ID;
 				lEventData.Type = Type;
 				TimelineEvent.OnGetDescription(lEventData);
 			}

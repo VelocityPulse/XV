@@ -32,7 +32,7 @@ public sealed class TimelineData
 		lActionAsset.Actions.Add(iAction);
 		lActionAsset.Parameters.Add(iParams);
 		lActionAsset.Track = lTrack;
-		lTimelineClip.duration = 0.1D;
+		lTimelineClip.duration = TimelineUtility.ClipSizeToDuration(UIClip.sSizeMin, UITrack.sSampleTrack.Size);
 		if (iTime > 0D) {
 			lTimelineClip.start = iTime;
 		}
@@ -42,6 +42,8 @@ public sealed class TimelineData
 		lEventData.Type = iType;
 		lEventData.ClipID = lClipID;
 		TimelineEvent.OnAddClip(lEventData);
+
+		RebuildTrack(iTrackID);
 
 		return lClipID;
 	}
@@ -59,7 +61,7 @@ public sealed class TimelineData
 			lActionAsset.Parameters.Add(lStep.tag);
 			lActionAsset.Track = lTrack;
 		}
-		lTimelineClip.duration = 0.1D;
+		lTimelineClip.duration = TimelineUtility.ClipSizeToDuration(UIClip.sSizeMin, UITrack.sSampleTrack.Size);
 		if (iTime > 0D) {
 			lTimelineClip.start = iTime;
 		}
@@ -69,6 +71,8 @@ public sealed class TimelineData
 		lEventData.Type = EventType.INTERACTION;
 		lEventData.ClipID = lClipID;
 		TimelineEvent.OnAddClip(lEventData);
+
+		RebuildTrack(iTrackID);
 
 		return lClipID;
 	}
@@ -93,16 +97,23 @@ public sealed class TimelineData
 		TimelineEvent.OnDeleteTrack(lEventData);
 	}
 
+	public void RebuildTrack(int iID)
+	{
+		ActionTrack lTrack = GetTrack(iID);
+		List<TimelineClip> lClips = lTrack.GetClips().ToList();
+
+ 		foreach (TimelineClip lClip in lClips) {
+			TimelineEventData lEventData = new TimelineEventData(iID);
+			lEventData.ClipID = lClip.asset.GetInstanceID();
+			lEventData.ClipStart = lClip.start;
+			TimelineEvent.OnResizeClip(lEventData);
+		}
+	}
+
 	public void RebuildAllTracks()
 	{
 		foreach (KeyValuePair<int, ActionTrack> lTrack in mBindings) {
-			List<TimelineClip> lClips = lTrack.Value.GetClips().ToList();
-			for (int lIndex = 0; lIndex < lClips.Count; lIndex++) {
-				TimelineEventData lEventData = new TimelineEventData(lTrack.Key);
-				lEventData.ClipIndex = lIndex;
-				lEventData.ClipStart = lClips[lIndex].start;
-				TimelineEvent.OnResizeClip(lEventData);
-			}
+			RebuildTrack(lTrack.Key);
 		}
 	}
 
@@ -137,7 +148,7 @@ public sealed class TimelineData
 	public string GetClipDescription(TimelineEventData iData)
 	{
 		ActionTrack lTrack = GetTrack(iData.TrackID);
-		TimelineClip lClip = lTrack.GetClips().ElementAtOrDefault(iData.ClipIndex);
+		TimelineClip lClip = lTrack.GetClips().ToList().Find(i => i.asset.GetInstanceID() == iData.ClipID);
 		if (lClip != null) {
 			ActionAsset lAsset = lClip.asset as ActionAsset;
 			return lAsset.Description;
@@ -148,7 +159,7 @@ public sealed class TimelineData
 	public void SetClipDescription(TimelineEventData iData, string iDescription)
 	{
 		ActionTrack lTrack = GetTrack(iData.TrackID);
-		TimelineClip lClip = lTrack.GetClips().ElementAtOrDefault(iData.ClipIndex);
+		TimelineClip lClip = lTrack.GetClips().ToList().Find(i => i.asset.GetInstanceID() == iData.ClipID);
 		if (lClip != null) {
 			ActionAsset lAsset = lClip.asset as ActionAsset;
 			lAsset.Description = iDescription;

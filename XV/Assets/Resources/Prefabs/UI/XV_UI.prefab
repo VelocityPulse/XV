@@ -1892,7 +1892,7 @@ GameObject:
   - component: {fileID: 114983673492043776}
   - component: {fileID: 114256178691151076}
   m_Layer: 0
-  m_Name: SceneNameText
+  m_Name: ChronoText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8006,7 +8006,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 12800000, guid: 430bebfa6e49543c6bbc6fa9c37172bd, type: 3}
     m_FontSize: 14
-    m_FontStyle: 1
+    m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 3
     m_MaxSize: 30
@@ -11212,7 +11212,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.8936035}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.000015258789}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!224 &224833502696439638
@@ -12861,6 +12861,16 @@ PlayableDirector:
   - key: {fileID: 114920155651301258, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
     value: {fileID: 0}
   - key: {fileID: 114110249730553890, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114794002991435914, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114575079931858286, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114817897604725338, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114533761122043438, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 114144747184108812, guid: bfe71d91c0e534e6e966b955a5377955, type: 2}
     value: {fileID: 0}
   m_ExposedReferences:
     m_References: []

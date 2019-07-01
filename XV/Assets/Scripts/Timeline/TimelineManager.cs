@@ -160,10 +160,14 @@ public sealed class TimelineManager : MonoBehaviour
 	{
 		TrackAsset lTrack = mData.GetTrack(iData.TrackID);
 		List<TimelineClip> lClips = lTrack.GetClips().ToList();
-		if (lClips.Count > iData.ClipIndex) {
-			TimelineClip lClip = lClips[iData.ClipIndex];
+
+		TimelineClip lClip = lClips.Find(i => i.asset.GetInstanceID() == iData.ClipID);
+		if (lClip != null) {
 			lClip.start = iData.ClipStart;
-			lClip.duration = iData.ClipLength;
+			lClip.duration = TimelineUtility.ClipSizeToDuration(UIClip.sSizeMin, UITrack.sSampleTrack.Size);
+		}
+		else {
+			Debug.LogError("TimelineManager: clip not found with ID " + iData.ClipID);
 		}
 	}
 
@@ -171,10 +175,13 @@ public sealed class TimelineManager : MonoBehaviour
 	{
 		TrackAsset lTrack = mData.GetTrack(iData.TrackID);
 		List<TimelineClip> lClips = lTrack.GetClips().ToList();
-		if (lClips.Count > iData.ClipIndex) {
-			mTimeline.DeleteClip(lClips[iData.ClipIndex]);
+		TimelineClip lClip = lClips.Find(i => i.asset.GetInstanceID() == iData.ClipID);
+		if (lClip != null) {
+			mTimeline.DeleteClip(lClip);
 		}
-		mData.CheckEmptyTrack(iData.TrackID);
+		else {
+			Debug.LogError("TimelineManager: clip not found with ID " + iData.ClipID);
+		}
 	}
 
 	private void Update()
