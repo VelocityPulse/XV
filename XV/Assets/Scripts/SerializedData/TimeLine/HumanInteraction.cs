@@ -26,9 +26,9 @@ public class HumanInteraction
 
 	public string TargetGUID { get; set; }
 
-    public float Speed { get; set; }
+	public float Speed { get; set; }
 
-    public float Acceleration { get; set; }
+	public float Acceleration { get; set; }
 
 	public double Time { get; set; }
 

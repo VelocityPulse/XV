@@ -18,20 +18,20 @@ public class ManifactureInteractable : AInteraction
 
 	private UIBubbleInfoButton mTakeOffBubbleButton;
 
-    private Action mReleaseTargetObject;
+	private Action mReleaseTargetObject;
 
-    private bool mTargetIsAvailable;
+	private bool mTargetIsAvailable;
 
-    protected override void Start()
+	protected override void Start()
 	{
 		base.Start();
 
 		mMovableEntity = GetComponent<MovableEntity>();
 
-        mReleaseTargetObject = null;
+		mReleaseTargetObject = null;
 
-        mTargetIsAvailable = true;
-    }
+		mTargetIsAvailable = true;
+	}
 
 
 	protected override void PostPoppingEntity()
@@ -62,14 +62,14 @@ public class ManifactureInteractable : AInteraction
 
 		TimelineEvent.UIResizeClipEvent += OnDragClipEvent;
 		TimelineEvent.UIDeleteClipEvent += OnDeleteClipEvent;
-        TimelineEvent.StopEvent += OnStopEvent;
+		TimelineEvent.StopEvent += OnStopEvent;
 	}
 
-    private void OnStopEvent(TimelineEventData iEvent)
-    {
-        if (mReleaseTargetObject != null)
-            mReleaseTargetObject();
-    }
+	private void OnStopEvent(TimelineEventData iEvent)
+	{
+		if (mReleaseTargetObject != null)
+			mReleaseTargetObject();
+	}
 
 	private void OnDragClipEvent(TimelineEventData iEvent)
 	{
@@ -97,22 +97,22 @@ public class ManifactureInteractable : AInteraction
 		}
 	}
 
-    private void ReleaseTargetInteractionOnDetroy(AInteraction iTarget)
-    {
-        if (iTarget != null)
-            iTarget.ReleaseForInteraction();
-        mReleaseTargetObject = null;
-    }
+	private void ReleaseTargetInteractionOnDetroy(AInteraction iTarget)
+	{
+		if (iTarget != null)
+			iTarget.ReleaseForInteraction();
+		mReleaseTargetObject = null;
+	}
 
-    protected override void OnDestroy()
+	protected override void OnDestroy()
 	{
 		base.OnDestroy();
 		TimelineEvent.AddClipEvent -= OnDragClipEvent;
 		TimelineEvent.DeleteClipEvent -= OnDeleteClipEvent;
-        TimelineEvent.StopEvent -= OnStopEvent;
+		TimelineEvent.StopEvent -= OnStopEvent;
 
-        if (mReleaseTargetObject != null)
-            mReleaseTargetObject();
+		if (mReleaseTargetObject != null)
+			mReleaseTargetObject();
 	}
 
 	#region TakeObject
@@ -120,22 +120,22 @@ public class ManifactureInteractable : AInteraction
 	private void OnClickTakeObject(AEntity iEntity)
 	{
 		StartCoroutine(InteractionWaitForTarget("Take", (iTargetEntityParameters) => {
-            AnimationParameters lAnimationParameters = null;
-            if (iTargetEntityParameters == null)
-                return;
-            lAnimationParameters = new AnimationParameters() {
-                TargetType = AnimationParameters.AnimationTargetType.ENTITY,
-                AnimationTarget = iTargetEntityParameters.gameObject,
-                Speed = mMovableEntity.ComputeSpeed(),
-                Acceleration = mMovableEntity.ComputeAcceleration(),
+			AnimationParameters lAnimationParameters = null;
+			if (iTargetEntityParameters == null)
+				return;
+			lAnimationParameters = new AnimationParameters() {
+				TargetType = AnimationParameters.AnimationTargetType.ENTITY,
+				AnimationTarget = iTargetEntityParameters.gameObject,
+				Speed = mMovableEntity.ComputeSpeed(),
+				Acceleration = mMovableEntity.ComputeAcceleration(),
 			};
 
-            if (lAnimationParameters == null) {
-                XV_UI.Instance.Notify(2F, "An error occured when retrieving targeted object.");
-                return;
-            }
+			if (lAnimationParameters == null) {
+				XV_UI.Instance.Notify(2F, "An error occured when retrieving targeted object.");
+				return;
+			}
 
-            List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
+			List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 
 			lInteractionSteps.Add(new InteractionStep {
 				tag = lAnimationParameters,
@@ -153,9 +153,9 @@ public class ManifactureInteractable : AInteraction
 				EntityGUID = mEntity.AODS.GUID,
 				IsTakeObject = true,
 				TargetGUID = iTargetEntityParameters.GetComponent<AEntity>().AODS.GUID, //j'aime le danger
-                Speed = lAnimationParameters.Speed,
-                Acceleration = lAnimationParameters.Acceleration,
-                Time = TimelineManager.Instance.Time,
+				Speed = lAnimationParameters.Speed,
+				Acceleration = lAnimationParameters.Acceleration,
+				Time = TimelineManager.Instance.Time,
 				TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
@@ -165,30 +165,30 @@ public class ManifactureInteractable : AInteraction
 
 	private bool TakeObjectMoveToTargetCallback(object iParams)
 	{
-        if (gameObject == null || iParams == null)
-            return true;
+		if (gameObject == null || iParams == null)
+			return true;
 
-        AnimationParameters lParams = (AnimationParameters)iParams;
+		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
 		if (lTarget == null || mObjectHeld != null)
 			return true;
 
-        AInteraction lTargetBaseInteraction;
-        if ((lTargetBaseInteraction = lTarget.GetComponent<AInteraction>()) == null) {
-            XV_UI.Instance.Notify(2F, "Can't check the object is available.");
-            mTargetIsAvailable = false;
-            return true;
-        }
+		AInteraction lTargetBaseInteraction;
+		if ((lTargetBaseInteraction = lTarget.GetComponent<AInteraction>()) == null) {
+			XV_UI.Instance.Notify(2F, "Can't check the object is available.");
+			mTargetIsAvailable = false;
+			return true;
+		}
 
-        if (!lTargetBaseInteraction.ReserveForInteraction(gameObject.GetHashCode())) {
-            mTargetIsAvailable = false;
-            return true;
-        }
-        mTargetIsAvailable = true;
-        mReleaseTargetObject = () => ReleaseTargetInteractionOnDetroy(lTargetBaseInteraction);
+		if (!lTargetBaseInteraction.ReserveForInteraction(gameObject.GetHashCode())) {
+			mTargetIsAvailable = false;
+			return true;
+		}
+		mTargetIsAvailable = true;
+		mReleaseTargetObject = () => ReleaseTargetInteractionOnDetroy(lTargetBaseInteraction);
 
-        if (mMovableEntity.MoveCallback(lTarget.transform.position, lParams) == false)
+		if (mMovableEntity.MoveCallback(lTarget.transform.position, lParams) == false)
 			return false;
 
 		// doesnt work
@@ -198,10 +198,10 @@ public class ManifactureInteractable : AInteraction
 
 	private bool TakeObjectPickCallback(object iParams)
 	{
-        if (gameObject == null || iParams == null || !mTargetIsAvailable)
-            return true;
+		if (gameObject == null || iParams == null || !mTargetIsAvailable)
+			return true;
 
-        if (TimelineManager.sGlobalState == TimelineManager.State.STOP)
+		if (TimelineManager.sGlobalState == TimelineManager.State.STOP)
 			return true;
 
 		if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE)
@@ -213,13 +213,13 @@ public class ManifactureInteractable : AInteraction
 		if (lTarget == null || mObjectHeld != null)
 			return true;
 
-        mObjectHeld = lTarget.GetComponent<AEntity>();
+		mObjectHeld = lTarget.GetComponent<AEntity>();
 		mObjectHeld.Selected = false;
 		mObjectHeld.NavMeshObjstacleEnabled = false;
-        mObjectHeld.LockWorldEditorDeplacement = true;
-        mObjectHeld.StashUIBubbleButtons();
+		mObjectHeld.LockWorldEditorDeplacement = true;
+		mObjectHeld.StashUIBubbleButtons();
 
-        lTarget.transform.parent = gameObject.transform;
+		lTarget.transform.parent = gameObject.transform;
 		lTarget.transform.localPosition = mEntity.EntityParameters.VehiculeHoldPosition;
 		//lTarget.transform.localRotation = Quaternion.Euler(0, 0, 0);
 		OnHold();
@@ -252,20 +252,20 @@ public class ManifactureInteractable : AInteraction
 		GameManager.Instance.CurrentDataScene.Serialize();
 	}
 
-    private bool TakeOffObjectCallback(object iParams)
-    {
-        if (mObjectHeld == null || iParams == null || gameObject == null)
+	private bool TakeOffObjectCallback(object iParams)
+	{
+		if (mObjectHeld == null || iParams == null || gameObject == null)
 			return true;
 
-        AInteraction lTargetBaseInteraction;
-        if ((lTargetBaseInteraction = mObjectHeld.GetComponent<AInteraction>()) == null) {
-            XV_UI.Instance.Notify(2F, "Can't check the object is available.");
-        }
-        lTargetBaseInteraction.ReleaseForInteraction();
+		AInteraction lTargetBaseInteraction;
+		if ((lTargetBaseInteraction = mObjectHeld.GetComponent<AInteraction>()) == null) {
+			XV_UI.Instance.Notify(2F, "Can't check the object is available.");
+		}
+		lTargetBaseInteraction.ReleaseForInteraction();
 
-        mReleaseTargetObject = null;
+		mReleaseTargetObject = null;
 
-        mObjectHeld.transform.localPosition = mEntity.EntityParameters.VehiculeDropPosition;
+		mObjectHeld.transform.localPosition = mEntity.EntityParameters.VehiculeDropPosition;
 		mObjectHeld.transform.parent = null;
 
 		OnUnhold();
@@ -284,17 +284,17 @@ public class ManifactureInteractable : AInteraction
 		mEntity.DestroyBubbleInfoButton(mTakeOffBubbleButton);
 		mTakeObjectInteraction.Enabled = true;
 		if (mObjectHeld != null) {
-            mObjectHeld.LockWorldEditorDeplacement = false;
-            mObjectHeld.StashPopUIBubbleInfoButtons();
-            mObjectHeld.NavMeshObjstacleEnabled = true;
+			mObjectHeld.LockWorldEditorDeplacement = false;
+			mObjectHeld.StashPopUIBubbleInfoButtons();
+			mObjectHeld.NavMeshObjstacleEnabled = true;
 			mObjectHeld = null;
 		} else
 			Debug.LogWarning("[HUMAN INTERACTABLE] Object Held shouldn't be null in OnUnhold");
 	}
 
-    #endregion TakeObject
+	#endregion TakeObject
 
-    public void HoldHuman(HumanInteractable iHuman, HumanInteractionType iInteractionType, Action iOnStartMovement = null, Action iOnEndMovement = null)
+	public void HoldHuman(HumanInteractable iHuman, HumanInteractionType iInteractionType, Action iOnStartMovement = null, Action iOnEndMovement = null)
 	{
 		if (iInteractionType == HumanInteractionType.MOUNT) {
 			iHuman.transform.parent = transform;
@@ -337,7 +337,7 @@ public class ManifactureInteractable : AInteraction
 			OnUnhold();
 	}
 
-    private void CheckAndAddInteractionsSaved()
+	private void CheckAndAddInteractionsSaved()
 	{
 		List<ManifactureInteraction> lManifactureInteractionList = GameManager.Instance.TimeLineSerialized.ManifactureInteractionList;
 
@@ -358,9 +358,9 @@ public class ManifactureInteractable : AInteraction
 					AnimationParameters lAnimationParameters = new AnimationParameters() {
 						TargetType = AnimationParameters.AnimationTargetType.ENTITY,
 						AnimationTarget = lEntity.gameObject,
-                        Speed = lInter.Speed,
-                        Acceleration = lInter.Acceleration
-                    };
+						Speed = lInter.Speed,
+						Acceleration = lInter.Acceleration
+					};
 
 					List<InteractionStep> lInteractionSteps = new List<InteractionStep>();
 

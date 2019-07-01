@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
 
 	private static GameManager sInstance;
 
-
 	private DataScene mCurrentDataScene;
 
 	private AEntity mSelectedEntity;
@@ -50,7 +49,7 @@ public class GameManager : MonoBehaviour
 
 	public DataScene CurrentDataScene { get { return mCurrentDataScene; } }
 
-	public TimeLineSerialized TimeLineSerialized { get { return mCurrentDataScene.TimeLineSerialized; }}
+	public TimeLineSerialized TimeLineSerialized { get { return mCurrentDataScene.TimeLineSerialized; } }
 
 	public Texture2D OverTexturCursor { get; private set; }
 
@@ -114,29 +113,27 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-        // If timeline played on
-        if (!XV_UI.Instance.isGUITimelineTrackLocked &&
-            TimelineManager.Instance.Time != 0F)
-        {
-            XV_UI.Instance.LockTimelineTracks();
-            AEntity.ForEachEntities(
-                (iEntity) => {
-                    iEntity.LockWorldEditorDeplacement = true;
-                    iEntity.LockDestroy = true;
-                });
-        }
-        // If timeline turned off 
-        else if (XV_UI.Instance.isGUITimelineTrackLocked &&
-            TimelineManager.Instance.Time == 0F)
-        {
-            XV_UI.Instance.UnlockTimelineTracks();
-            AEntity.ForEachEntities(
-                (iEntity) => {
-                    iEntity.LockWorldEditorDeplacement = false;
-                    iEntity.LockDestroy = false;
-                });
-        }
-    }
+		// If timeline played on
+		if (!XV_UI.Instance.isGUITimelineTrackLocked &&
+			TimelineManager.Instance.Time != 0F) {
+			XV_UI.Instance.LockTimelineTracks();
+			AEntity.ForEachEntities(
+				(iEntity) => {
+					iEntity.LockWorldEditorDeplacement = true;
+					iEntity.LockDestroy = true;
+				});
+		}
+		// If timeline turned off 
+		else if (XV_UI.Instance.isGUITimelineTrackLocked &&
+			TimelineManager.Instance.Time == 0F) {
+			XV_UI.Instance.UnlockTimelineTracks();
+			AEntity.ForEachEntities(
+				(iEntity) => {
+					iEntity.LockWorldEditorDeplacement = false;
+					iEntity.LockDestroy = false;
+				});
+		}
+	}
 
 	public GameObject BuildObject(ObjectDataScene iODS, bool iAnimatedPopping = false)
 	{
@@ -242,7 +239,7 @@ public class GameManager : MonoBehaviour
 
 		lHumanEntity.InitDataScene(CurrentDataScene);
 		lHumanEntity.SetObjectDataScene(iHDS);
-        lHumanEntity.SaveEntity();
+		lHumanEntity.SaveEntity();
 
 		return oGameObject;
 	}

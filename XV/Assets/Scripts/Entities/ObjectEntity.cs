@@ -150,11 +150,11 @@ public class ObjectEntity : AEntity
 			Tag = UIBubbleInfo.DESTROY_TAG,
 			Text = "Destroy",
 			ClickAction = (iObjectEntity) => {
-                Dispose();
-                // RemoveEntity cannot be in dispose and Destroy because
-                // Dispose() is called on a scene unload
-                RemoveEntity();
-            }
+				Dispose();
+				// RemoveEntity cannot be in dispose and Destroy because
+				// Dispose() is called on a scene unload
+				RemoveEntity();
+			}
 		});
 
 		// Add a Nav Mesh obstacle on each object
@@ -190,8 +190,8 @@ public class ObjectEntity : AEntity
 
 	public override void SaveEntity()
 	{
-        if (mODS != null && TimelineManager.Instance.Time == 0F) {
-            mODS.Position = transform.position;
+		if (mODS != null && TimelineManager.Instance.Time == 0F) {
+			mODS.Position = transform.position;
 			mODS.Rotation = transform.rotation.eulerAngles;
 			mODS.Scale = transform.localScale;
 			mDataScene.Serialize();
@@ -200,7 +200,7 @@ public class ObjectEntity : AEntity
 
 	public override void RemoveEntity()
 	{
-        base.RemoveEntity();
+		base.RemoveEntity();
 
 		if (mODS != null) {
 			if (mDataScene.IsDataObjectsContains(mODS)) {
@@ -327,7 +327,7 @@ public class ObjectEntity : AEntity
 			Utils.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("dropable"));
 		}
 
-  		SaveEntity();
+		SaveEntity();
 	}
 
 	private void OnMouseDown()

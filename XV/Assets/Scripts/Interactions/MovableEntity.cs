@@ -324,8 +324,8 @@ public sealed class MovableEntity : MonoBehaviour
 				IsMoveAnim = true,
 				TargetPosition = lHitPoint,
 				Time = TimelineManager.Instance.Time,
-                Speed = ComputeSpeed(),
-                Acceleration = ComputeAcceleration(),
+				Speed = ComputeSpeed(),
+				Acceleration = ComputeAcceleration(),
 				TimeLineId = lId
 			});
 			GameManager.Instance.CurrentDataScene.Serialize();
@@ -334,15 +334,15 @@ public sealed class MovableEntity : MonoBehaviour
 
 	public bool MoveCallback(Vector3 iDestination, object iParams, Action iOnEndMovement = null)
 	{
-        // Check NavMesh component are present
-        if (mEntityObstacle == null || mAgent == null) {
-            Debug.LogError("NavMeshAgent or NavMeshObstacle are missing.");
-            return true;
-        }
+		// Check NavMesh component are present
+		if (mEntityObstacle == null || mAgent == null) {
+			Debug.LogError("NavMeshAgent or NavMeshObstacle are missing.");
+			return true;
+		}
 
-        if (gameObject == null || iParams == null)
-            return true;
-        
+		if (gameObject == null || iParams == null)
+			return true;
+
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
 			mAgent.enabled = false;
 			return true;
@@ -367,7 +367,7 @@ public sealed class MovableEntity : MonoBehaviour
 			// Update path and dest
 			mAgent.ResetPath();
 			mAgent.SetDestination(iDestination);
-            // Update speed
+			// Update speed
 			mAgent.speed = lAnimParams.Speed;
 			mAgent.acceleration = lAnimParams.Acceleration;
 		}
@@ -419,9 +419,9 @@ public sealed class MovableEntity : MonoBehaviour
 
 	private bool RotateCallback(Quaternion iTarget, object iParams)
 	{
-        if (gameObject == null || iParams == null)
-            return true;
-        
+		if (gameObject == null || iParams == null)
+			return true;
+
 		if (TimelineManager.sGlobalState == TimelineManager.State.STOP) {
 			mAgent.enabled = false;
 			return true;

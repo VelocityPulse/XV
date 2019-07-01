@@ -34,12 +34,12 @@ public abstract class AEntity : MonoBehaviour
 
 	public AObjectDataScene AODS { get { return mAODS; } }
 
-    public bool LockDestroy
-    {
-        get { return mUIBubbleInfo.DestroyLocked; }
+	public bool LockDestroy
+	{
+		get { return mUIBubbleInfo.DestroyLocked; }
 
-        set { mUIBubbleInfo.DestroyLocked = value; }
-    }
+		set { mUIBubbleInfo.DestroyLocked = value; }
+	}
 
 	public bool NavMeshObjstacleEnabled
 	{
@@ -148,31 +148,29 @@ public abstract class AEntity : MonoBehaviour
 			return;
 	}
 
-    public virtual void RemoveEntity()
-    {
-        TimeLineSerialized lTimeLineSerialized = mDataScene.TimeLineSerialized;
+	public virtual void RemoveEntity()
+	{
+		TimeLineSerialized lTimeLineSerialized = mDataScene.TimeLineSerialized;
 
-        if (mEntityParameters.Type == EntityParameters.EntityType.HUMAN)
-            lTimeLineSerialized.HumanInteractionList.Clear();
+		if (mEntityParameters.Type == EntityParameters.EntityType.HUMAN)
+			lTimeLineSerialized.HumanInteractionList.Clear();
 
-        ManifactureInteraction[] lManifacturableInterBuffer = lTimeLineSerialized.ManifactureInteractionList.ToArray();
-        MovableAnimation[] lMovableAnimBuffer = lTimeLineSerialized.MovableAnimationList.ToArray();
+		ManifactureInteraction[] lManifacturableInterBuffer = lTimeLineSerialized.ManifactureInteractionList.ToArray();
+		MovableAnimation[] lMovableAnimBuffer = lTimeLineSerialized.MovableAnimationList.ToArray();
 
-        foreach (ManifactureInteraction lInter in lManifacturableInterBuffer)
-        {
-            if (lInter.EntityGUID == mAODS.GUID || lInter.TargetGUID == mAODS.GUID)
-                lTimeLineSerialized.ManifactureInteractionList.Remove(lInter);
-        }
-        foreach (MovableAnimation lAnim in lMovableAnimBuffer)
-        {
-            if (lAnim.EntityGUID == mAODS.GUID)
-                lTimeLineSerialized.MovableAnimationList.Remove(lAnim);
-        }
+		foreach (ManifactureInteraction lInter in lManifacturableInterBuffer) {
+			if (lInter.EntityGUID == mAODS.GUID || lInter.TargetGUID == mAODS.GUID)
+				lTimeLineSerialized.ManifactureInteractionList.Remove(lInter);
+		}
+		foreach (MovableAnimation lAnim in lMovableAnimBuffer) {
+			if (lAnim.EntityGUID == mAODS.GUID)
+				lTimeLineSerialized.MovableAnimationList.Remove(lAnim);
+		}
 
-        lTimeLineSerialized.Serialize();
-    }
+		lTimeLineSerialized.Serialize();
+	}
 
-    public AEntity SetUIBubbleInfo(UIBubbleInfo iBubbleInfo)
+	public AEntity SetUIBubbleInfo(UIBubbleInfo iBubbleInfo)
 	{
 		mUIBubbleInfo = iBubbleInfo;
 
@@ -254,8 +252,8 @@ public abstract class AEntity : MonoBehaviour
 			return;
 
 		AEntity[] lEntities = AllEntities;
-        foreach (AEntity lEntity in lEntities)
-            iAction(lEntity);
+		foreach (AEntity lEntity in lEntities)
+			iAction(lEntity);
 	}
 
 	public static void HideNoInteractable(EntityParameters.EntityType[] iTypes,

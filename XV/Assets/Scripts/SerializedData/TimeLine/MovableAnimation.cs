@@ -16,9 +16,9 @@ public class MovableAnimation
 
 	public Vector3 TargetRotation { get; set; }
 
-    public float Speed { get; set; }
+	public float Speed { get; set; }
 
-    public float Acceleration { get; set; }
+	public float Acceleration { get; set; }
 
 	public double Time { get; set; }
 

@@ -98,8 +98,8 @@ public abstract class AInteraction : MonoBehaviour
 				mEnabled = value;
 				if (value)
 					AInteraction.UpdateAvailableInteraction();
-                else
-                    HideUI();
+				else
+					HideUI();
 			}
 		}
 
@@ -173,13 +173,13 @@ public abstract class AInteraction : MonoBehaviour
 
 	private List<ItemInteraction> mItemInteractions;
 
-    private int mReservationHashCode;
+	private int mReservationHashCode;
 
 	protected AEntity mEntity;
 
 	protected virtual void Start()
 	{
-        mReservationHashCode = 0;
+		mReservationHashCode = 0;
 
 		mEntity = GetComponent<AEntity>();
 		mParameters = GetComponent<EntityParameters>();
@@ -220,39 +220,39 @@ public abstract class AInteraction : MonoBehaviour
 
 	protected abstract void PostPoppingEntity();
 
-    /// <summary>
-    /// Ask to use this AInteraction, if it is available return true
-    /// and mark this object unavailable to interact with.
-    /// </summary>
-    /// <returns>True if the reservation success, false otherwise. (Already in used)</returns>
-    public bool ReserveForInteraction(int iHashCode)
-    {
-        // New reservation
-        if (mReservationHashCode == 0) {
-            mReservationHashCode = iHashCode;
-            return true;
-        }
+	/// <summary>
+	/// Ask to use this AInteraction, if it is available return true
+	/// and mark this object unavailable to interact with.
+	/// </summary>
+	/// <returns>True if the reservation success, false otherwise. (Already in used)</returns>
+	public bool ReserveForInteraction(int iHashCode)
+	{
+		// New reservation
+		if (mReservationHashCode == 0) {
+			mReservationHashCode = iHashCode;
+			return true;
+		}
 
-        // Already reserve by the caller
-        if (mReservationHashCode == iHashCode)
-            return true;
+		// Already reserve by the caller
+		if (mReservationHashCode == iHashCode)
+			return true;
 
-        XV_UI.Instance.Notify(2F, "The target is already in used by another object.");
-        return false;
-    }
+		XV_UI.Instance.Notify(2F, "The target is already in used by another object.");
+		return false;
+	}
 
-    /// <summary>
-    /// Release this AInteraction, the object will be available to interact with.
-    /// </summary>
-    public void ReleaseForInteraction()
-    {
-        mReservationHashCode = 0;
-    }
+	/// <summary>
+	/// Release this AInteraction, the object will be available to interact with.
+	/// </summary>
+	public void ReleaseForInteraction()
+	{
+		mReservationHashCode = 0;
+	}
 
-    /// <summary>
-    /// Display UI of available interaction according to Entities in the scene.
-    /// </summary>
-    public void UpdateAvailableInteraction()
+	/// <summary>
+	/// Display UI of available interaction according to Entities in the scene.
+	/// </summary>
+	public void UpdateAvailableInteraction()
 	{
 		foreach (ItemInteraction lAnimationParameter in mItemInteractions) {
 			foreach (EntityParameters.EntityType lType in lAnimationParameter.InteractWith) {
@@ -385,10 +385,10 @@ public abstract class AInteraction : MonoBehaviour
 		AEntity.HideNoInteractable(GetItemInteraction(iInteractionName).InteractWith, mEntity);
 		yield return new WaitWhile(() => {
 
-            if (Input.GetKeyDown(KeyCode.Escape)) {
-                Debug.LogWarning("[TARGET SELECTOR] Exit target selector !");
-                return false;
-            }
+			if (Input.GetKeyDown(KeyCode.Escape)) {
+				Debug.LogWarning("[TARGET SELECTOR] Exit target selector !");
+				return false;
+			}
 
 			if (Input.GetMouseButtonDown(0)) {
 
