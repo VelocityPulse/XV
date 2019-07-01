@@ -142,5 +142,6 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 	public void OnPointerUp(PointerEventData iData)
 	{
 		UITimelineInfo.Instance.Hide();
+		Track.ReorderClips();
 	}
 }

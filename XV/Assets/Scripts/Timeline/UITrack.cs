@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -127,42 +128,13 @@ public class UITrack : MonoBehaviour
 		return lClipX;
 	}
 
-	public int GetPreviousAtPosition(float iClipX, TimelineData.EventType iType)
+	public void ReorderClips()
 	{
-		if (mClips.Count == 0) {
-			return -1;
-		}
-
-		int i;
-		for (i = 0; i < mClips.Count; i++) {
-			if (mClips[i].transform.localPosition.x >= iClipX) {
-				return i - 1;
-			}
-		}
-		return i - 1;
-	}
-
-	public int GetNextAtPosition(float iClipX, TimelineData.EventType iType)
-	{
-		if (mClips.Count == 0) {
-			return -1;
-		}
-
-		int i;
-		for (i = 0; i < mClips.Count; i++) {
-			if (mClips[i].transform.localPosition.x > iClipX) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	public UIClip GetClip(int iIndex, TimelineData.EventType iType)
-	{
-		if (iIndex >= 0 && iIndex < mClips.Count) {
-			return mClips[iIndex];
-		}
-		return null;
+		List<UIClip> lTmp = mClips.OrderByDescending(lClip => {
+			RectTransform lTr = lClip.transform as RectTransform;
+			return lTr.localPosition.x;
+		}).ToList();
+		mClips = lTmp;
 	}
 
 	public int GetIndex(UIClip iClip)
