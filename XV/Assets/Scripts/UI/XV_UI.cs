@@ -83,10 +83,10 @@ public sealed class XV_UI : MonoBehaviour
 			mIsGUILocked = true;
 
             if (!mIsTimelineTrackLocked)
-                LockCanvas(UIModelManagerLockerScreen);
-
-            LockCanvas(UIToolBarLockerScreen);
+                LockCanvas(UITimelinePanelLockerScreenTrack);
             LockCanvas(UITimelinePanelLockerScreen);
+            LockCanvas(UIModelManagerLockerScreen);
+            LockCanvas(UIToolBarLockerScreen);
 			LockCanvas(UISceneLockerScreen);
 		}
 	}
@@ -97,10 +97,10 @@ public sealed class XV_UI : MonoBehaviour
 			mIsGUILocked = false;
 
             if (!mIsTimelineTrackLocked)
-                UnlockCanvas(UIModelManagerLockerScreen);
-
-            UnlockCanvas(UIToolBarLockerScreen);
+                UnlockCanvas(UITimelinePanelLockerScreenTrack);
             UnlockCanvas(UITimelinePanelLockerScreen);
+            UnlockCanvas(UIModelManagerLockerScreen);
+            UnlockCanvas(UIToolBarLockerScreen);
 			UnlockCanvas(UISceneLockerScreen);
 		}
 	}
@@ -110,12 +110,9 @@ public sealed class XV_UI : MonoBehaviour
         if (!mIsTimelineTrackLocked)
         {
             mIsTimelineTrackLocked = true;
-
-            LockCanvas(UITimelinePanelLockerScreenTrack);
-            LockCanvas(UIModelManagerLockerScreen);
+            LockGUI();
         }
     }
-
 
     public void UnlockTimelineTracks()
     {
@@ -123,8 +120,11 @@ public sealed class XV_UI : MonoBehaviour
         {
             mIsTimelineTrackLocked = false;
 
-            UnlockCanvas(UIModelManagerLockerScreen);
-            UnlockCanvas(UITimelinePanelLockerScreenTrack);
+            UnlockGUI();
+
+            //UnlockCanvas(UIModelManagerLockerScreen);
+            //UnlockCanvas(UITimelinePanelLockerScreenTrack);
+            //UnlockCanvas(UIToolBarLockerScreen);
         }
     }
     

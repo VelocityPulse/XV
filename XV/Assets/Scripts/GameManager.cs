@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
 
 		// If timeline played on
 		if (!XV_UI.Instance.isGUITimelineTrackLocked &&
-			TimelineManager.Instance.Time != 0F) {
+			TimelineManager.sGlobalState == TimelineManager.State.PLAY) {
 			XV_UI.Instance.LockTimelineTracks();
 			AEntity.ForEachEntities(
 				(iEntity) => {
@@ -125,7 +125,7 @@ public class GameManager : MonoBehaviour
 		}
 		// If timeline turned off 
 		else if (XV_UI.Instance.isGUITimelineTrackLocked &&
-			TimelineManager.Instance.Time == 0F) {
+			TimelineManager.sGlobalState == TimelineManager.State.STOP) {
 			XV_UI.Instance.UnlockTimelineTracks();
 			AEntity.ForEachEntities(
 				(iEntity) => {
