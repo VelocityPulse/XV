@@ -103,7 +103,7 @@ public sealed class CameraHandler : MonoBehaviour
 			CurrentMode = Mode.LOCKED;
 		}
 		// Use tab to switch between 'view modes': free or subjective
-		if (Input.GetKeyDown(KeyCode.Tab)) {
+		if (Input.GetKeyDown(KeyCode.Tab) && !XV_UI.Instance.isGUILocked) {
 			ViewMode = (ViewMode == Mode.FREE) ? Mode.SUBJECTIVE : Mode.FREE;
 		}
 
