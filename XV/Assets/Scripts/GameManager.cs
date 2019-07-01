@@ -184,10 +184,8 @@ public class GameManager : MonoBehaviour
 		lParameters = oGameObject.GetComponent<EntityParameters>();
 
 		// Setting positions
-		oGameObject.transform.position = Vector3.zero;
-
 		oGameObject.transform.position = iODS.Position;
-		oGameObject.transform.localEulerAngles = Vector3.zero;
+        oGameObject.transform.eulerAngles = iODS.Rotation;
 
 		oGameObject.name = iODS.PrefabName + "_mesh";
 		oGameObject.transform.localScale = iODS.Scale;
