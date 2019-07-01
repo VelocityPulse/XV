@@ -135,7 +135,6 @@ public sealed class MovableEntity : MonoBehaviour
 				});
 				mMoveButtonColor = lButton.GetComponent<Image>();
 
-
 				// Add Rotate Button & Keep track of the button image to edit color
 				lButton = iObj.CreateBubbleInfoButton(new UIBubbleInfoButton {
 					Tag = "Rotate",
@@ -481,10 +480,11 @@ public sealed class MovableEntity : MonoBehaviour
 		if (mEditionMode == EditionMode.NONE) {
 			// Enter in rotate edition mode
 			mEditionMode = EditionMode.ROTATE;
-			mRotateButtonColor.color = Color.red;
+            if (mRotateButtonColor != null)
+                mRotateButtonColor.color = Color.red;
 
-			// Create a Ghost clone to preview rotation
-			mGhostEntity = mEntity.CreateGhostObject();
+            // Create a Ghost clone to preview rotation
+            mGhostEntity = mEntity.CreateGhostObject();
 
 			// Cancel rotation if error
 			if (mGhostEntity == null) {
@@ -564,7 +564,8 @@ public sealed class MovableEntity : MonoBehaviour
 		// Reset Button & Mode
 		if (mMoveButtonColor != null)
 			mMoveButtonColor.color = Color.white;
-		mRotateButtonColor.color = Color.white;
+        if (mRotateButtonColor != null)
+    		mRotateButtonColor.color = Color.white;
 		mEditionMode = EditionMode.NONE;
 		mAngle = 0F;
 		mRotationPerformed = 0F;

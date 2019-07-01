@@ -83,11 +83,14 @@ public sealed class XV_UI : MonoBehaviour
 			mIsGUILocked = true;
 
             if (!mIsTimelineTrackLocked)
+            {
                 LockCanvas(UITimelinePanelLockerScreenTrack);
+                LockCanvas(UISceneLockerScreen);
+            }
             LockCanvas(UITimelinePanelLockerScreen);
             LockCanvas(UIModelManagerLockerScreen);
             LockCanvas(UIToolBarLockerScreen);
-			LockCanvas(UISceneLockerScreen);
+
 		}
 	}
 
@@ -97,11 +100,13 @@ public sealed class XV_UI : MonoBehaviour
 			mIsGUILocked = false;
 
             if (!mIsTimelineTrackLocked)
+            {
                 UnlockCanvas(UITimelinePanelLockerScreenTrack);
+                UnlockCanvas(UISceneLockerScreen);
+            }
             UnlockCanvas(UITimelinePanelLockerScreen);
             UnlockCanvas(UIModelManagerLockerScreen);
             UnlockCanvas(UIToolBarLockerScreen);
-			UnlockCanvas(UISceneLockerScreen);
 		}
 	}
 
