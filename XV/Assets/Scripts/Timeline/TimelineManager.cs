@@ -28,6 +28,7 @@ public sealed class TimelineManager : MonoBehaviour
 	public bool Looping
 	{
 		set { mDirector.extrapolationMode = value ? DirectorWrapMode.Loop : DirectorWrapMode.None; }
+		private get { return mDirector.extrapolationMode == DirectorWrapMode.Loop; }
 	}
 
 	public double Time
@@ -175,20 +176,19 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 		mData.CheckEmptyTrack(iData.TrackID);
 	}
-	
+
 	private void Update()
 	{
-		if (mDirector.time > mTimeline.duration - UnityEngine.Time.deltaTime)
-		{
+		if ((mDirector.time > mTimeline.duration - UnityEngine.Time.deltaTime) && !Looping) {
 			mDirector.time = mTimeline.duration;
 			mDirector.Pause();
 		}
 	}
 
-    public void Play()
-    {
-        if (Time != 0F && TimelineManager.sGlobalState != State.PAUSE) 
-            Stop();
+	public void Play()
+	{
+		if (Time != 0F && TimelineManager.sGlobalState != State.PAUSE)
+			Stop();
 		mDirector.Play();
 		TimelineEvent.OnPlay(null);
 	}
