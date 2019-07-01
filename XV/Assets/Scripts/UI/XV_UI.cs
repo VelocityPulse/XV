@@ -9,22 +9,19 @@ public sealed class XV_UI : MonoBehaviour
 
 	public bool isGUILocked { get { return mIsGUILocked; } }
 
-    public bool isGUITimelineTrackLocked { get { return mIsTimelineTrackLocked; } }
+	public bool isGUITimelineTrackLocked { get { return mIsTimelineTrackLocked; } }
 
 	[SerializeField]
 	private UINotifier notifier;
 
 	[SerializeField]
-	private CanvasGroup UIModelManagerLockerScreen;
-
-	[SerializeField]
-	private CanvasGroup UIToolBarLockerScreen;
+	private CanvasGroup UILockerScreen;
 
 	[SerializeField]
 	private CanvasGroup UITimelinePanelLockerScreen;
 
-    [SerializeField]
-    private CanvasGroup UITimelinePanelLockerScreenTrack;
+	[SerializeField]
+	private CanvasGroup UITimelinePanelLockerScreenTrack;
 
 	[SerializeField]
 	private UIConfirmPopup uIConfirmPopup;
@@ -37,7 +34,7 @@ public sealed class XV_UI : MonoBehaviour
 	private static XV_UI sInstance;
 
 	private bool mIsGUILocked;
-    private bool mIsTimelineTrackLocked;
+	private bool mIsTimelineTrackLocked;
 
 	static public XV_UI Instance
 	{
@@ -79,11 +76,10 @@ public sealed class XV_UI : MonoBehaviour
 		if (!mIsGUILocked) {
 			mIsGUILocked = true;
 
-            if (!mIsTimelineTrackLocked)
-                LockCanvas(UIModelManagerLockerScreen);
+			if (!mIsTimelineTrackLocked)
+				LockCanvas(UILockerScreen);
 
-            LockCanvas(UIToolBarLockerScreen);
-            LockCanvas(UITimelinePanelLockerScreen);
+			LockCanvas(UITimelinePanelLockerScreen);
 		}
 	}
 
@@ -92,47 +88,44 @@ public sealed class XV_UI : MonoBehaviour
 		if (mIsGUILocked) {
 			mIsGUILocked = false;
 
-            if (!mIsTimelineTrackLocked)
-                UnlockCanvas(UIModelManagerLockerScreen);
-
-            UnlockCanvas(UIToolBarLockerScreen);
-            UnlockCanvas(UITimelinePanelLockerScreen);
+			if (!mIsTimelineTrackLocked)
+				UnlockCanvas(UILockerScreen);
+				
+			UnlockCanvas(UITimelinePanelLockerScreen);
 		}
 	}
 
-    public void LockTimelineTracks()
-    {
-        if (!mIsTimelineTrackLocked)
-        {
-            mIsTimelineTrackLocked = true;
+	public void LockTimelineTracks()
+	{
+		if (!mIsTimelineTrackLocked) {
+			mIsTimelineTrackLocked = true;
 
-            LockCanvas(UITimelinePanelLockerScreenTrack);
-            LockCanvas(UIModelManagerLockerScreen);
-        }
-    }
+			LockCanvas(UITimelinePanelLockerScreenTrack);
+			LockCanvas(UILockerScreen);
+		}
+	}
 
 
-    public void UnlockTimelineTracks()
-    {
-        if (mIsTimelineTrackLocked)
-        {
-            mIsTimelineTrackLocked = false;
+	public void UnlockTimelineTracks()
+	{
+		if (mIsTimelineTrackLocked) {
+			mIsTimelineTrackLocked = false;
 
-            UnlockCanvas(UIModelManagerLockerScreen);
-            UnlockCanvas(UITimelinePanelLockerScreenTrack);
-        }
-    }
-    
-    private void LockCanvas(CanvasGroup iCanvasGroup)
-    {
-        iCanvasGroup.alpha = 0F;
-        iCanvasGroup.gameObject.SetActive(true);
-        StartCoroutine(Utils.FadeToAsync(1F, 0.5F, iCanvasGroup));
-    }
+			UnlockCanvas(UILockerScreen);
+			UnlockCanvas(UITimelinePanelLockerScreenTrack);
+		}
+	}
 
-    private void UnlockCanvas(CanvasGroup iCanvasGroup)
-    {
-        StartCoroutine(Utils.FadeToAsync(0F, 0.5F, iCanvasGroup,
-                             () => { iCanvasGroup.gameObject.SetActive(false); }));
-    }
+	private void LockCanvas(CanvasGroup iCanvasGroup)
+	{
+		iCanvasGroup.alpha = 0F;
+		iCanvasGroup.gameObject.SetActive(true);
+		StartCoroutine(Utils.FadeToAsync(1F, 0.5F, iCanvasGroup));
+	}
+
+	private void UnlockCanvas(CanvasGroup iCanvasGroup)
+	{
+		StartCoroutine(Utils.FadeToAsync(0F, 0.5F, iCanvasGroup,
+							 () => { iCanvasGroup.gameObject.SetActive(false); }));
+	}
 }
