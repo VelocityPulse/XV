@@ -61,5 +61,6 @@ public class UIClipDescription : MonoBehaviour
 		mCanvasGroup.alpha = iState ? 1F : 0F;
 		mCanvasGroup.interactable = iState;
 		mCanvasGroup.blocksRaycasts = iState;
+		GameManager.Instance.KeyboardDeplacementActive = !iState;
 	}
 }

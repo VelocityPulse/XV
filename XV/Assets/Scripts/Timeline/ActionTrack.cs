@@ -85,23 +85,26 @@ public class ActionTrack : TrackAsset
 		return null;
 	}
 	
-	private static void Reset()
+	private void Reset()
 	{
 		TimelineManager.sGlobalState = TimelineManager.State.PLAY;
 	}
 
-	private static void Play(TimelineEventData iData)
+	private void Play(TimelineEventData iData)
 	{
 		Reset();
 	}
 
-	private static void Pause(TimelineEventData iData)
+	private void Pause(TimelineEventData iData)
 	{
 		TimelineManager.sGlobalState = TimelineManager.State.PAUSE;
 	}
 
-	private static void Stop(TimelineEventData iData)
+	private void Stop(TimelineEventData iData)
 	{
+		mActionsSets.Clear();
+		mParamsSets.Clear();
+		mDescriptions.Clear();
 		TimelineManager.sGlobalState = TimelineManager.State.STOP;
 		TimelineManager.Instance.StartCoroutine(Utils.WaitForAsync(ACTIONS_LOOP_TIME, Reset));
 	}
