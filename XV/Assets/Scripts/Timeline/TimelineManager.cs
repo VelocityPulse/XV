@@ -175,6 +175,15 @@ public sealed class TimelineManager : MonoBehaviour
 		}
 		mData.CheckEmptyTrack(iData.TrackID);
 	}
+	
+	private void Update()
+	{
+		if (mDirector.time > mTimeline.duration - UnityEngine.Time.deltaTime)
+		{
+			mDirector.time = mTimeline.duration;
+			mDirector.Pause();
+		}
+	}
 
     public void Play()
     {
