@@ -94,6 +94,8 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 
 	public void ResizeEvent(bool iShouldGrow = false)
 	{
+		Track.ReorderClips();
+		
 		TimelineEventData lEventData = new TimelineEventData(Track.ID);
 		lEventData.Type = Type;
 		lEventData.ClipIndex = Track.GetIndex(this);
@@ -142,6 +144,5 @@ public class UIClip : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPo
 	public void OnPointerUp(PointerEventData iData)
 	{
 		UITimelineInfo.Instance.Hide();
-		Track.ReorderClips();
 	}
 }
