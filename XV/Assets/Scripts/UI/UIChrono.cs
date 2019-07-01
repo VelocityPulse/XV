@@ -26,11 +26,14 @@ public class UIChrono : MonoBehaviour
 		TimelineEvent.StopEvent += OnTimelineEventStop;
 	}
 
+	private void OnDestroy()
+	{
+		TimelineEvent.StopEvent -= OnTimelineEventStop;
+	}
+
 	// Update is called once per frame
 	void Update()
 	{
-		UnityEngine.Debug.Log(TimelineManager.sGlobalState);
-
 		if (TimelineManager.sGlobalState == TimelineManager.State.PLAY) {
 			mStopWatch.Start();
 		} else if (TimelineManager.sGlobalState == TimelineManager.State.PAUSE) {
