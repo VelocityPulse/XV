@@ -65,8 +65,9 @@ public sealed class TimelineManager : MonoBehaviour
 		mDirector = GetComponent<PlayableDirector>();
 		mTimeline = (TimelineAsset)mDirector.playableAsset;
 		mData = new TimelineData(mTimeline, mDirector);
+		ClearTimeline();
 	}
-
+	
 	private void OnApplicationQuit()
 	{
 		ClearTimeline();
@@ -215,9 +216,9 @@ public sealed class TimelineManager : MonoBehaviour
 		foreach (TrackAsset lRootTrack in lToDelete) {
 			mTimeline.DeleteTrack(lRootTrack);
 		}
-		// Creation of a dummy track to set a minimum duration of 5 seconds
+		// Creation of a dummy track to set a minimum duration of 15 seconds
 		ActivationTrack lTrack = (ActivationTrack)mTimeline.CreateTrack(typeof(ActivationTrack), null, "Duration Track");
-		lTrack.CreateDefaultClip();
+		lTrack.CreateDefaultClip().duration = 15D;
 	}
 
 #if UNITY_EDITOR
