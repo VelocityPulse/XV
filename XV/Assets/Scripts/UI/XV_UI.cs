@@ -18,6 +18,9 @@ public sealed class XV_UI : MonoBehaviour
 	private CanvasGroup UIModelManagerLockerScreen;
 
 	[SerializeField]
+	private CanvasGroup UISceneLockerScreen;
+
+	[SerializeField]
 	private CanvasGroup UIToolBarLockerScreen;
 
 	[SerializeField]
@@ -84,6 +87,7 @@ public sealed class XV_UI : MonoBehaviour
 
             LockCanvas(UIToolBarLockerScreen);
             LockCanvas(UITimelinePanelLockerScreen);
+			LockCanvas(UISceneLockerScreen);
 		}
 	}
 
@@ -97,6 +101,7 @@ public sealed class XV_UI : MonoBehaviour
 
             UnlockCanvas(UIToolBarLockerScreen);
             UnlockCanvas(UITimelinePanelLockerScreen);
+			UnlockCanvas(UISceneLockerScreen);
 		}
 	}
 
