@@ -18,16 +18,12 @@ public class ActionTrack : TrackAsset
 
 	private new void OnEnable()
 	{
-		TimelineEvent.PauseEvent += Pause;
 		TimelineEvent.StopEvent += Stop;
-		TimelineEvent.PlayEvent += Play;
 	}
 
 	private void OnDisable()
 	{
-		TimelineEvent.PauseEvent -= Pause;
 		TimelineEvent.StopEvent -= Stop;
-		TimelineEvent.PlayEvent -= Play;
 	}
 
 	private void Awake()
@@ -85,27 +81,10 @@ public class ActionTrack : TrackAsset
 		return null;
 	}
 	
-	private void Reset()
-	{
-		TimelineManager.sGlobalState = TimelineManager.State.PLAY;
-	}
-
-	private void Play(TimelineEventData iData)
-	{
-		Reset();
-	}
-
-	private void Pause(TimelineEventData iData)
-	{
-		TimelineManager.sGlobalState = TimelineManager.State.PAUSE;
-	}
-
 	private void Stop(TimelineEventData iData)
 	{
 		mActionsSets.Clear();
 		mParamsSets.Clear();
 		mDescriptions.Clear();
-		TimelineManager.sGlobalState = TimelineManager.State.STOP;
-		TimelineManager.Instance.StartCoroutine(Utils.WaitForAsync(ACTIONS_LOOP_TIME, Reset));
 	}
 }

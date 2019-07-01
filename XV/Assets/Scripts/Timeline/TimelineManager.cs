@@ -5,7 +5,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
-using UnityEngine.Animations;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -16,7 +15,7 @@ using AnimAction = System.Predicate<object>;
 public sealed class TimelineManager : MonoBehaviour
 {
 	public static TimelineManager Instance { get; private set; }
-	public enum State { PLAY, PAUSE, STOP };
+	public enum State { STOP, PAUSE, PLAY };
 	public static State sGlobalState;
 	public static readonly int BAD_CLIP_ID = 0;
 
@@ -191,18 +190,21 @@ public sealed class TimelineManager : MonoBehaviour
 		if (Time != 0F && TimelineManager.sGlobalState != State.PAUSE)
 			Stop();
 		mDirector.Play();
+		sGlobalState = State.PLAY;
 		TimelineEvent.OnPlay(null);
 	}
 
 	public void Pause()
 	{
 		mDirector.Pause();
+		sGlobalState = State.PAUSE;
 		TimelineEvent.OnPause(null);
 	}
 
 	public void Stop()
 	{
 		mDirector.Stop();
+		sGlobalState = State.STOP;
 		TimelineEvent.OnStop(null);
 		AEntity.ForEachEntities(iEntity => iEntity.ResetWorldState());
 	}
