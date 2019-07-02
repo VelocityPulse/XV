@@ -282,8 +282,13 @@ public class UIBubbleInfo : MonoBehaviour
 
 	public void StashPopButtons()
 	{
-		while (mStashedButtons.Count != 0)
-			CreateButton(mStashedButtons.Dequeue());
+        while (mStashedButtons.Count != 0)
+            CreateButton(mStashedButtons.Dequeue());
+
+        // relock if timeline is playing
+        if (TimelineManager.sGlobalState == TimelineManager.State.PLAY ||
+            TimelineManager.sGlobalState == TimelineManager.State.PAUSE)
+            LockDestroy();
 	}
 
 	public void OnEndEdit()
