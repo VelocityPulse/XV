@@ -370,9 +370,11 @@ public sealed class MovableEntity : MonoBehaviour
 		AnimationParameters lAnimParams = (AnimationParameters)iParams;
 
         if (lAnimParams.Action != null) {
-            Debug.Log(lAnimParams.Action());
             if (lAnimParams.Action() == true)
+            {
+                XV_UI.Instance.Notify(1.5F, "Cannot move if human is busy !");
                 return true;
+            }
         }
 
 		if (!mAgent.enabled) {
@@ -425,7 +427,9 @@ public sealed class MovableEntity : MonoBehaviour
                 if (mEntity.EntityParameters.Type == EntityParameters.EntityType.HUMAN)
                 {
                     if (gameObject.GetComponent<HumanInteractable>().IsBusy)
+                    {
                         return true;
+                    }
                 }
                 return false;
             }
@@ -461,8 +465,17 @@ public sealed class MovableEntity : MonoBehaviour
 
 		AnimationParameters lAnimParams = (AnimationParameters)iParams;
 
-		// Update rotation performed according to speed
-		mRotationPerformed += Time.deltaTime * lAnimParams.Speed;
+        if (lAnimParams.Action != null)
+        {
+            if (lAnimParams.Action() == true)
+            {
+                XV_UI.Instance.Notify(1.5F, "Cannot rotate if human is busy !");
+                return true;
+            }
+        }
+
+        // Update rotation performed according to speed
+        mRotationPerformed += Time.deltaTime * lAnimParams.Speed;
 
 		// Rotate to the correct amount
 		gameObject.transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, iTarget, mRotationPerformed / lActionDuration);
