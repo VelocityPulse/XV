@@ -27,6 +27,8 @@ public class AnimationParameters
 	/// Use AnimationTargetType to cast it later
 	/// </summary>
 	public object AnimationTarget;
+
+    public Func<bool> Action;
 }
 
 /// <summary>

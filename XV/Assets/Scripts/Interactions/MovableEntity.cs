@@ -309,14 +309,23 @@ public sealed class MovableEntity : MonoBehaviour
 		// Check the hit.point clicked is the ground
 		if ((GetHitPointFromMouseClic(ref lHitPoint, "scene"))) {
 
-			// Add the code that do the animation in the Action timeline
-			int lId = TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
+            AnimationParameters lAP = new AnimationParameters() {
+                Speed = ComputeSpeed(),
+                Acceleration = ComputeAcceleration(),
+                Action = () => {
+                    if (mEntity.EntityParameters.Type == EntityParameters.EntityType.HUMAN)
+                    {
+                        if (gameObject.GetComponent<HumanInteractable>().IsBusy)
+                            return true;
+                    }
+                    return false;
+                }
+            };
+
+            // Add the code that do the animation in the Action timeline
+            int lId = TimelineManager.Instance.AddAnimation(gameObject, iInfo => {
 				return MoveCallback(lHitPoint, iInfo);
-			}, new AnimationParameters() {
-				Speed = ComputeSpeed(),
-				Acceleration = ComputeAcceleration()
-			},
-			   TimelineManager.Instance.Time);
+			}, lAP, TimelineManager.Instance.Time);
 
 			GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimation() {
 				EntityGUID = mEntity.AODS.GUID,
@@ -360,6 +369,12 @@ public sealed class MovableEntity : MonoBehaviour
 
 		AnimationParameters lAnimParams = (AnimationParameters)iParams;
 
+        if (lAnimParams.Action != null) {
+            Debug.Log(lAnimParams.Action());
+            if (lAnimParams.Action() == true)
+                return true;
+        }
+
 		if (!mAgent.enabled) {
 			// Active Agent
 			mAgent.enabled = true;
@@ -396,15 +411,25 @@ public sealed class MovableEntity : MonoBehaviour
 		return false;
 	}
 
-	private void AddAndExecuteRotation(Quaternion iTarget)
-	{
-		// Reset Button & Mode
-		ResetMode();
+    private void AddAndExecuteRotation(Quaternion iTarget)
+    {
+        // Reset Button & Mode
+        ResetMode();
 
-		// Add the code that do the animation in the following Action
-		int lId = TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
-			return RotateCallback(iTarget, iInfo);
-		}, new AnimationParameters(), TimelineManager.Instance.Time);
+        // Add the code that do the animation in the following Action
+        int lId = TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
+            return RotateCallback(iTarget, iInfo);
+        }, new AnimationParameters(){
+            Action = () =>
+            {
+                if (mEntity.EntityParameters.Type == EntityParameters.EntityType.HUMAN)
+                {
+                    if (gameObject.GetComponent<HumanInteractable>().IsBusy)
+                        return true;
+                }
+                return false;
+            }
+        }, TimelineManager.Instance.Time);
 
 		GameManager.Instance.TimeLineSerialized.MovableAnimationList.Add(new MovableAnimation() {
 			EntityGUID = mEntity.AODS.GUID,
@@ -516,7 +541,16 @@ public sealed class MovableEntity : MonoBehaviour
 					}, new AnimationParameters() {
 						Speed = lAnim.Speed,
 						Acceleration = lAnim.Acceleration,
-					}, lAnim.Time);
+                        Action = () =>
+                        {
+                            if (mEntity.EntityParameters.Type == EntityParameters.EntityType.HUMAN)
+                            {
+                                if (gameObject.GetComponent<HumanInteractable>().IsBusy)
+                                    return true;
+                            }
+                            return false;
+                        }
+                    }, lAnim.Time);
 
 				} else if (lAnim.IsRotateAnim) {
 					// Rotation action
@@ -525,7 +559,17 @@ public sealed class MovableEntity : MonoBehaviour
 
 					lAnim.TimeLineId = TimelineManager.Instance.AddRotation(gameObject, (iInfo) => {
 						return RotateCallback(lRotation, iInfo);
-					}, new AnimationParameters(), lAnim.Time);
+					}, new AnimationParameters() {
+                        Action = () =>
+                        {
+                            if (mEntity.EntityParameters.Type == EntityParameters.EntityType.HUMAN)
+                            {
+                                if (gameObject.GetComponent<HumanInteractable>().IsBusy)
+                                    return true;
+                            }
+                            return false;
+                        }
+                    }, lAnim.Time);
 				}
 			}
 		}

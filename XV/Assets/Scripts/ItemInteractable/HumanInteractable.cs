@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(MovableEntity))]
 [RequireComponent(typeof(Animator))]
-
 public class HumanInteractable : AInteraction
 {
 	private MovableEntity mMovableEntity;
@@ -33,6 +32,11 @@ public class HumanInteractable : AInteraction
 	private Action mReleaseTargetObject;
 
 	private bool mTargetIsAvailable;
+
+    public bool IsBusy
+    {
+        get { return mObjectPushed != null || mObjectMounted != null; }
+    }
 
 	protected override void Start()
 	{
