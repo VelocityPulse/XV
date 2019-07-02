@@ -302,8 +302,10 @@ public class HumanInteractable : AInteraction
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
-		if (mObjectMounted == null)
-			return true;
+        if (mObjectMounted == null) {
+            XV_UI.Instance.Notify(2F, "Human can't dismount the object.");
+            return true;
+        }
 
 		mObjectMounted.DropHuman(this);
 		OnUnmount();
@@ -342,7 +344,7 @@ public class HumanInteractable : AInteraction
 			mEntity.DestroyBubbleInfoButton(mUnmountBubbleButton);
 		mEntity.StashPopUIBubbleInfoButtons();
 
-		if (mObjectMounted != null)
+        if (mObjectMounted != null)
 			mObjectMounted = null;
 	}
 
@@ -652,6 +654,11 @@ public class HumanInteractable : AInteraction
 
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
+
+        if (mObjectPushed == null) {
+            XV_UI.Instance.Notify(2F, "Human can't release object.");
+            return true;
+        }
 
 		mObjectPushed.DropHuman(this, OnManufactureStartMove, OnManufactureEndMove);
 		OnRelease();

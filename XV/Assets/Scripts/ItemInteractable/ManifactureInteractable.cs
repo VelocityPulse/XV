@@ -171,10 +171,12 @@ public class ManifactureInteractable : AInteraction
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
-		if (lTarget == null || mObjectHeld != null)
-			return true;
+		if (lTarget == null || mObjectHeld != null) {
+            XV_UI.Instance.Notify(2F, "Can't take the object.");
+            return true;
+        }
 
-		AInteraction lTargetBaseInteraction;
+        AInteraction lTargetBaseInteraction;
 		if ((lTargetBaseInteraction = lTarget.GetComponent<AInteraction>()) == null) {
 			XV_UI.Instance.Notify(2F, "Can't check the object is available.");
 			mTargetIsAvailable = false;
@@ -210,8 +212,8 @@ public class ManifactureInteractable : AInteraction
 		AnimationParameters lParams = (AnimationParameters)iParams;
 		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
-		if (lTarget == null || mObjectHeld != null)
-			return true;
+        if (lTarget == null || mObjectHeld != null)
+            return true;
 
 		mObjectHeld = lTarget.GetComponent<AEntity>();
 		mObjectHeld.Selected = false;
@@ -254,8 +256,13 @@ public class ManifactureInteractable : AInteraction
 
 	private bool TakeOffObjectCallback(object iParams)
 	{
-		if (mObjectHeld == null || iParams == null || gameObject == null)
+		if (iParams == null || gameObject == null)
 			return true;
+
+        if (mObjectHeld == null) {
+            XV_UI.Instance.Notify(2F, "Can't drop the object.");
+            return true;
+        }
 
 		AInteraction lTargetBaseInteraction;
 		if ((lTargetBaseInteraction = mObjectHeld.GetComponent<AInteraction>()) == null) {
