@@ -41,8 +41,12 @@ public class TimelineUtility : MonoBehaviour
 	public static string FormatTime(double iSeconds)
 	{
 		string lStr = iSeconds.ToString();
-		string lSeconds = lStr.Substring(0, lStr.IndexOf('.'));
-		string lRemain = lStr.Substring(lStr.IndexOf('.') + 1, 2);
+		string lSeconds = lStr;
+		string lRemain = "00";
+		if (lStr.IndexOf('.') != -1) {
+			lSeconds = lStr.Substring(0, lStr.IndexOf('.'));
+			lRemain = lStr.Substring(lStr.IndexOf('.') + 1, 2);
+		}
 		return lSeconds + ":" + lRemain;
 	}
 

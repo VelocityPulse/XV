@@ -33,7 +33,14 @@ public class UITrack : MonoBehaviour
 		}
 	}
 
-	public float Size { get { return mRectTransform.rect.size.x; } }
+	public float Size
+	{
+		get
+		{
+			RectTransform rectTransform = transform as RectTransform;
+			return rectTransform.rect.size.x;
+		}
+	}
 
 	private void OnEnable()
 	{
