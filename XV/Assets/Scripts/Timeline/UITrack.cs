@@ -37,6 +37,8 @@ public class UITrack : MonoBehaviour
 	{
 		get
 		{
+            if (this == null)
+                return 1000F;
 			RectTransform rectTransform = transform as RectTransform;
 			return rectTransform.rect.size.x;
 		}
