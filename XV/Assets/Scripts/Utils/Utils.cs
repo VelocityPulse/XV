@@ -14,16 +14,50 @@ public static class Utils
 
 	public static readonly Color32 PALE_ORANGE = new Color32(255, 211, 131, 255);
 
-	public static bool CreateFolder(string iPath)
+	public static void CopyDirectory(string iSourceDirName, string iDestDirName, bool iCopySubDirs)
 	{
-		if (string.IsNullOrEmpty(iPath))
-			return false;
+		DirectoryInfo lDir = new DirectoryInfo(iSourceDirName);
 
-		if (Directory.Exists(iPath))
+		if (!lDir.Exists) {
+			throw new DirectoryNotFoundException(
+				"Source directory does not exist or could not be found: "
+				+ iSourceDirName);
+		}
+
+		DirectoryInfo[] lDirs = lDir.GetDirectories();
+		CreateDirectory(iDestDirName);
+
+		FileInfo[] lFiles = lDir.GetFiles();
+		foreach (FileInfo lFile in lFiles) {
+			string lTempPath = Path.Combine(iDestDirName, lFile.Name);
+			lFile.CopyTo(lTempPath, false);
+		}
+
+		if (iCopySubDirs) {
+			foreach (DirectoryInfo lSubdir in lDirs) {
+				string lTempPath = Path.Combine(iDestDirName, lSubdir.Name);
+				CopyDirectory(lSubdir.FullName, lTempPath, iCopySubDirs);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Creates a directory.
+	/// </summary>
+	/// <param name="iFolderPath">Path to the directory.</param>
+	public static bool CreateDirectory(string iFolderPath)
+	{
+		try {
+			if (string.IsNullOrEmpty(iFolderPath))
+				return false;
+
+			if (!Directory.Exists(iFolderPath))
+				Directory.CreateDirectory(iFolderPath);
+
 			return true;
-		Directory.CreateDirectory(iPath);
-
-		return false;
+		} catch {
+			return false;
+		}
 	}
 
 	public static void PrintStackTrace()

@@ -60,7 +60,7 @@ public sealed class TimeLineSerialized
 	public string Serialize()
 	{
 		string lFolderPath = Application.dataPath + RES_PATH;
-		Utils.CreateFolder(lFolderPath);
+		Utils.CreateDirectory(lFolderPath);
 
 		if (!TimeLineName.EndsWith(".xml"))
 			TimeLineName += ".xml";
@@ -77,7 +77,7 @@ public sealed class TimeLineSerialized
 	static public TimeLineSerialized Unserialize(string iTimeLineName)
 	{
 		string lFolderPath = Application.dataPath + RES_PATH;
-		Utils.CreateFolder(lFolderPath);
+		Utils.CreateDirectory(lFolderPath);
 
 		if (!iTimeLineName.EndsWith(".xml"))
 			iTimeLineName += ".xml";

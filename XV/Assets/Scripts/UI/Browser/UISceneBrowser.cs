@@ -59,7 +59,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 	private void Start()
 	{
 		mSavedScenePath = Application.dataPath + DataScene.RES_PATH;
-		Utils.CreateFolder(mSavedScenePath);
+		Utils.CreateDirectory(mSavedScenePath);
 
 		// Init some variables
 		if ((mCanvasGroup = GetComponent<CanvasGroup>()) != null)

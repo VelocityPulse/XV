@@ -89,7 +89,7 @@ public sealed class DataScene
 	static public string Serialize(DataScene iDataScene)
 	{
 		string lFolderPath = Application.dataPath + RES_PATH;
-		Utils.CreateFolder(lFolderPath);
+		Utils.CreateDirectory(lFolderPath);
 
 		using (StreamWriter writer = new StreamWriter(lFolderPath + iDataScene.SceneName)) {
 			XmlSerializer serializer = new XmlSerializer(typeof(DataScene));
@@ -105,7 +105,7 @@ public sealed class DataScene
 	public string Serialize()
 	{
 		string lFolderPath = Application.dataPath + RES_PATH;
-		Utils.CreateFolder(lFolderPath);
+		Utils.CreateDirectory(lFolderPath);
 
 		if (!SceneName.EndsWith(".xml"))
 			SceneName += ".xml";
@@ -124,7 +124,7 @@ public sealed class DataScene
 	static public DataScene Unserialize(string iSceneName)
 	{
 		string lFolderPath = Application.dataPath + RES_PATH;
-		Utils.CreateFolder(lFolderPath);
+		Utils.CreateDirectory(lFolderPath);
 
 		if (!iSceneName.EndsWith(".xml"))
 			iSceneName += ".xml";

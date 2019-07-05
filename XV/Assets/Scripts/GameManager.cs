@@ -78,6 +78,11 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	private void Awake()
+	{
+		CheckFirstLaunch();
+	}
+
 	void Start()
 	{
 		if (sInstance == null)
@@ -132,6 +137,16 @@ public class GameManager : MonoBehaviour
 					iEntity.LockWorldEditorDeplacement = false;
 					iEntity.LockDestroy = false;
 				});
+		}
+	}
+
+	private void CheckFirstLaunch() {
+		if (!File.Exists(Application.dataPath + DataScene.RES_PATH + "Demo.xml")) {
+
+			Utils.CreateDirectory(Application.dataPath + DataScene.RES_PATH);
+			Utils.CreateDirectory(Application.dataPath + TimeLineSerialized.RES_PATH);
+			File.Copy(Application.streamingAssetsPath + "/SavedData/SceneData/" + "Demo.xml", Application.dataPath + DataScene.RES_PATH + "Demo.xml");
+			File.Copy(Application.streamingAssetsPath + "/SavedData/Timeline/" + "Demo.xml", Application.dataPath + TimeLineSerialized.RES_PATH + "Demo.xml");
 		}
 	}
 
