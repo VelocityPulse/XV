@@ -57,12 +57,6 @@ public abstract class AInteraction : MonoBehaviour
 		public EntityParameters.EntityType[] InteractWith;
 
 		/// <summary>
-		/// interaction function, which will be called in the Timeline.
-		/// </summary>
-		[System.Obsolete("Useless")]
-		public Predicate<object> AnimationImpl;
-
-		/// <summary>
 		/// UIBubbleInfoButton of this Animation, it will be displayed only when one of Subscription is present in the scene.
 		/// </summary>
 		public UIBubbleInfoButton Button;
@@ -360,7 +354,7 @@ public abstract class AInteraction : MonoBehaviour
 
 			// Check all field are correctly set
 			if (string.IsNullOrEmpty(iInteraction.Name) || iInteraction.InteractWith == null
-				|| iInteraction.InteractWith.Length == 0 || iInteraction.AnimationImpl == null) {
+				|| iInteraction.InteractWith.Length == 0) {
 				Debug.LogError("[INTERACTION] - AnimationParameters not correctly set");
 				return null;
 			}

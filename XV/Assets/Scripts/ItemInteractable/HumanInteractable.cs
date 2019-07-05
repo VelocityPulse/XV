@@ -60,7 +60,6 @@ public class HumanInteractable : AInteraction
 			Name = "Take",
 			Help = "Take an object",
 			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.SMALL_ITEM, EntityParameters.EntityType.MEDIUM_ITEM },
-			AnimationImpl = MoveToTargetCallback,
 			AInteraction = this,
 			Button = new UIBubbleInfoButton() {
 				Text = "Take",
@@ -73,7 +72,6 @@ public class HumanInteractable : AInteraction
 			Name = "Mount",
 			Help = "Mount an object",
 			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.VEHICLE },
-			AnimationImpl = MountObjectCallback,
 			AInteraction = this,
 			Button = new UIBubbleInfoButton() {
 				Text = "Mount",
@@ -86,7 +84,6 @@ public class HumanInteractable : AInteraction
 			Name = "Handle",
 			Help = "Handle an object",
 			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.TROLLEY },
-			AnimationImpl = PushObjectCallback,
 			AInteraction = this,
 			Button = new UIBubbleInfoButton() {
 				Text = "Handle",
@@ -298,10 +295,7 @@ public class HumanInteractable : AInteraction
 	{
 		if (gameObject == null || iParams == null)
 			return true;
-
-		AnimationParameters lParams = (AnimationParameters)iParams;
-		GameObject lTarget = (GameObject)lParams.AnimationTarget;
-
+		
         if (mObjectMounted == null) {
             XV_UI.Instance.Notify(2F, "Human can't dismount the object.");
             return true;
@@ -651,9 +645,6 @@ public class HumanInteractable : AInteraction
 	{
 		if (gameObject == null || iParams == null)
 			return true;
-
-		AnimationParameters lParams = (AnimationParameters)iParams;
-		GameObject lTarget = (GameObject)lParams.AnimationTarget;
 
         if (mObjectPushed == null) {
             XV_UI.Instance.Notify(2F, "Human can't release object.");

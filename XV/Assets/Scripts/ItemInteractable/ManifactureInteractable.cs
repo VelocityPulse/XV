@@ -43,7 +43,6 @@ public class ManifactureInteractable : AInteraction
 			Name = "Take",
 			Help = "Take an object",
 			InteractWith = new EntityParameters.EntityType[] { EntityParameters.EntityType.MEDIUM_ITEM, EntityParameters.EntityType.HEAVY_ITEM },
-			AnimationImpl = TakeObjectMoveToTargetCallback,
 			AInteraction = this,
 			Button = new UIBubbleInfoButton() {
 				Text = "Take",
