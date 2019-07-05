@@ -7,26 +7,28 @@ using UnityEngine.UI;
 
 public sealed class UISceneBrowser : MonoBehaviour
 {
-	[SerializeField]
-	private UINewSceneTitle newSceneTitle;
+    [SerializeField]
+    private UINewSceneTitle newSceneTitle;
 
-	private const float NOTIFIER_DURATION = 1F;
+    private const float NOTIFIER_DURATION = 1F;
 
-	private string mSavedScenePath;
+    private string mSavedScenePath;
 
-	private List<string> mFullPathFiles;
+    private List<string> mFullPathFiles;
 
-	private List<string> mFileNames;
+    private List<string> mFileNames;
 
-	private bool mDisplayed;
+    private bool mDisplayed;
 
-	private CanvasGroup mCanvasGroup;
+    private CanvasGroup mCanvasGroup;
 
-	private GameObject mFileUITemplate;
+    private GameObject mFileUITemplate;
 
-	private UIElementGridParam mFileUIParam;
+    private UIElementGridParam mFileUIParam;
 
-	private UIElementGridParam mLastFileUIParamSelected;
+    private UIElementGridParam mLastFileUIParamSelected;
+
+    public static bool IsOpen { get; private set; }
 
 	// Assets
 
@@ -67,6 +69,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 
 		gameObject.SetActive(false);
 		mDisplayed = false;
+        IsOpen = false;
 
 		// Load Prefab
 		mFileUITemplate = Resources.Load<GameObject>(GameManager.UI_TEMPLATE_PATH + "UIFileElementGrid");
@@ -164,6 +167,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 		if (mLastFileUIParamSelected == null)
 			return;
 
+        IsOpen = true;
 		DataScene lDataScene = DataScene.Unserialize(mLastFileUIParamSelected.Text.text);
 		GameManager.Instance.LoadScene(lDataScene);
 		XV_UI.Instance.UnlockGUI();
@@ -193,6 +197,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 
 	private void OnClickCancel()
 	{
+        IsOpen = false;
 		HideBrowser();
 	}
 
@@ -214,6 +219,7 @@ public sealed class UISceneBrowser : MonoBehaviour
 	{
 		if (!mDisplayed) {
 			gameObject.SetActive(true);
+            IsOpen = true;
 			UpdateFiles();
 			mDisplayed = true;
 			XV_UI.Instance.LockGUI();

@@ -198,6 +198,11 @@ public class GameManager : MonoBehaviour
 		EntityParameters lParameters;
 		lParameters = oGameObject.GetComponent<EntityParameters>();
 
+        // If no parameters found create one, and this object will be FIX_ITEM
+        if (lParameters == null) {
+            lParameters = oGameObject.AddComponent<EntityParameters>();
+        }
+
 		// Setting positions
 		oGameObject.transform.position = iODS.Position;
         oGameObject.transform.eulerAngles = iODS.Rotation;
@@ -216,7 +221,7 @@ public class GameManager : MonoBehaviour
 		lObjectEntity.SetUIBubbleInfo(lUIBubbleInfo.GetComponent<UIBubbleInfo>());
 		lObjectEntity.SaveEntity();
 
-		// If this item can move - Add MovableEntity script
+		// If this item can't move hide speed input field
 		if (lParameters != null && !lParameters.Movable)
 			lUIBubbleInfo.GetComponent<UIBubbleInfo>().HideSpeedInput();
 

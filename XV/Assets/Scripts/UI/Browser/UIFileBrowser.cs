@@ -67,6 +67,8 @@ public sealed class UIFileBrowser : MonoBehaviour
 	[SerializeField]
 	private Text SelectedFile;
 
+    public static bool IsOpen { get; private set; }
+
 	// Use this for initialization
 	private void Start()
 	{
@@ -78,6 +80,7 @@ public sealed class UIFileBrowser : MonoBehaviour
 
 		gameObject.SetActive(false);
 		mDisplayed = false;
+        IsOpen = false;
 		// Init selected file text
 		SelectedFile.text = SELECTION_FIELD;
 		SelectedFile.color = Utils.ROYAL_GREY;
@@ -122,7 +125,7 @@ public sealed class UIFileBrowser : MonoBehaviour
 			if (mFileUIParam != null)
 				mFileUIParam.Text.text = lFile.Replace(mPath + "/", "");
 			GameObject lElement = Instantiate(mFileUITemplate, UIGridElement.transform);
-			lElement.GetComponent<Button>().onClick.AddListener(() => { ElementSelection(lElement); });
+			lElement.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => { ElementSelection(lElement); });
 		}
 	}
 
@@ -205,25 +208,31 @@ public sealed class UIFileBrowser : MonoBehaviour
 		// Display
 		if (!mDisplayed) {
 			gameObject.SetActive(true);
+            IsOpen = true;
 			UpdateFiles();
 			mDisplayed = true;
 			gameObject.SetActive(true);
+            GameManager.Instance.KeyboardDeplacementActive = false;
 			if (mCanvasGroup != null)
-				StartCoroutine(Utils.FadeToAsync(1F, 0.4F, mCanvasGroup));
+                StartCoroutine(Utils.FadeToAsync(1F, 0.4F, mCanvasGroup, () => {
+                    GameManager.Instance.KeyboardDeplacementActive = false;
+                }));
 		}
 		// Hide
 		else
 			HideBrowser();
 	}
 
-	public void HideBrowser()
+    public void HideBrowser()
 	{
 		if (mDisplayed) {
+            IsOpen = false;
 			mDisplayed = false;
 			if (mCanvasGroup != null) {
 				StartCoroutine(Utils.FadeToAsync(0F, 0.4F, mCanvasGroup, () => {
 					ClearFiles();
 					gameObject.SetActive(false);
+                    GameManager.Instance.KeyboardDeplacementActive = true;
 				}));
 			}
 		}

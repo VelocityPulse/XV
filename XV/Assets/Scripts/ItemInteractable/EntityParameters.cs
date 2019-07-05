@@ -60,4 +60,14 @@ public class EntityParameters : MonoBehaviour
 	{
 		get { return CanMove; }
 	}
+
+    public EntityParameters()
+    {
+        TypeOf = EntityType.FIX_ITEM;
+        SitPosition = Vector3.zero;
+        HoldPosition = Vector3.zero;
+        DropPosition = Vector3.zero;
+        CanMove = false;
+    }
+
 }

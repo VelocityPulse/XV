@@ -104,7 +104,7 @@ public class UIBubbleInfo : MonoBehaviour
 
 			if (ModelName.isFocused || (SpeedInput != null && SpeedInput.isFocused))
 				GameManager.Instance.KeyboardDeplacementActive = false;
-			else
+            else if (!UISceneBrowser.IsOpen && !UIFileBrowser.IsOpen)
 				GameManager.Instance.KeyboardDeplacementActive = true;
 		}
 	}
