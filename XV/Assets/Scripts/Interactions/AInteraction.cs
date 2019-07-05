@@ -28,7 +28,7 @@ public class AnimationParameters
 	/// </summary>
 	public object AnimationTarget;
 
-    public Func<bool> Action;
+	public Func<bool> Action;
 }
 
 /// <summary>

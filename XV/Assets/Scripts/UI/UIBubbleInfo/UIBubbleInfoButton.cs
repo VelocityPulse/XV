@@ -6,18 +6,18 @@ using UnityEngine.UI;
 
 public sealed class UIBubbleInfoButton
 {
-    /// <summary>
-    /// Label of the UI Button
-    /// </summary>
+	/// <summary>
+	/// Label of the UI Button
+	/// </summary>
 	public string Text { get; set; }
 
-    /// <summary>
-    /// Tag of the Button, useful to destroy a specific Button.
-    /// </summary>
-    public string Tag { get; set; }
+	/// <summary>
+	/// Tag of the Button, useful to destroy a specific Button.
+	/// </summary>
+	public string Tag { get; set; }
 
-    /// <summary>
-    /// Callback OnClick of this Button.
-    /// </summary>
+	/// <summary>
+	/// Callback OnClick of this Button.
+	/// </summary>
 	public Action<AEntity> ClickAction { get; set; }
 }
